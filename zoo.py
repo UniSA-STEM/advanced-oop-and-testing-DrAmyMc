@@ -39,8 +39,8 @@ class Zoo:
     def remove_animal(self):
         pass
 
-    def add_enclosure(self, type, size):
-        self.__enclosures.append(Enclosure(type,size))
+    def add_enclosure(self, name, type, size):
+        self.__enclosures.append(Enclosure(name, type,size))
 
     def remove_enclosure(self):
         pass
@@ -48,11 +48,21 @@ class Zoo:
     def add_staff(self):
         pass
 
-    def remove_staff(self):
-        pass
+# TODO: Fix name parameter for removal
+    def remove_staff(self, staff_name):
+        if staff_name in self.staff.name:
+            self.staff.remove(staff_name)
 
-    def assign_animal(self):
-        pass
+# TODO: Fix animal / enclosure parameters
+    def assign_animal(self, animal, enclosure):
+        if enclosure.animal_type is None:
+            enclosure.animal_type(animal.species)
+            enclosure.add_animal(animal)
+        elif enclosure.animal_type == animal.species:
+            enclosure.add_animal(animal)
+        else:
+            print(f"Cannot add to this enclosure - must be of species {enclosure.animal_type}.")
+
 
     def __str__(self):
         return f"{self.name} has {self.enclosures} enclosures and {self.staff} staff."

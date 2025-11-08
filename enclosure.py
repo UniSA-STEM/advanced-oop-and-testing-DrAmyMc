@@ -7,15 +7,21 @@ Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 '''
 
-class Enclosure:
-    TYPE_LIST = ["Aquatic", "Savannah", "Reptile House", "Jungle"]
+from animal import Animal
 
-    def __init__(self, type, size):
+class Enclosure:
+    TYPE_LIST = ["Aquatic", "Savannah", "Terrarium", "Jungle"]
+
+    def __init__(self, name, type, size):
+        self.name = name
         self.type = type
         self.size = size
         self.__cleanliness_level = 5
         self.__animal_type = None
         self.__animals_housed = []
+
+    def get_name(self):
+        return self.__name
 
     def get_type(self):
         return self.__type
@@ -32,6 +38,10 @@ class Enclosure:
     def get_animals_housed(self):
         return self.__animals_housed
 
+    def set_name(self, name):
+        if isinstance(name, str):
+            self.__name = name
+
     def set_type(self, type):
         if type in Enclosure.TYPE_LIST:
             self.__type = type
@@ -47,6 +57,11 @@ class Enclosure:
     def set_animal_type(self, species):
         self.__animal_type = species
 
+    def add_animal(self, animal):
+        if isinstance(animal, Animal):
+            self.__animals_housed.append(animal)
+
+    name = property(get_name, set_name)
     type = property(get_type, set_type)
     size = property(get_size, set_size)
     cleanliness_level = property(get_cleanliness_level, set_cleanliness_level)

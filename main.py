@@ -16,12 +16,12 @@ def test_zoo_creation():
     print(zoo)
 
 def test_enclosure_creation():
-    reptile1 = Enclosure("Reptile House", 20)
+    reptile1 = Enclosure("Reptile House", "Terrarium", 20)
     print(reptile1)
 
 def test_add_enclosure():
     zoo = Zoo("Halls Gap Zoo")
-    zoo.add_enclosure("Reptile House", 20)
+    zoo.add_enclosure("Reptile House", "Terrarium", 20)
     print(zoo)
 
 def test_staff_creation():
