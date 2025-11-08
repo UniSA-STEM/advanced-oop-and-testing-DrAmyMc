@@ -10,7 +10,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 from animal import Animal
 
 class Enclosure:
-    TYPE_LIST = ["Aquatic", "Savannah", "Terrarium", "Jungle"]
+    TYPE_LIST = ["Aquatic", "Savannah", "Terrarium", "Bushland"]
 
     def __init__(self, name, type, size):
         self.name = name

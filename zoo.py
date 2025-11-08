@@ -65,4 +65,4 @@ class Zoo:
 
 
     def __str__(self):
-        return f"{self.name} has {self.enclosures} enclosures and {self.staff} staff."
+        return f"{self.name} has {self.enclosures} enclosures and {self.staff} staff.\n"

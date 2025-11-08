@@ -10,34 +10,15 @@ This is my own work as defined by the University's Academic Integrity Policy.
 from abc import ABC, abstractmethod
 from species import species_dict
 
-#Mammal
-    #Kangaroo
-        #WesternGreyKangaroo
-        #KIKangaroo
-    #Carnivore
-        #SpottedHyena
-        #Lion
-#Reptile
-    #Snake
-        #EasternBrownSnake
-        #TigerSnake
-    #Lizard
-        #Gila Monster
-        #BlueTongue
-#Bird
-    #Flight
-        #RainbowLorikeet
-        #SulphurCrestedCockatoo
-    #Flightless
-        #Emu
-        #Cassowary
 
 class Animal(ABC):
     def __init__(self, name, age, species):
         self.name = name
         self.age = age
         self.species = species
+        self.__is_native = self.lookup_is_native()
         self.__dietary_requirements = self.lookup_diet()
+        self.__environment = self.lookup_environment()
         self.__space = self.lookup_space()
 
     def get_name(self):
@@ -49,8 +30,14 @@ class Animal(ABC):
     def get_species(self):
         return self.__species
 
+    def get_is_native(self):
+        return self.__is_native
+
     def get_dietary_requirements(self):
         return self.__dietary_requirements
+
+    def get_environment(self):
+        return self.__environment
 
     def get_space(self):
         return self.__space
@@ -70,14 +57,22 @@ class Animal(ABC):
     name = property(get_name, set_name)
     age = property(get_age, set_age)
     species = property(get_species, set_species)
+    is_native = property(get_is_native)
     dietary_requirements = property(get_dietary_requirements)
+    environment = property(get_environment)
     space = property(get_space)
 
+    def lookup_is_native(self):
+        return species_dict[self.species][3]
+
     def lookup_diet(self):
-        return species_dict[self.species][1]
+        return species_dict[self.species][2]
+
+    def lookup_environment(self):
+        return species_dict[self.species][0]
 
     def lookup_space(self):
-        return species_dict[self.species][0]
+        return species_dict[self.species][1]
 
     @abstractmethod
     def make_sound(self):
@@ -91,8 +86,21 @@ class Animal(ABC):
     def sleep(self):
         pass
 
+    @abstractmethod
+    def move(self):
+        pass
+
     def __str__(self):
-        return "I am an animal."
+        details = [f"---{self.name.upper()} THE {self.__class__.__name__.upper()}---"]
+        if self.is_native:
+            details.append(f"I am a {self.species}, which is native to Australia.")
+        else:
+            details.append(f"I am a {self.species}, which is not native to Australia.")
+        details.append(f"Age: {self.age} years old\n"
+                       f"Required environment: {self.environment}\n"
+                       f"Required space: {self.space}m\u00b2\n"
+                       f"Required diet: {self.dietary_requirements}\n")
+        return '\n'.join(details)
 
 class Carnivore(Animal):
     def __init__self(self, name, age, species):
@@ -107,15 +115,9 @@ class Carnivore(Animal):
     def sleep(self):
         return f"{self.name} is now sleeping."
 
+    def move(self):
+        return f"{self.name} is now moving."
+
     def __str__(self):
-        return super().__str__() + (f" I am a {self.species.lower()}, a type of carnivore. "
-                                    f"My name is {self.name} and I am {self.age} years old.\n"
-                                    f"I need to eat {self.dietary_requirements} and I need a space of {self.space} m2.")
-
-cat = Carnivore("Paddy", 100, "Lion")
-print(cat)
-print(cat.make_sound())
-print(cat.eat())
-print(cat.sleep())
-
+        return super().__str__()
 
