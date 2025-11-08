@@ -52,3 +52,15 @@ class Enclosure:
     cleanliness_level = property(get_cleanliness_level, set_cleanliness_level)
     animal_type = property(get_animal_type, set_animal_type)
     animals_housed = property(get_animals_housed)
+
+    def __str__(self):
+        details = [f"---{self.type.upper()} ENCLOSURE---\n"
+                f"Size: {self.size}m\u00b2\n"
+                f"Cleanliness level: {self.cleanliness_level}"]
+        if self.cleanliness_level == 0:
+            details.append(f"This enclosure urgently needs cleaning!")
+        if self.animal_type is None:
+            details.append(f"This enclosure is currently empty.\n")
+        else:
+            details.append(f"This enclosures houses the {self.animal_type} species.")
+        return '\n'.join(details)
