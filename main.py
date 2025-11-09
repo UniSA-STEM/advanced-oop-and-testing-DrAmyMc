@@ -7,11 +7,10 @@ Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 """
 
-from staff import Veterinarian
-from staff import Zookeeper
+from staff import Veterinarian, Zookeeper
 from zoo import Zoo
 from enclosure import Enclosure
-from animal import Carnivore
+from animal import Mammal, Bird, Reptile
 
 
 def test_create_animal():
@@ -27,11 +26,15 @@ def test_create_animal():
     print("\n=== TEST: Creation of Animals ===\n")
 
     # --- Create and display valid animals ---
-    cat = Carnivore("Paddy", 3, "Lion")
+    cat = Mammal("Paddy", 3, "Lion")
+    pelican = Bird("Percival", 2, "Pelican")
+    lizard = Reptile("Lizzie", 1, "Lace Monitor")
     print(cat)
+    print(pelican)
+    print(lizard)
 
     # --- Attempt to create animals with invalid species ---
-    cat2 = Carnivore("Paddy", 3, "llion")
+    cat2 = Mammal("Paddy", 3, "llion")
     print(cat2)
 
     # --- Modify animal attributes to valid values ---
@@ -86,6 +89,37 @@ def test_create_enclosure():
     enc.cleanliness_level = 'dirty'
     enc.animal_type = 'Koalaass'
     print(enc)
+
+def test_add_animal():
+    """
+    Direct tests for the Enclosure class for adding animal to enclosure.
+
+    Tests:
+        - Creation of an enclosure instance (valid and invalid case).
+        - Setting attributes manually (valid and invalid cases).
+        - Displaying string representations.
+    """
+    print("\n=== TEST: Adding Animal to Enclosure ===\n")
+
+    # --- Create and display valid enclosure and animals ---
+    enc = Enclosure("Test Enclosure", "Aquatic", 30)
+    print(enc)
+    person = Veterinarian("Test Vet", 2025)
+    bird1 = Bird("Percy1", 2, "Pelican")
+    bird2 = Bird("Percy2", 2, "Pelican")
+    bird3 = Bird("Percy3", 2, "Pelican")
+    bird4 = Bird("Percy4", 2, "Pelican")
+    cat = Mammal("Puddy", 3, "Lion")
+    otter = Mammal("Otty", 1, "Otter")
+    enc.add_animal(person)      # Not a valid animal object
+    enc.add_animal(cat)
+    enc.add_animal(bird1)
+    enc.add_animal(otter)
+    enc.add_animal(bird2)
+    enc.add_animal(bird3)
+    enc.add_animal(bird4)
+    print(enc)
+    print(enc.animals_housed)
 
 def test_create_staff():
     """
@@ -159,10 +193,11 @@ def main():
     """Calls all the test functions"""
 
     # --- Testing animal class ---
-    test_create_animal()
+    #test_create_animal()
 
     # --- Testing enclosure class ---
     #test_create_enclosure()
+    test_add_animal()
 
     # --- Testing staff class ---
     #test_create_staff()

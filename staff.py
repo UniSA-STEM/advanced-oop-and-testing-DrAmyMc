@@ -108,7 +108,7 @@ class Staff(ABC):
     # -----------------
 
     @abstractmethod
-    def method(self):
+    def assign_animals(self, species):
         pass
 
 
@@ -120,7 +120,10 @@ class Veterinarian(Staff):
     # Behavioural methods
     # -------------------
 
-    def method(self):
+    def assign_animals(self, species):
+        pass
+
+    def conduct_health_check(self, animal):
         pass
 
 class Zookeeper(Staff):
@@ -131,5 +134,11 @@ class Zookeeper(Staff):
     # Behavioural methods
     # -------------------
 
-    def method(self):
+    def assign_animals(self, species):
+        pass
+
+    def clean_enclosure(self, enclosure_name):
+        pass
+
+    def feed_animals(self, species):
         pass

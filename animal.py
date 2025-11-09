@@ -207,7 +207,7 @@ class Animal(ABC):
         pass
 
 
-class Carnivore(Animal):
+class Mammal(Animal):
     def __init__(self, name, age, species):
         super().__init__(name, age, species)
 
@@ -230,3 +230,50 @@ class Carnivore(Animal):
     def __str__(self):
         return super().__str__()
 
+
+class Bird(Animal):
+    def __init__(self, name, age, species):
+        super().__init__(name, age, species)
+
+    # -------------------
+    # Behavioural methods
+    # -------------------
+
+    def make_sound(self):
+        return "Roar!"
+
+    def eat(self):
+        return f"{self.name} is now eating {self.dietary_requirements}."
+
+    def sleep(self):
+        return f"{self.name} is now sleeping."
+
+    def move(self):
+        return f"{self.name} is now moving."
+
+    def __str__(self):
+        return super().__str__()
+
+
+class Reptile(Animal):
+    def __init__(self, name, age, species):
+        super().__init__(name, age, species)
+
+    # -------------------
+    # Behavioural methods
+    # -------------------
+
+    def make_sound(self):
+        return "Roar!"
+
+    def eat(self):
+        return f"{self.name} is now eating {self.dietary_requirements}."
+
+    def sleep(self):
+        return f"{self.name} is now sleeping."
+
+    def move(self):
+        return f"{self.name} is now moving."
+
+    def __str__(self):
+        return super().__str__()

@@ -8,7 +8,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 """
 
 from animal import Animal
-from species import species_dict
+from species import species_dict, loc_dict
 
 
 class Enclosure:
@@ -41,6 +41,7 @@ class Enclosure:
         self.size = size                #Utilises the setter for validation of new instances
         self.__cleanliness_level = 5
         self.__animal_type = None
+        self.__max_animals = self.calculate_max_animals()
         self.__animals_housed = []
 
     # --------------
@@ -66,6 +67,10 @@ class Enclosure:
     def get_animal_type(self)->str:
         """Returns the enclosure's animal type or None if empty."""
         return self.__animal_type
+
+    def get_max_animals(self)->int:
+        """Returns the enclosure's maximum animal capacity or None if empty."""
+        return self.__max_animals
 
     def get_animals_housed(self)->list:
         """Returns the list of animals housed in the enclosure."""
@@ -150,7 +155,19 @@ class Enclosure:
     size = property(get_size, set_size)
     cleanliness_level = property(get_cleanliness_level, set_cleanliness_level)
     animal_type = property(get_animal_type, set_animal_type)
+    max_animals = property(get_max_animals)
     animals_housed = property(get_animals_housed)
+
+    # --------------
+    # Helper methods
+    # --------------
+
+    def calculate_max_animals(self):
+        if self.animal_type is not None:
+            species_space = species_dict[self.animal_type][loc_dict['space']]
+            return self.size // species_space
+        else:
+            return None
 
     # -------------------
     # Behavioural methods
@@ -164,8 +181,24 @@ class Enclosure:
             animal (Animal): Adds an animal to the list of animals housed in the enclosure.
                              Must be Animal class.
         """
-        if isinstance(animal, Animal):
+        if not isinstance(animal, Animal):
+            print(f"This is not an animal. Cannot add to enclosure.")
+        elif animal.environment != self.type:
+            print(f"Cannot add {animal.species} to this {self.type} enclosure - must be in {animal.environment} enclosure.")
+        elif self.animal_type is not None and self.animal_type != animal.species:
+            print(f"Cannot add {animal.species} to this {self.animal_type} enclosure - must be same species.")
+        elif self.animal_type is None and self.size < animal.space:
+            print(f"Cannot add {animal.species} - you need a bigger enclosure of at least {animal.size}m\u00b2.")
+        elif self.animal_type is None and self.size >= animal.space:
+            self.animal_type = animal.species
             self.__animals_housed.append(animal)
+            print(f"You have successfully added a {animal.species}. This is now a {self.animal_type} enclosure.")
+        elif len(self.animals_housed) >= self.__max_animals:
+            print(f"Cannot add {animal.species} - the enclosure is already full.")
+        else:
+            self.__animals_housed.append(animal)
+            print(f"You have successfully added another {animal.species} to this enclosure.")
+
 
     def __str__(self):
         """
