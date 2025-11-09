@@ -1,14 +1,15 @@
-'''
+"""
 File: zoo.py
-Description: A brief description of this Python module.
+Description: Zoo class, representing a zoo and its operations with enclosures, animals, and staff.
 Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
-'''
+"""
 
 from enclosure import Enclosure
 from staff import Staff
+
 
 class Zoo:
     def __init__(self, name):
@@ -16,22 +17,41 @@ class Zoo:
         self.__enclosures = []
         self.__staff = []
 
-    def get_name(self):
+    # --------------
+    # Getter methods
+    # --------------
+
+    def get_name(self)->str:
+        """Returns the zoo's name."""
         return self.__name
 
-    def get_enclosures(self):
+    def get_enclosures(self)->list:
+        """Returns the list of enclosure objects at the zoo."""
         return self.__enclosures
 
-    def get_staff(self):
+    def get_staff(self)->list:
+        """Returns the list of staff objects at the zoo."""
         return self.__staff
+
+    # --------------
+    # Setter methods
+    # --------------
 
     def set_name(self, name):
         if isinstance(name, str):
             self.__name = name
 
+    # --------------------
+    # Property definitions
+    # --------------------
+
     name = property(get_name, set_name)
     enclosures = property(get_enclosures)
     staff = property(get_staff)
+
+    # -------------------
+    # Behavioural methods
+    # -------------------
 
     def add_animal(self):
         pass
@@ -62,7 +82,6 @@ class Zoo:
             enclosure.add_animal(animal)
         else:
             print(f"Cannot add to this enclosure - must be of species {enclosure.animal_type}.")
-
 
     def __str__(self):
         return f"{self.name} has {self.enclosures} enclosures and {self.staff} staff.\n"

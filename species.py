@@ -1,3 +1,13 @@
+"""
+File: species.py
+Description: Species dictionary, to be used in conjunction with Animal class.
+Author: Amellia (Amy) McCormack
+ID: 110392134
+Username: MCCAY044
+This is my own work as defined by the University's Academic Integrity Policy.
+"""
+
+
 species_dict = {
     "Lion": ["Savannah", 200, "meat", False],
     "Tiger": ["Savannah", 200, "meat", False],

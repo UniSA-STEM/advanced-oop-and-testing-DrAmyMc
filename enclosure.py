@@ -1,13 +1,14 @@
-'''
+"""
 File: enclosure.py
-Description: A brief description of this Python module.
+Description: Enclosure class, representing an enclosure in a zoo to hold animals.
 Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
-'''
+"""
 
 from animal import Animal
+
 
 class Enclosure:
     TYPE_LIST = ["Aquatic", "Savannah", "Terrarium", "Bushland"]
@@ -20,23 +21,37 @@ class Enclosure:
         self.__animal_type = None
         self.__animals_housed = []
 
-    def get_name(self):
+    # --------------
+    # Getter methods
+    # --------------
+
+    def get_name(self)->str:
+        """Returns the enclosure's name."""
         return self.__name
 
-    def get_type(self):
+    def get_type(self)->str:
+        """Returns the enclosure's environmental type."""
         return self.__type
 
-    def get_size(self):
+    def get_size(self)->int:
+        """Returns the enclosure's size in square metres."""
         return self.__size
 
-    def get_cleanliness_level(self):
+    def get_cleanliness_level(self)->int:
+        """Returns the enclosure's cleanliness level."""
         return self.__cleanliness_level
 
-    def get_animal_type(self):
+    def get_animal_type(self)->str:
+        """Returns the enclosure's animal type or None if empty."""
         return self.__animal_type
 
-    def get_animals_housed(self):
+    def get_animals_housed(self)->list:
+        """Returns the list of animals housed in the enclosure."""
         return self.__animals_housed
+
+    # --------------
+    # Setter methods
+    # --------------
 
     def set_name(self, name):
         if isinstance(name, str):
@@ -61,12 +76,20 @@ class Enclosure:
         if isinstance(animal, Animal):
             self.__animals_housed.append(animal)
 
+    # --------------------
+    # Property definitions
+    # --------------------
+
     name = property(get_name, set_name)
     type = property(get_type, set_type)
     size = property(get_size, set_size)
     cleanliness_level = property(get_cleanliness_level, set_cleanliness_level)
     animal_type = property(get_animal_type, set_animal_type)
     animals_housed = property(get_animals_housed)
+
+    # -------------------
+    # Behavioural methods
+    # -------------------
 
     def __str__(self):
         details = [f"---{self.type.upper()} ENCLOSURE---\n"
