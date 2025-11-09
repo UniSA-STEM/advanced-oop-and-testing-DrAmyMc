@@ -17,7 +17,7 @@ class Enclosure:
     """
 
     # List of the valid enclosure types
-    TYPE_LIST = ["Aquatic", "Savannah", "Terrarium", "Bushland"]
+    TYPE_LIST = ["Aquatic", "Savannah", "Terrarium", "Bushland", "Forrest", "Jungle", "Aviary"]
 
     def __init__(self, name, type, size):
         """
@@ -80,20 +80,26 @@ class Enclosure:
         Updates the enclosure's name.
 
         Args:
-            name (str): The new name for the enclosure, ensuring only a string may be passed.
+            name (str): The new name for the enclosure, ensuring only a string of a minimum length may be passed.
         """
-        if isinstance(name, str):
+        MIN_LENGTH = 3
+        if isinstance(name, str) and len(name) >= MIN_LENGTH:
             self.__name = name
+        else:
+            print(f"Invalid enclosure name. Please enter text of at least {MIN_LENGTH} characters.")
 
     def set_type(self, type):
         """
         Sets the environmental type of the enclosure.
 
         Args:
-            type (str): The environtmental type of the enclosure. Must be a valid type.
+            type (str): The environmental type of the enclosure. Must be a valid type.
         """
         if type in Enclosure.TYPE_LIST:
             self.__type = type
+        else:
+            print(f"Invalid enclosure type. Please enter one of the following types: "
+                  f"{Enclosure.TYPE_LIST}")
 
     def set_size(self, size):
         """
@@ -102,8 +108,12 @@ class Enclosure:
         Args:
             size (int): The new enclosure size (0-5000) in square metres.
         """
-        if isinstance(size, int) and 0 < size <= 5000:
+        MIN_SIZE = 1
+        MAX_SIZE = 5000
+        if isinstance(size, int) and MIN_SIZE <= size <= MAX_SIZE:
             self.__size = size
+        else:
+            print(f"Invalid size. Please enter an integer between {MIN_SIZE} and {MAX_SIZE}.")
 
     def set_cleanliness_level(self, level):
         """
@@ -112,8 +122,12 @@ class Enclosure:
         Args:
             cleanliness_level (int): The new cleanliness level (0-5).
         """
-        if isinstance(level, int) and 0 <= level <= 5:
+        MIN_LEVEL = 0
+        MAX_LEVEL = 5
+        if isinstance(level, int) and MIN_LEVEL <= level <= MAX_LEVEL:
             self.__cleanliness_level = level
+        else:
+            print(f"Invalid cleanliness level. Please enter an integer between {MIN_LEVEL} and {MAX_LEVEL}.")
 
     def set_animal_type(self, species):
         """
@@ -124,6 +138,8 @@ class Enclosure:
         """
         if species in species_dict:
             self.__animal_type = species
+        else:
+            print(f"{species} is not a valid species. Please enter a valid species only.")
 
     # --------------------
     # Property definitions
@@ -158,14 +174,17 @@ class Enclosure:
         Returns:
             str: The enclosure name, type, size, cleanliness level, and animal species housed.
         """
-        details = [f"---{self.name.upper()}---\n"
-                   f"{self.type} Enclosure---\n"
-                   f"Size: {self.size}m\u00b2\n"
-                   f"Cleanliness level: {self.cleanliness_level}"]
-        if self.cleanliness_level == 0:
-            details.append(f"This enclosure urgently needs cleaning!")
-        if self.animal_type is None:
-            details.append(f"This enclosure is currently empty.\n")
-        else:
-            details.append(f"This enclosures houses the {self.animal_type} species.")
-        return '\n'.join(details)
+        try:
+            details = [f"---{self.name.upper()}---\n"
+                       f"{self.type} Enclosure\n"
+                       f"Size: {self.size}m\u00b2\n"
+                       f"Cleanliness level: {self.cleanliness_level}"]
+            if self.cleanliness_level == 0:
+                details.append(f"This enclosure urgently needs cleaning!")
+            if self.animal_type is None:
+                details.append(f"This enclosure is currently empty.\n")
+            else:
+                details.append(f"This enclosures houses the {self.animal_type} species.\n")
+            return '\n'.join(details)
+        except:
+            return "Invalid object.\n"

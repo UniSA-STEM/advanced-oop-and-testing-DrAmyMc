@@ -31,7 +31,6 @@ class Zoo:
         self.name = name            #Utilises the setter for validation of new instances
         self.__enclosures = []
         self.__staff = []
-
     # --------------
     # Getter methods
     # --------------
@@ -57,10 +56,13 @@ class Zoo:
         Updates the zoo's name.
 
         Args:
-            name (str): The new name for the zoo, ensuring only a string may be passed.
+            name (str): The new name for the zoo, ensuring only a string of a minimum length may be passed.
         """
-        if isinstance(name, str):
+        MIN_LENGTH = 3
+        if isinstance(name, str) and len(name) >= MIN_LENGTH:
             self.__name = name
+        else:
+            print(f"Invalid zoo name. Please enter text of at least {MIN_LENGTH} characters.")
 
     # --------------------
     # Property definitions
@@ -105,11 +107,14 @@ class Zoo:
             print(f"Cannot add to this enclosure - must be of species {enclosure.animal_type}.")
 
     #TODO: Update with different format to list enclosures and staff properly
-    def __str__(self):
+    def __str__(self)->str:
         """
         Returns a formatted string containing the zoo's details.
 
         Returns:
             str: The name, enclosure list, and staff list.
         """
-        return f"{self.name} has {self.enclosures} enclosures and {self.staff} staff.\n"
+        try:
+            return f"{self.name} has {self.enclosures} enclosures and {self.staff} staff.\n"
+        except:
+            return "Invalid object.\n"
