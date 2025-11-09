@@ -12,14 +12,36 @@ from species import species_dict
 
 
 class Animal(ABC):
+    """
+    Represents an animal in the abstract sense.
+    The Animal class models general animal features, requirements, and methods.
+    """
+
     def __init__(self, name, age, species):
-        self.name = name
-        self.age = age
-        self.species = species
-        self.__is_native = self.__lookup_is_native()
-        self.__dietary_requirements = self.__lookup_diet()
-        self.__environment = self.__lookup_environment()
-        self.__space = self.__lookup_space()
+        """
+           Initialises a new Animal instance when utilised through a concrete subclass.
+
+           Args:
+               name (str): The name of the animal.
+               age (int): The age of the animal.
+               size (int): The species of the animal.
+
+           Attributes:
+               __name (str): The animal's name.
+               __age (int): The animal's age.
+               __species (str): The species of animal.
+               __is_native (bool): Whether the animal species is native to Australia.
+               __dietary_requirements (str): The diet of the animal species.
+               __environment (str): The environment requirement of the animal species.
+               __space (str): The amount of space required per animal of that animal species.
+        """
+        self.name = name                                    #Utilises the setter for validation of new instances
+        self.age = age                                      #Utilises the setter for validation of new instances
+        self.species = species                              #Utilises the setter for validation of new instances
+        self.__is_native = self.__lookup_is_native()        #Utilises lookup function based on species
+        self.__dietary_requirements = self.__lookup_diet()  #Utilises lookup function based on species
+        self.__environment = self.__lookup_environment()    #Utilises lookup function based on species
+        self.__space = self.__lookup_space()                #Utilises lookup function based on species
 
     # --------------
     # Getter methods
@@ -58,14 +80,32 @@ class Animal(ABC):
     # --------------
 
     def set_name(self, name):
+        """
+        Updates the animal's name.
+
+        Args:
+            name (str): The new name for the animal, ensuring only a string may be passed.
+        """
         if isinstance(name, str):
             self.__name = name
 
     def set_age(self, age):
+        """
+        Updates the animal's age, ensuring it remains within a valid range.
+
+        Args:
+            size (int): The new animal age (0-200) in years.
+        """
         if isinstance(age, int) and 0 <= age <= 200:
             self.__age = age
 
     def set_species(self, species):
+        """
+        Sets the species type.
+
+        Args:
+            species (str): The species of the animal. Must be a valid species.
+        """
         if species in species_dict:
             self.__species = species
 
@@ -85,16 +125,20 @@ class Animal(ABC):
     # Helper methods
     # -------------------
 
-    def __lookup_is_native(self):
+    def __lookup_is_native(self)->bool:
+        """Returns the species' native status."""
         return species_dict[self.species][3]
 
-    def __lookup_diet(self):
+    def __lookup_diet(self)->str:
+        """Returns the species' dietary requirements."""
         return species_dict[self.species][2]
 
-    def __lookup_environment(self):
+    def __lookup_environment(self)->str:
+        """Returns the species' environmental type."""
         return species_dict[self.species][0]
 
-    def __lookup_space(self):
+    def __lookup_space(self)->int:
+        """Returns the species' space requirements."""
         return species_dict[self.species][1]
 
     # -------------------
@@ -102,6 +146,12 @@ class Animal(ABC):
     # -------------------
 
     def __str__(self):
+        """
+        Returns a formatted string containing the animal's details.
+
+        Returns:
+            str: The name, class, species, if native, age, and required environment, space, and diet.
+        """
         details = [f"---{self.name.upper()} THE {self.__class__.__name__.upper()}---"]
         if self.is_native:
             details.append(f"I am a {self.species}, which is native to Australia.")

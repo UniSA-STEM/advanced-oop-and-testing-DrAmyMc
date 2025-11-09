@@ -11,10 +11,26 @@ from abc import ABC, abstractmethod
 
 
 class Staff(ABC):
+    """
+    Represents an employee at the zoo in the abstract sense.
+    """
+
     def __init__(self, name, year_hired):
-        self.name = name
-        self.year_hired = year_hired
-        self.__role = self.__class__.__name__
+        """
+           Initialises a new Staff instance when utilised through a concrete subclass.
+
+           Args:
+               name (str): The employee's name.
+               year_hired (int): The year the employee was hired.
+
+           Attributes:
+               __name (str): The employee's name.
+               __year_hired (int): The year the employee was hired.
+               __role (str): The role that the employee has been hired to fill.
+        """
+        self.name = name                        #Utilises the setter for validation of new instances
+        self.year_hired = year_hired            #Utilises the setter for validation of new instances
+        self.__role = self.__class__.__name__   #Utilises the name of the class to label the role
 
     # --------------
     # Getter methods
@@ -37,10 +53,22 @@ class Staff(ABC):
     # --------------
 
     def set_name(self, name):
+        """
+        Updates the employee's name.
+
+        Args:
+            name (str): The new name for the employee, ensuring only a string may be passed.
+        """
         if isinstance(name, str):
             self.__name = name
 
     def set_year_hired(self, year_hired):
+        """
+            Updates the year hired, ensuring it remains within a valid range.
+
+            Args:
+                year_hired (int): The new year hired.
+            """
         if isinstance(year_hired, int) and 2010 <= year_hired <= 2050:
             self.__year_hired = year_hired
 
@@ -57,6 +85,12 @@ class Staff(ABC):
     # -------------------
 
     def __str__(self):
+        """
+        Returns a formatted string containing the employee's details.
+
+        Returns:
+            str: The name, year hired, and role.
+        """
         return f"{self.name} was hired in {self.year_hired} in the role of {self.role}."
 
     # -----------------

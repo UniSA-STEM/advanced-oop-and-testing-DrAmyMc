@@ -12,8 +12,23 @@ from staff import Staff
 
 
 class Zoo:
+    """
+    Represents a zoo, with enclosures, animals and staff.
+    """
+
     def __init__(self, name):
-        self.name = name
+        """
+           Initialises a new Zoo instance.
+
+           Args:
+               name (str): The name of the zoo.
+
+           Attributes:
+               __name (str): The zoo's name.
+               __enclosures (list[Enclosure]): A list of Enclosure objects at the zoo, initially empty.
+               __staff (list[Staff]): A list of Staff objects at the zoo, initially empty.
+        """
+        self.name = name            #Utilises the setter for validation of new instances
         self.__enclosures = []
         self.__staff = []
 
@@ -38,6 +53,12 @@ class Zoo:
     # --------------
 
     def set_name(self, name):
+        """
+        Updates the zoo's name.
+
+        Args:
+            name (str): The new name for the zoo, ensuring only a string may be passed.
+        """
         if isinstance(name, str):
             self.__name = name
 
@@ -83,5 +104,12 @@ class Zoo:
         else:
             print(f"Cannot add to this enclosure - must be of species {enclosure.animal_type}.")
 
+    #TODO: Update with different format to list enclosures and staff properly
     def __str__(self):
+        """
+        Returns a formatted string containing the zoo's details.
+
+        Returns:
+            str: The name, enclosure list, and staff list.
+        """
         return f"{self.name} has {self.enclosures} enclosures and {self.staff} staff.\n"
