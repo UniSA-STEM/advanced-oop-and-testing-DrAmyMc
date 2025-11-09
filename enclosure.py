@@ -136,10 +136,10 @@ class Enclosure:
         Args:
             species (str): The species to be housed in the enclosure. Must be a valid species.
         """
-        if species in species_dict:
-            self.__animal_type = species
+        if species.title() in species_dict:
+            self.__animal_type = species.title()
         else:
-            print(f"{species} is not a valid species. Please enter a valid species only.")
+            print(f"{species.title()} is not a valid species. Please enter a valid species only.")
 
     # --------------------
     # Property definitions

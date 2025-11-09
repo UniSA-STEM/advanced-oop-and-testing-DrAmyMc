@@ -15,7 +15,37 @@ from animal import Carnivore
 
 
 def test_create_animal():
+    """
+        Direct tests for the Animal superclass and subclasses for animal creation, setting attributes
+        and string display.
+
+        Tests:
+            - Creation of animal instances (valid and invalid cases).
+            - Setting attributes manually (valid and invalid cases).
+            - Displaying string representations.
+        """
+    print("\n=== TEST: Creation of Animals ===\n")
+
+    # --- Create and display valid animals ---
     cat = Carnivore("Paddy", 3, "Lion")
+    print(cat)
+
+    # --- Attempt to create animals with invalid species ---
+    cat2 = Carnivore("Paddy", 3, "llion")
+    print(cat2)
+
+    # --- Modify animal attributes to valid values ---
+    cat.name = "Puddy"
+    cat.age = 0
+    cat.species = "tiger"       # Will automatically convert to title case when matching
+    print(cat)
+
+    # --- Attempt to modify animal attributes to invalid values ---
+    cat.name = "P"
+    cat.age = -1
+    cat.age = 201
+    cat.age = "old"
+    cat.species = "llion"
     print(cat)
 
 def test_create_enclosure():
@@ -42,7 +72,7 @@ def test_create_enclosure():
     enc.type = 'Bushland'
     enc.size = 5000
     enc.cleanliness_level = 0
-    enc.animal_type = 'Koala'
+    enc.animal_type = 'koala'   # Will automatically convert to title case when matching
     print(enc)
 
     # --- Attempt to modify enclosure attributes to invalid values ---
@@ -58,8 +88,40 @@ def test_create_enclosure():
     print(enc)
 
 def test_create_staff():
+    """
+        Direct tests for the Staff superclass and subclasses for staff creation, setting attributes
+        and string display.
+
+        Tests:
+            - Creation of staff instances (valid and invalid cases).
+            - Setting attributes manually (valid and invalid cases).
+            - Displaying string representations.
+        """
+    print("\n=== TEST: Creation of Staff ===\n")
+
+    # --- Create and display valid staff ---
     vet = Veterinarian("Joe Boggs", 2025)
     zookeeper = Zookeeper("Sally Fubbs", 2025)
+    print(vet)
+    print(zookeeper)
+
+  # --- Attempt to create staff with invalid name ---
+    vet2 = Veterinarian("John", 2025)
+    print(vet2)
+
+    # --- Modify staff attributes to valid values ---
+    vet.name = "Jimmy Giggle"
+    zookeeper.name = "Hoot McHoot"
+    vet.year_hired = 2010
+    zookeeper.year_hired = 2050
+    print(vet)
+    print(zookeeper)
+
+    # --- Attempt to modify staff attributes to invalid values ---
+    vet.name = "Jim"
+    zookeeper.name = "Hoot"
+    vet.year_hired = 2009
+    zookeeper.year_hired = 2051
     print(vet)
     print(zookeeper)
 
@@ -97,10 +159,10 @@ def main():
     """Calls all the test functions"""
 
     # --- Testing animal class ---
-    #test_create_animal()
+    test_create_animal()
 
     # --- Testing enclosure class ---
-    test_create_enclosure()
+    #test_create_enclosure()
 
     # --- Testing staff class ---
     #test_create_staff()

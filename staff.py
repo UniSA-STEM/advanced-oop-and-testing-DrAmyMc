@@ -57,10 +57,13 @@ class Staff(ABC):
         Updates the employee's name.
 
         Args:
-            name (str): The new name for the employee, ensuring only a string may be passed.
+            name (str): The new name for the employee, ensuring only a string of a minimum length may be passed.
         """
-        if isinstance(name, str):
+        MIN_LENGTH = 5
+        if isinstance(name, str) and len(name) >= MIN_LENGTH:
             self.__name = name
+        else:
+            print(f"Invalid employee name. Please enter text of at least {MIN_LENGTH} characters.")
 
     def set_year_hired(self, year_hired):
         """
@@ -69,8 +72,12 @@ class Staff(ABC):
             Args:
                 year_hired (int): The new year hired.
             """
-        if isinstance(year_hired, int) and 2010 <= year_hired <= 2050:
+        MIN_YEAR = 2010
+        MAX_YEAR = 2050
+        if isinstance(year_hired, int) and MIN_YEAR <= year_hired <= MAX_YEAR:
             self.__year_hired = year_hired
+        else:
+            print(f"Please enter a valid year between {MIN_YEAR} and {MAX_YEAR}.")
 
     # --------------------
     # Property definitions
@@ -91,7 +98,10 @@ class Staff(ABC):
         Returns:
             str: The name, year hired, and role.
         """
-        return f"{self.name} was hired in {self.year_hired} in the role of {self.role}."
+        try:
+            return f"{self.name} was hired in {self.year_hired} in the role of {self.role}."
+        except:
+            return f"Invalid object.\n"
 
     # -----------------
     # Abstract methods

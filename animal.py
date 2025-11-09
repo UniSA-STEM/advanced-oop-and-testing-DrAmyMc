@@ -9,6 +9,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 from abc import ABC, abstractmethod
 from species import species_dict
+from species import loc_dict
 
 
 class Animal(ABC):
@@ -35,13 +36,13 @@ class Animal(ABC):
                __environment (str): The environment requirement of the animal species.
                __space (str): The amount of space required per animal of that animal species.
         """
-        self.name = name                                    #Utilises the setter for validation of new instances
-        self.age = age                                      #Utilises the setter for validation of new instances
-        self.species = species                              #Utilises the setter for validation of new instances
-        self.__is_native = self.__lookup_is_native()        #Utilises lookup function based on species
-        self.__dietary_requirements = self.__lookup_diet()  #Utilises lookup function based on species
-        self.__environment = self.__lookup_environment()    #Utilises lookup function based on species
-        self.__space = self.__lookup_space()                #Utilises lookup function based on species
+        self.name = name                        # Utilises the setter for validation of new instances
+        self.age = age                          # Utilises the setter for validation of new instances
+        self.__is_native = None                 # Will be overridden when species is set
+        self.__dietary_requirements = None      # Will be overridden when species is set
+        self.__environment = None               # Will be overridden when species is set
+        self.__space = None                     # Will be overridden when species is set
+        self.species = species                  # Utilises the setter for validation of new instances
 
     # --------------
     # Getter methods
@@ -84,10 +85,13 @@ class Animal(ABC):
         Updates the animal's name.
 
         Args:
-            name (str): The new name for the animal, ensuring only a string may be passed.
+            name (str): The new name for the animal, ensuring only a string of a minimum length may be passed.
         """
-        if isinstance(name, str):
+        MIN_LENGTH = 2
+        if isinstance(name, str) and len(name) >= MIN_LENGTH:
             self.__name = name
+        else:
+            print(f"Invalid animal name. Please enter text of at least {MIN_LENGTH} characters.")
 
     def set_age(self, age):
         """
@@ -96,18 +100,30 @@ class Animal(ABC):
         Args:
             size (int): The new animal age (0-200) in years.
         """
-        if isinstance(age, int) and 0 <= age <= 200:
+        MIN_AGE = 0
+        MAX_AGE = 200
+        if isinstance(age, int) and MIN_AGE <= age <= MAX_AGE:
             self.__age = age
+        else:
+            print(f"Invalid animal age. Please enter age in years, as an integer between "
+                  f"{MIN_AGE} and {MAX_AGE}.")
 
     def set_species(self, species):
         """
-        Sets the species type.
+        Sets the species type and updates information related to species.
 
         Args:
             species (str): The species of the animal. Must be a valid species.
         """
-        if species in species_dict:
-            self.__species = species
+        if species.title() in species_dict:
+            self.__species = species.title()
+            # Updates attributes determined by species type
+            self.__is_native = self.__lookup_is_native()
+            self.__dietary_requirements = self.__lookup_diet()
+            self.__environment = self.__lookup_environment()
+            self.__space = self.__lookup_space()
+        else:
+            print(f"{species.title()} is not a valid species. Please enter a valid species only.")
 
     # --------------------
     # Property definitions
@@ -127,19 +143,23 @@ class Animal(ABC):
 
     def __lookup_is_native(self)->bool:
         """Returns the species' native status."""
-        return species_dict[self.species][3]
+        if self.species:
+            return species_dict[self.species][loc_dict['native']]
 
     def __lookup_diet(self)->str:
         """Returns the species' dietary requirements."""
-        return species_dict[self.species][2]
+        if self.species:
+            return species_dict[self.species][loc_dict['diet']]
 
     def __lookup_environment(self)->str:
         """Returns the species' environmental type."""
-        return species_dict[self.species][0]
+        if self.species:
+            return species_dict[self.species][loc_dict['env']]
 
     def __lookup_space(self)->int:
         """Returns the species' space requirements."""
-        return species_dict[self.species][1]
+        if self.species:
+            return species_dict[self.species][loc_dict['space']]
 
     # -------------------
     # Behavioural methods
@@ -152,16 +172,19 @@ class Animal(ABC):
         Returns:
             str: The name, class, species, if native, age, and required environment, space, and diet.
         """
-        details = [f"---{self.name.upper()} THE {self.__class__.__name__.upper()}---"]
-        if self.is_native:
-            details.append(f"I am a {self.species}, which is native to Australia.")
-        else:
-            details.append(f"I am a {self.species}, which is not native to Australia.")
-        details.append(f"Age: {self.age} years old\n"
-                       f"Required environment: {self.environment}\n"
-                       f"Required space: {self.space}m\u00b2\n"
-                       f"Required diet: {self.dietary_requirements}\n")
-        return '\n'.join(details)
+        try:
+            details = [f"---{self.name.upper()} THE {self.__class__.__name__.upper()}---"]
+            if self.is_native:
+                details.append(f"I am a {self.species}, which is native to Australia.")
+            else:
+                details.append(f"I am a {self.species}, which is not native to Australia.")
+            details.append(f"Age: {self.age} years old\n"
+                           f"Required environment: {self.environment}\n"
+                           f"Required space: {self.space}m\u00b2\n"
+                           f"Required diet: {self.dietary_requirements}\n")
+            return '\n'.join(details)
+        except:
+            return "Invalid object.\n"
 
     # -----------------
     # Abstract methods
