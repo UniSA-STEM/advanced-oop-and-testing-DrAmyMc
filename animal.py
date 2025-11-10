@@ -137,9 +137,9 @@ class Animal(ABC):
     environment = property(get_environment)
     space = property(get_space)
 
-    # -------------------
+    # --------------
     # Helper methods
-    # -------------------
+    # --------------
 
     def __lookup_is_native(self)->bool:
         """Returns the species' native status."""
@@ -208,8 +208,53 @@ class Animal(ABC):
 
 
 class Mammal(Animal):
-    def __init__(self, name, age, species):
+    def __init__(self, name, age, species, is_female):
         super().__init__(name, age, species)
+        self.is_female = is_female
+        self.__is_pregnant = False
+
+    # --------------
+    # Getter methods
+    # --------------
+
+    def get_is_female(self)->bool:
+        """Returns the animal's sex - True is female, False is male."""
+        return self.__is_female
+
+    def get_is_pregnant(self)->bool:
+        """Returns the animal's pregnancy status - True or False."""
+        return self.__is_pregnant
+
+    # --------------
+    # Setter methods
+    # --------------
+
+    def set_is_female(self, is_female):
+        """
+        Sets the sex of the animal.
+
+        Args:
+            is_female (bool): True if female, False if male. Must be boolean.
+        """
+        if isinstance(is_female, bool):
+            self.__is_female = is_female
+
+    def set_is_pregnant(self, is_pregnant):
+        """
+        Sets the pregnancy status of the mammal.
+
+        Args:
+            is_pregnant (bool): True if pregnant, False if not pregnant. Must be boolean.
+        """
+        if isinstance(is_pregnant, bool) and self.is_female == True:
+            self.__is_pregnant = is_pregnant
+
+    # --------------------
+    # Property definitions
+    # --------------------
+
+    is_female = property(get_is_female, set_is_female)
+    is_pregnant = property(get_is_pregnant, set_is_pregnant)
 
     # -------------------
     # Behavioural methods
@@ -240,16 +285,16 @@ class Bird(Animal):
     # -------------------
 
     def make_sound(self):
-        return "Roar!"
+        print(f"{self.name} the {self.species} is tweeting and chirping.")
 
     def eat(self):
-        return f"{self.name} is now eating {self.dietary_requirements}."
+        print(f"{self.name} the {self.species} is now pecking at their {self.dietary_requirements}.")
 
     def sleep(self):
-        return f"{self.name} is now sleeping."
+        print(f"{self.name} the {self.species} is now sleeping in its nest or perch.")
 
     def move(self):
-        return f"{self.name} is now moving."
+        return f"{self.name} the {self.species} is now walking around on its two legs."
 
     def __str__(self):
         return super().__str__()
