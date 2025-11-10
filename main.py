@@ -90,14 +90,14 @@ def test_create_enclosure():
     enc.animal_type = 'Koalaass'
     print(enc)
 
-def test_add_animal():
+def test_add_list_animals():
     """
-    Direct tests for the Enclosure class for adding animal to enclosure.
+    Direct tests for the Enclosure class for add_animal and list_animals.
 
     Tests:
-        - Creation of an enclosure instance (valid and invalid case).
-        - Setting attributes manually (valid and invalid cases).
-        - Displaying string representations.
+        - Creating an empty enclosure with no animals listed in list_animals.
+        - Adding valid animals and attempting to add invalid animals to enclosure.
+        - Displaying updated list_animals method with only valid animals added.
     """
     print("\n=== TEST: Adding Animal to Enclosure ===\n")
 
@@ -111,6 +111,7 @@ def test_add_animal():
     bird4 = Bird("Percy4", 2, "Pelican")
     cat = Mammal("Puddy", 3, "Lion")
     otter = Mammal("Otty", 1, "Otter")
+    enc.list_animals()
 
     # --- Add valid and attempt to add invalid selections to enclosure --
     enc.add_animal(person)      # Not a valid animal object
@@ -121,6 +122,9 @@ def test_add_animal():
     enc.add_animal(bird3)       # Valid addition
     enc.add_animal(bird4)       # No more space in enclosure
     print(enc)                  # Enclosure will now contain 3 pelicans
+
+    # --- List animal method will list the details of animals housed ---
+    enc.list_animals()
 
 def test_create_staff():
     """
@@ -198,7 +202,7 @@ def main():
 
     # --- Testing enclosure class ---
     #test_create_enclosure()
-    test_add_animal()
+    test_add_list_animals()
 
     # --- Testing staff class ---
     #test_create_staff()

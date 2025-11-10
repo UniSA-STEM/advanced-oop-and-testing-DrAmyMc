@@ -203,6 +203,19 @@ class Enclosure:
             self.__animals_housed.append(animal)
             print(f"You have successfully added another {animal.species} to this enclosure.")
 
+    def list_animals(self):
+        """Prints a list of animals housed in enclosure."""
+        if self.animals_housed == []:
+            animals_housed_str = f"{self.name} is currently empty.\n"
+        else:
+            animals_housed_str = f"---Animals Housed in {self.name}---\n"
+            for animal in self.animals_housed:
+                animals_housed_str += (f"{animal.name} the {animal.species}, aged {animal.age} years\n")
+        print(animals_housed_str)
+
+    def report_status(self):
+        pass
+
     def __str__(self):
         """
         Returns a formatted string containing the enclosure's details.
@@ -220,10 +233,7 @@ class Enclosure:
             if self.animal_type is None:
                 details.append(f"This enclosure is currently empty.\n")
             else:
-                details.append(f"This enclosures houses the {self.animal_type} species.\n"
-                               f"Animals housed:")
-                for animal in self.animals_housed:
-                    details.append(f"    {animal.name}, aged {animal.age} years")
+                details.append(f"Houses: {len(self.animals_housed)} {self.animal_type}s\n")
             return '\n'.join(details)
         except:
             return "Invalid object.\n"
