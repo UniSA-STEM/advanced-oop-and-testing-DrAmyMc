@@ -111,26 +111,27 @@ def test_add_animal():
     bird4 = Bird("Percy4", 2, "Pelican")
     cat = Mammal("Puddy", 3, "Lion")
     otter = Mammal("Otty", 1, "Otter")
+
+    # --- Add valid and attempt to add invalid selections to enclosure --
     enc.add_animal(person)      # Not a valid animal object
-    enc.add_animal(cat)
-    enc.add_animal(bird1)
-    enc.add_animal(otter)
-    enc.add_animal(bird2)
-    enc.add_animal(bird3)
-    enc.add_animal(bird4)
-    print(enc)
-    print(enc.animals_housed)
+    enc.add_animal(cat)         # Not an environmental match
+    enc.add_animal(bird1)       # Valid addition, sets enclosure to Pelican
+    enc.add_animal(otter)       # Not the correct species
+    enc.add_animal(bird2)       # Valid addition
+    enc.add_animal(bird3)       # Valid addition
+    enc.add_animal(bird4)       # No more space in enclosure
+    print(enc)                  # Enclosure will now contain 3 pelicans
 
 def test_create_staff():
     """
-        Direct tests for the Staff superclass and subclasses for staff creation, setting attributes
-        and string display.
+    Direct tests for the Staff superclass and subclasses for staff creation, setting attributes
+    and string display.
 
-        Tests:
-            - Creation of staff instances (valid and invalid cases).
-            - Setting attributes manually (valid and invalid cases).
-            - Displaying string representations.
-        """
+    Tests:
+        - Creation of staff instances (valid and invalid cases).
+        - Setting attributes manually (valid and invalid cases).
+        - Displaying string representations.
+    """
     print("\n=== TEST: Creation of Staff ===\n")
 
     # --- Create and display valid staff ---

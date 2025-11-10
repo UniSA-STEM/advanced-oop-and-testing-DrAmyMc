@@ -41,7 +41,6 @@ class Enclosure:
         self.size = size                #Utilises the setter for validation of new instances
         self.__cleanliness_level = 5
         self.__animal_type = None
-        self.__max_animals = self.calculate_max_animals()
         self.__animals_housed = []
 
     # --------------
@@ -67,10 +66,6 @@ class Enclosure:
     def get_animal_type(self)->str:
         """Returns the enclosure's animal type or None if empty."""
         return self.__animal_type
-
-    def get_max_animals(self)->int:
-        """Returns the enclosure's maximum animal capacity or None if empty."""
-        return self.__max_animals
 
     def get_animals_housed(self)->list:
         """Returns the list of animals housed in the enclosure."""
@@ -155,19 +150,23 @@ class Enclosure:
     size = property(get_size, set_size)
     cleanliness_level = property(get_cleanliness_level, set_cleanliness_level)
     animal_type = property(get_animal_type, set_animal_type)
-    max_animals = property(get_max_animals)
     animals_housed = property(get_animals_housed)
 
     # --------------
     # Helper methods
     # --------------
 
-    def calculate_max_animals(self):
+    def calculate_max_animals(self)->int:
+        """
+        Calculates maximum number of animals that can be held based on enclosure size
+        and space requirements for the species housed.
+
+        Returns: max_animals
+        """
         if self.animal_type is not None:
             species_space = species_dict[self.animal_type][loc_dict['space']]
-            return self.size // species_space
-        else:
-            return None
+            max_animals = self.size // species_space
+            return max_animals
 
     # -------------------
     # Behavioural methods
@@ -181,24 +180,28 @@ class Enclosure:
             animal (Animal): Adds an animal to the list of animals housed in the enclosure.
                              Must be Animal class.
         """
+        # Ensures only animal objects can be added to enclosure
         if not isinstance(animal, Animal):
             print(f"This is not an animal. Cannot add to enclosure.")
+        # Ensures environmental type of enclosure is suitable for species being added
         elif animal.environment != self.type:
             print(f"Cannot add {animal.species} to this {self.type} enclosure - must be in {animal.environment} enclosure.")
+        # Ensures enclosure is restricted to a single type of animal as per assignment specification
         elif self.animal_type is not None and self.animal_type != animal.species:
             print(f"Cannot add {animal.species} to this {self.animal_type} enclosure - must be same species.")
+        # Ensures enclosure has enough space before successfully adding animal
         elif self.animal_type is None and self.size < animal.space:
             print(f"Cannot add {animal.species} - you need a bigger enclosure of at least {animal.size}m\u00b2.")
         elif self.animal_type is None and self.size >= animal.space:
-            self.animal_type = animal.species
             self.__animals_housed.append(animal)
+            # Sets animal type of enclosure when first species successfully added
+            self.animal_type = animal.species
             print(f"You have successfully added a {animal.species}. This is now a {self.animal_type} enclosure.")
-        elif len(self.animals_housed) >= self.__max_animals:
-            print(f"Cannot add {animal.species} - the enclosure is already full.")
+        elif len(self.animals_housed) >= self.calculate_max_animals():
+            print(f"Cannot add {animal.species} - the enclosure is already full of {animal.species}s.")
         else:
             self.__animals_housed.append(animal)
             print(f"You have successfully added another {animal.species} to this enclosure.")
-
 
     def __str__(self):
         """
@@ -217,7 +220,10 @@ class Enclosure:
             if self.animal_type is None:
                 details.append(f"This enclosure is currently empty.\n")
             else:
-                details.append(f"This enclosures houses the {self.animal_type} species.\n")
+                details.append(f"This enclosures houses the {self.animal_type} species.\n"
+                               f"Animals housed:")
+                for animal in self.animals_housed:
+                    details.append(f"    {animal.name}, aged {animal.age} years")
             return '\n'.join(details)
         except:
             return "Invalid object.\n"
