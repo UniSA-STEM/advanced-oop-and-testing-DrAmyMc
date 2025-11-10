@@ -90,14 +90,41 @@ def test_create_enclosure():
     enc.animal_type = 'Koalaass'
     print(enc)
 
-def test_add_list_animals():
+def test_report_status():
     """
-    Direct tests for the Enclosure class for add_animal and list_animals.
+    Direct tests for the Enclosure class for reporting enclosure status based on cleanliness level.
 
     Tests:
-        - Creating an empty enclosure with no animals listed in list_animals.
+        - Creation of an enclosure instance.
+        - Manually setting cleanliness level.
+        - Reporting status corresponding to cleanliness.
+    """
+    print("\n=== TEST: Report Enclosure Status ===\n")
+
+    # --- Create and display valid enclosure ---
+    enc = Enclosure("Reptile House", "Terrarium", 20)
+    print(enc)
+
+    # --- Report enclosures statuses for various cleanliness levels ---
+    enc.report_status()
+    enc.cleanliness_level = 4
+    enc.report_status()
+    enc.cleanliness_level = 3
+    enc.report_status()
+    enc.cleanliness_level = 2
+    enc.report_status()
+    enc.cleanliness_level = 1
+    enc.report_status()
+    enc.cleanliness_level = 0
+    enc.report_status()
+
+def test_add_animals():
+    """
+    Direct tests for the Enclosure class for add_animal.
+
+    Tests:
+        - Creating an empty enclosure with no animals.
         - Adding valid animals and attempting to add invalid animals to enclosure.
-        - Displaying updated list_animals method with only valid animals added.
     """
     print("\n=== TEST: Adding Animal to Enclosure ===\n")
 
@@ -111,7 +138,6 @@ def test_add_list_animals():
     bird4 = Bird("Percy4", 2, "Pelican")
     cat = Mammal("Puddy", 3, "Lion")
     otter = Mammal("Otty", 1, "Otter")
-    enc.list_animals()
 
     # --- Add valid and attempt to add invalid selections to enclosure --
     enc.add_animal(person)      # Not a valid animal object
@@ -123,8 +149,37 @@ def test_add_list_animals():
     enc.add_animal(bird4)       # No more space in enclosure
     print(enc)                  # Enclosure will now contain 3 pelicans
 
-    # --- List animal method will list the details of animals housed ---
+def test_check_capacity_list_animals():
+    """
+        Direct tests for the Enclosure class for list_animals and check_capacity.
+
+        Tests:
+            - Creating an empty enclosure with no animals listed in list_animals.
+            - Adding animals with updated list_animals and check_capacity displayed.
+        """
+    print("\n=== TEST: Checking Enclosure Capacity and Animal Listing ===\n")
+
+    # --- Create and display empty enclosure ---
+    enc = Enclosure("Test Enclosure", "Aquatic", 30)
+    print(enc)
     enc.list_animals()
+    enc.check_capacity()
+
+    # --- Create test animals ---
+    bird1 = Bird("Percy1", 2, "Pelican")
+    bird2 = Bird("Percy2", 2, "Pelican")
+    bird3 = Bird("Percy3", 2, "Pelican")
+
+    # --- Add animals, list animals and check capacity ---
+    enc.add_animal(bird1)
+    enc.list_animals()
+    enc.check_capacity()
+    enc.add_animal(bird2)
+    enc.list_animals()
+    enc.check_capacity()
+    enc.add_animal(bird3)
+    enc.list_animals()
+    enc.check_capacity()
 
 def test_create_staff():
     """
@@ -202,7 +257,9 @@ def main():
 
     # --- Testing enclosure class ---
     #test_create_enclosure()
-    test_add_list_animals()
+    #test_report_status()
+    test_add_animals()
+    #test_check_capacity_list_animals()
 
     # --- Testing staff class ---
     #test_create_staff()

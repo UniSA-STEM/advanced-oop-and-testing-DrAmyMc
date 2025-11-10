@@ -214,7 +214,36 @@ class Enclosure:
         print(animals_housed_str)
 
     def report_status(self):
-        pass
+        """Prints a cleanliness status message based on current cleanliness level."""
+        if self.cleanliness_level == 0:
+            print("This enclosure is filthy. Immediate action is required.")
+        elif self.cleanliness_level == 1:
+            print("This enclosure is very dirty. It should be cleaned urgently.")
+        elif self.cleanliness_level == 2:
+            print("This enclosure is now dirty. It should be cleaned now.")
+        elif self.cleanliness_level == 3:
+            print("This enclosure is becoming dirty. It should be cleaned soon.")
+        elif self.cleanliness_level == 4:
+            print("This enclosure is quite clean. It does not need cleaning yet.")
+        else:
+            print("This enclosure is pristine. It has just been cleaned.")
+
+    def check_capacity(self):
+        """Prints a capacity message based on current capacity of enclosure."""
+        if self.animal_type is None:
+            print(f"This enclosure is currently empty. It has {self.size}m\u00b2 of space available.")
+        else:
+            # Calculates current, maximum, and available animal numbers
+            current_animals = len(self.animals_housed)
+            max_animals = self.calculate_max_animals()
+            space_available = max_animals - current_animals
+            # Displays current animal numbers
+            print(f"This enclosure currently houses {current_animals} {self.animal_type}s.")
+            # Displays custom capacity message based on whether space is available or not
+            if space_available > 0:
+                print(f"It has space available for {space_available} more {self.animal_type}s.")
+            else:
+                print("It is at maximum capacity and has no more space available.")
 
     def __str__(self):
         """
@@ -228,8 +257,6 @@ class Enclosure:
                        f"{self.type} Enclosure\n"
                        f"Size: {self.size}m\u00b2\n"
                        f"Cleanliness level: {self.cleanliness_level}"]
-            if self.cleanliness_level == 0:
-                details.append(f"This enclosure urgently needs cleaning!")
             if self.animal_type is None:
                 details.append(f"This enclosure is currently empty.\n")
             else:
