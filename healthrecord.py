@@ -15,7 +15,7 @@ class HealthRecord:
     """
 
     # Four categories for health issues recorded
-    ISSUE_TYPE = ['Injury', 'Illness', 'Behavioural', 'Other']
+    ISSUE_TYPE = ['Injury', 'Illness', 'Behavioural Issue']
 
     def __init__(self, issue_type, severity_level, date_reported, description, treatment_plan):
         """
@@ -39,8 +39,8 @@ class HealthRecord:
         self.severity_level = severity_level        #Utilises the setter for validation of new instances
         self.date_reported = date_reported          #Utilises the setter for validation of new instances
         self.description = description              #Utilises the setter for validation of new instances
-        self.is_current = True
         self.__treatment_plan = [treatment_plan]
+        self.is_current = True
 
     # --------------
     # Getter methods
@@ -62,13 +62,13 @@ class HealthRecord:
         """Returns a description of the health issue."""
         return self.__description
 
-    def get_is_current(self)->bool:
-        """Returns whether the health issue is current (True) or resolved (False)."""
-        return self.__is_current
-
     def get_treatment_plan(self)->list:
         """Returns the list of treatment plan notes."""
         return self.__treatment_plan
+
+    def get_is_current(self) -> bool:
+        """Returns whether the health issue is current (True) or resolved (False)."""
+        return self.__is_current
 
     # --------------
     # Setter methods
@@ -130,18 +130,7 @@ class HealthRecord:
         else:
             print(f"Invalid description. Please enter text of at least {MIN_LENGTH} characters.")
 
-    def set_is_current(self, is_current):
-        """
-        Updates the status of the health issue (current = True, resolved = False).
 
-        Args:
-            is_current (bool): The status of the health issue.
-        """
-        if isinstance(is_current, bool):
-            self.__is_current = is_current
-        else:
-            print(f"Invalid current health status. Please enter either True (issue still current) or "
-                  f"False (issue resolved).")
 
     def set_treatment_plan(self, treatment_plan):
         """
@@ -157,6 +146,19 @@ class HealthRecord:
         else:
             print(f"Invalid treatment plan. Please enter text of at least {MIN_LENGTH} characters.")
 
+    def set_is_current(self, is_current):
+        """
+        Updates the status of the health issue (current = True, resolved = False).
+
+        Args:
+            is_current (bool): The status of the health issue.
+        """
+        if isinstance(is_current, bool):
+            self.__is_current = is_current
+        else:
+            print(f"Invalid current health status. Please enter either True (issue still current) or "
+                  f"False (issue resolved).")
+
     # --------------------
     # Property definitions
     # --------------------
@@ -165,8 +167,8 @@ class HealthRecord:
     severity_level = property(get_severity_level, set_severity_level)
     date_reported = property(get_date_reported, set_date_reported)
     description = property(get_description, set_description)
-    is_current = property(get_is_current, set_is_current)
     treatment_plan = property(get_treatment_plan, set_treatment_plan)
+    is_current = property(get_is_current, set_is_current)
 
     # -------------------
     # Behavioural methods
@@ -175,6 +177,7 @@ class HealthRecord:
     def issue_resolved(self):
         """Marks the health issue as resolved."""
         self.is_current = False
+        print("You have successfully marked this issue as resolved.")
 
     def update_treatment_plan(self, treatment_plan):
         """
@@ -187,6 +190,32 @@ class HealthRecord:
         MIN_LENGTH = 12
         if isinstance(treatment_plan, str) and len(treatment_plan) >= MIN_LENGTH:
             self.__treatment_plan.append(treatment_plan)
+            print("Your new treatment plan/notes have been successfully added to this record.")
         else:
             print(f"Invalid treatment plan. Please enter text of at least {MIN_LENGTH} characters.")
 
+    def __str__(self):
+        """
+        Returns a formatted string containing the health record's details.
+
+        Returns:
+            str: The type, severity, date, description, treatment plan and current status of issue.
+        """
+        try:
+            if self.is_current:
+                status = 'CURRENT'
+            else:
+                status = 'RESOLVED'
+            severity = ['Negligible', 'Minor', 'Moderate', 'Severe'][self.severity_level]
+            details = [f"---{self.issue_type.upper()} REPORT---\n"
+                       f"This issue is {status}.\n"
+                       f"Severity: {severity}\n"
+                       f"Date reported: {self.date_reported}\n"
+                       f"Description: {self.description}\n"
+                       f"Treatment plan/Notes:"]
+            for treatment in self.treatment_plan:
+                details.append(treatment)
+            details.append("")
+            return '\n'.join(details)
+        except:
+            return "Invalid object.\n"
