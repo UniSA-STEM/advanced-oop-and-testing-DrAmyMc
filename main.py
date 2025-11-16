@@ -27,15 +27,15 @@ def test_create_animal():
     print("\n=== TEST: Creation of Animals ===\n")
 
     # --- Create and display valid animals ---
-    cat = Mammal("Paddy", 3, "Lion", False)
-    pelican = Bird("Percival", 2, "Pelican")
-    lizard = Reptile("Lizzie", 1, "Lace Monitor")
+    cat = Mammal("Paddy", 3, False, "Lion", "Shaggy")
+    pelican = Bird("Percival", 2, True,"Pelican", 2.1, False)
+    lizard = Reptile("Lizzie", 1, False,"Lace Monitor", 18, False)
     print(cat)
     print(pelican)
     print(lizard)
 
     # --- Attempt to create animals with invalid species ---
-    cat2 = Mammal("Paddy", 3, "llion", False)
+    cat2 = Mammal("Paddy", 3, False, "llion", "Shaggy")
     print(cat2)
 
     # --- Modify animal attributes to valid values ---
@@ -338,7 +338,7 @@ def main():
     """Calls all the test functions"""
 
     # --- Testing animal class ---
-    #test_create_animal()
+    test_create_animal()
 
     # --- Testing enclosure class ---
     #test_create_enclosure()
@@ -352,7 +352,7 @@ def main():
     # --- Testing health record class ---
     #test_create_health_record()
     #test_update_health_record()
-    test_add_health_record()
+    #test_add_health_record()
 
     # --- Testing zoo class ---
     #test_create_zoo()
