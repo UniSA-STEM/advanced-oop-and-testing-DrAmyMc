@@ -9,6 +9,8 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 from animal import Animal
 from species import species_dict, loc_dict
+from staff import Zookeeper
+from staff import Veterinarian
 
 
 class Enclosure:
@@ -42,6 +44,8 @@ class Enclosure:
         self.__cleanliness_level = 5
         self.__animal_type = None
         self.__animals_housed = []
+        self.__assigned_zookeeper = None
+        self.__assigned_vet = None
 
     # --------------
     # Getter methods
@@ -71,16 +75,22 @@ class Enclosure:
         """Returns the list of animals housed in the enclosure."""
         return self.__animals_housed
 
+    def get_assigned_zookeeper(self):
+        """Returns the name of the zookeeper assigned to the enclosure."""
+        return self.__assigned_zookeeper
+
+    def get_assigned_vet(self):
+        """Returns the name of the vet assigned to the enclosure."""
+        return self.__assigned_vet
+
     # --------------
     # Setter methods
     # --------------
 
     def set_name(self, name):
         """
-        Updates the enclosure's name.
-
-        Args:
-            name (str): The new name for the enclosure, ensuring only a string of a minimum length may be passed.
+        Sets the enclosure's name.
+        Args: name (str): The name for the enclosure, ensuring only a string of a minimum length may be passed.
         """
         MIN_LENGTH = 3
         if isinstance(name, str) and len(name) >= MIN_LENGTH:
@@ -91,9 +101,7 @@ class Enclosure:
     def set_type(self, type):
         """
         Sets the environmental type of the enclosure.
-
-        Args:
-            type (str): The environmental type of the enclosure. Must be a valid type.
+        Args: type (str): The environmental type of the enclosure. Must be a valid type.
         """
         if type in Enclosure.TYPE_LIST:
             self.__type = type
@@ -104,9 +112,7 @@ class Enclosure:
     def set_size(self, size):
         """
         Updates the enclosure size, ensuring it remains within a valid range.
-
-        Args:
-            size (int): The new enclosure size (0-5000) in square metres.
+        Args: size (int): The new enclosure size (0-5000) in square metres.
         """
         MIN_SIZE = 1
         MAX_SIZE = 5000
@@ -118,9 +124,7 @@ class Enclosure:
     def set_cleanliness_level(self, level):
         """
         Updates the cleanliness level, ensuring it remains within a valid range.
-
-        Args:
-            cleanliness_level (int): The new cleanliness level (0-5).
+        Args: cleanliness_level (int): The new cleanliness level (0-5).
         """
         MIN_LEVEL = 0
         MAX_LEVEL = 5
@@ -132,14 +136,20 @@ class Enclosure:
     def set_animal_type(self, species):
         """
         Sets the species to be housed in the enclosure.
-
-        Args:
-            species (str): The species to be housed in the enclosure. Must be a valid species.
+        Args: species (str): The species to be housed in the enclosure. Must be a valid species.
         """
         if species.title() in species_dict:
             self.__animal_type = species.title()
         else:
             print(f"{species.title()} is not a valid species. Please enter a valid species only.")
+
+    def set_assigned_zookeeper(self, zookeeper):
+        if isinstance(zookeeper, Zookeeper):
+            self.__assigned_zookeeper = zookeeper
+
+    def set_assigned_vet(self, vet):
+        if isinstance(vet, Veterinarian):
+            self.__assigned_vet = vet
 
     # --------------------
     # Property definitions
@@ -151,6 +161,8 @@ class Enclosure:
     cleanliness_level = property(get_cleanliness_level, set_cleanliness_level)
     animal_type = property(get_animal_type, set_animal_type)
     animals_housed = property(get_animals_housed)
+    assigned_zookeeper = property(get_assigned_zookeeper, set_assigned_zookeeper)
+    assigned_vet = property(get_assigned_vet, set_assigned_vet)
 
     # --------------
     # Helper methods
@@ -248,19 +260,27 @@ class Enclosure:
     def __str__(self):
         """
         Returns a formatted string containing the enclosure's details.
-
-        Returns:
-            str: The enclosure name, type, size, cleanliness level, and animal species housed.
+        Returns: str: The enclosure name, type, size, cleanliness level, and animal species housed.
         """
         try:
-            details = [f"---{self.name.upper()}---\n"
-                       f"{self.type} Enclosure\n"
-                       f"Size: {self.size}m\u00b2\n"
-                       f"Cleanliness level: {self.cleanliness_level}"]
-            if self.animal_type is None:
-                details.append(f"This enclosure is currently empty.\n")
+            if self.assigned_zookeeper is None:
+                zookeeper = 'None assigned'
             else:
-                details.append(f"Houses: {len(self.animals_housed)} {self.animal_type}s\n")
-            return '\n'.join(details)
+                zookeeper = f"{self.assigned_zookeeper.first_name} {self.assigned_zookeeper.last_name}"
+            if self.assigned_vet is None:
+                vet = 'None assigned'
+            else:
+                vet = f"{self.assigned_vet.first_name} {self.assigned_vet.last_name}"
+            if self.animal_type is None:
+                animal_type = f"This enclosure is currently empty.\n"
+            else:
+                animal_type = f"Houses: {len(self.animals_housed)} {self.animal_type}s\n"
+            return [f"---{self.name.upper()}---\n"
+                    f"{self.type} Enclosure\n"
+                    f"Size: {self.size}m\u00b2\n"
+                    f"Cleanliness level: {self.cleanliness_level}\n"
+                    f"Assigned zookeeper: {zookeeper}\n"
+                    f"Assigned veterinarian: {vet}\n"
+                    f"{animal_type}\n"]
         except:
             return "Invalid object.\n"

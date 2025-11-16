@@ -7,38 +7,54 @@ Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 """
 
-from abc import ABC, abstractmethod
+from enclosure import Enclosure
 
 
-class Staff(ABC):
+class Staff:
     """
-    Represents an employee at the zoo in the abstract sense.
+    Represents an employee at the zoo. Subclasses exist for specialised employee types.
     """
-
-    def __init__(self, name, year_hired):
+    def __init__(self, staff_id, first_name, last_name, year_hired):
         """
-           Initialises a new Staff instance when utilised through a concrete subclass.
+        Initialises a new Staff instance.
 
-           Args:
-               name (str): The employee's name.
-               year_hired (int): The year the employee was hired.
+        Args:
+            staff_id (int): The ID of the employee at the zoo.
+            first_name (str): The employee's first name.
+            last_name (str): The employee's last name.
+            year_hired (int): The year the employee was hired.
 
-           Attributes:
-               __name (str): The employee's name.
-               __year_hired (int): The year the employee was hired.
-               __role (str): The role that the employee has been hired to fill.
+        Attributes:
+            __staff_id (int): The ID of the employee at the zoo.
+            __first_name (str): The employee's first name.
+            __last_name (str): The employee's last name.
+            __year_hired (int): The year the employee was hired.
+            __role (str): The role that the employee has been hired to fill.
+            __responsibilities (list): List of the employee's responsibilities.
         """
-        self.name = name                        #Utilises the setter for validation of new instances
+        self.staff_id = staff_id                #Utilises the setter for validation of new instances
+        self.first_name = first_name            #Utilises the setter for validation of new instances
+        self.last_name = last_name              #Utilises the setter for validation of new instances
         self.year_hired = year_hired            #Utilises the setter for validation of new instances
         self.__role = self.__class__.__name__   #Utilises the name of the class to label the role
+        self._responsibilities = []
+        self.__assigned_enclosures = []
 
     # --------------
     # Getter methods
     # --------------
 
-    def get_name(self)->str:
-        """Returns the employee's name."""
-        return self.__name
+    def get_staff_id(self)->int:
+        """Return's the employee's staff ID number."""
+        return self.__staff_id
+
+    def get_first_name(self)->str:
+        """Returns the employee's first name."""
+        return self.__first_name
+
+    def get_last_name(self)->str:
+        """Returns the employee's last name."""
+        return self.__last_name
 
     def get_year_hired(self)->int:
         """Returns the year the employee was hired ."""
@@ -48,30 +64,57 @@ class Staff(ABC):
         """Returns the employee's role."""
         return self.__role
 
+    def get_responsibilities(self)->list:
+        """Returns a list of the employee's responsibilities."""
+        return self._responsibilities
+
+    def get_assigned_enclosures(self)->list:
+        """Returns a list of the enclosures assigned to the employee."""
+        return self.__assigned_enclosures
+
     # --------------
     # Setter methods
     # --------------
 
-    def set_name(self, name):
+    def set_staff_id(self, staff_id):
         """
-        Updates the employee's name.
-
-        Args:
-            name (str): The new name for the employee, ensuring only a string of a minimum length may be passed.
+        Sets the staff id number, ensuring it is a valid id number.
+        Args: staff_id (int): The staff id number.
         """
-        MIN_LENGTH = 5
-        if isinstance(name, str) and len(name) >= MIN_LENGTH:
-            self.__name = name
+        MIN = 100000
+        MAX = 999999
+        if isinstance(staff_id, int) and MIN <= staff_id <= MAX:
+            self.__staff_id = staff_id
         else:
-            print(f"Invalid employee name. Please enter text of at least {MIN_LENGTH} characters.")
+            print(f"Invalid staff id number. Please enter an integer between {MIN_LEVEL} and {MAX_LEVEL}.")
+
+    def set_first_name(self, first_name):
+        """
+        Sets the employee's first name.
+        Args: first_name (str): The employee's first name, ensuring only a string of a minimum length may be passed.
+        """
+        MIN_LENGTH = 2
+        if isinstance(first_name, str) and len(first_name) >= MIN_LENGTH:
+            self.__first_name = first_name
+        else:
+            print(f"Invalid employee first name. Please enter text of at least {MIN_LENGTH} characters.")
+
+    def set_last_name(self, last_name):
+        """
+        Sets the employee's last name.
+        Args: last_name (str): The employee's last name, ensuring only a string of a minimum length may be passed.
+        """
+        MIN_LENGTH = 2
+        if isinstance(last_name, str) and len(last_name) >= MIN_LENGTH:
+            self.__last_name = last_name
+        else:
+            print(f"Invalid employee last name. Please enter text of at least {MIN_LENGTH} characters.")
 
     def set_year_hired(self, year_hired):
         """
-            Updates the year hired, ensuring it remains within a valid range.
-
-            Args:
-                year_hired (int): The new year hired.
-            """
+        Updates the year hired, ensuring it remains within a valid range.
+        Args: year_hired (int): The year hired.
+        """
         MIN_YEAR = 2010
         MAX_YEAR = 2050
         if isinstance(year_hired, int) and MIN_YEAR <= year_hired <= MAX_YEAR:
@@ -79,13 +122,28 @@ class Staff(ABC):
         else:
             print(f"Please enter a valid year between {MIN_YEAR} and {MAX_YEAR}.")
 
+    def set_role(self, role):
+        """
+        Sets the employee's role.
+        Args: role (str): The employee's role, ensuring only a string of a minimum length may be passed.
+        """
+        MIN_LENGTH = 4
+        if isinstance(role, str) and len(role) >= MIN_LENGTH:
+            self.__role = role
+        else:
+            print(f"Invalid employee role. Please enter text of at least {MIN_LENGTH} characters.")
+
     # --------------------
     # Property definitions
     # --------------------
 
-    name = property(get_name, set_name)
-    year_hired = property (get_year_hired, set_year_hired)
-    role = property(get_role)
+    staff_id = property(get_staff_id, set_staff_id)
+    first_name = property(get_first_name, set_first_name)
+    last_name = property(get_last_name, set_last_name)
+    year_hired = property(get_year_hired, set_year_hired)
+    role = property(get_role, set_role)
+    responsibilities = property(get_responsibilities)
+    assigned_enclosures = property(get_assigned_enclosures)
 
     # -------------------
     # Behavioural methods
@@ -94,48 +152,53 @@ class Staff(ABC):
     def __str__(self):
         """
         Returns a formatted string containing the employee's details.
-
-        Returns:
-            str: The name, year hired, and role.
+        Returns: str: The name, year hired, and role.
         """
         try:
-            return f"{self.name} was hired in {self.year_hired} in the role of {self.role}."
+            responsibilities_str = ""
+            assigned_enclosures_str = ""
+            if self.responsibilities != []:
+                responsibilities_str = 'Responsibilities:\n'
+                for responsibility in self.responsibilities:
+                    responsibilities_str += f"   {responsibility}\n"
+            if self.assigned_enclosures != []:
+                assigned_enclosures_str = 'Assigned Enclosures:\n'
+                for enclosure in self.assigned_enclosures:
+                    assigned_enclosures_str += "   {enclosure}\n"
+            return (f"{self.first_name} {self.last_name} was hired in {self.year_hired} in the role of {self.role}.\n"
+                    + responsibilities_str + assigned_enclosures_str)
         except:
             return f"Invalid object.\n"
-
-    # -----------------
-    # Abstract methods
-    # -----------------
-
-    @abstractmethod
-    def assign_animals(self, species):
-        pass
-
-
-class Veterinarian(Staff):
-    def __init__(self, name, year_hired):
-        super().__init__(name, year_hired)
 
     # -------------------
     # Behavioural methods
     # -------------------
 
-    def assign_animals(self, species):
-        pass
+    def assign_enclosure(self, enclosure):
+        if isinstance(enclosure, Enclosure):
+            self.__assigned_enclosures.append(enclosure)
+
+
+class Veterinarian(Staff):
+    def __init__(self, staff_id, first_name, last_name, year_hired):
+        super().__init__(staff_id, first_name, last_name, year_hired)
+        self._responsibilities = ['Conduct health checks', 'Treat animals', 'Plan preventive health care']
+
+    # -------------------
+    # Behavioural methods
+    # -------------------
 
     def conduct_health_check(self, animal):
         pass
 
 class Zookeeper(Staff):
-    def __init__(self, name, year_hired):
-        super().__init__(name, year_hired)
+    def __init__(self, staff_id, first_name, last_name, year_hired):
+        super().__init__(staff_id, first_name, last_name, year_hired)
+        self._responsibilities = ['Feed animals', 'Clean enclosures', 'Exhibit planning']
 
     # -------------------
     # Behavioural methods
     # -------------------
-
-    def assign_animals(self, species):
-        pass
 
     def clean_enclosure(self, enclosure_name):
         pass
