@@ -35,6 +35,7 @@ class Enclosure:
                __type (str): The envrionmental type of the enclosure.
                __size (int): The size of the enclosure in square metres.
                __cleanliness_level (int): The cleanliness of the enclosure from 0 (filthy) to 5 (pristine).
+               __on_display (bool): Whether an enclosure is on display to the public.
                __animal_type (str | None): The type of animal housed in the enclosure, None if empty.
                __animals_housed = (list[Animal]): A list of animal objects in the enclosure, initially empty.
         """
@@ -42,6 +43,7 @@ class Enclosure:
         self.type = type                #Utilises the setter for validation of new instances
         self.size = size                #Utilises the setter for validation of new instances
         self.__cleanliness_level = 5
+        self.__on_display   = False
         self.__animal_type = None
         self.__animals_housed = []
         self.__assigned_zookeeper = None
@@ -66,6 +68,10 @@ class Enclosure:
     def get_cleanliness_level(self)->int:
         """Returns the enclosure's cleanliness level."""
         return self.__cleanliness_level
+
+    def get_on_display(self)->bool:
+        """Returns the enclosure's display status."""
+        return self.__on_display
 
     def get_animal_type(self)->str:
         """Returns the enclosure's animal type or None if empty."""
@@ -133,6 +139,16 @@ class Enclosure:
         else:
             print(f"Invalid cleanliness level. Please enter an integer between {MIN_LEVEL} and {MAX_LEVEL}.")
 
+    def set_on_display(self, on_display):
+        """
+        Sets the display status of the enclosure.
+        Args: on_display (bool): True if on display, False if not. Must be boolean.
+        """
+        if isinstance(on_display, bool):
+            self.__on_display = on_display
+        else:
+            print(f"Invalid status. Please enter True if on display or False if not currently on display.")
+
     def set_animal_type(self, species):
         """
         Sets the species to be housed in the enclosure.
@@ -159,6 +175,7 @@ class Enclosure:
     type = property(get_type, set_type)
     size = property(get_size, set_size)
     cleanliness_level = property(get_cleanliness_level, set_cleanliness_level)
+    on_display = property(get_on_display, set_on_display)
     animal_type = property(get_animal_type, set_animal_type)
     animals_housed = property(get_animals_housed)
     assigned_zookeeper = property(get_assigned_zookeeper, set_assigned_zookeeper)

@@ -29,8 +29,10 @@ class Zoo:
                __staff (list[Staff]): A list of Staff objects at the zoo, initially empty.
         """
         self.name = name            #Utilises the setter for validation of new instances
-        self.__enclosures = []
-        self.__staff = []
+        self.__animals = {}
+        self.__enclosures = {}
+        self.__staff = {}
+
     # --------------
     # Getter methods
     # --------------
@@ -39,12 +41,16 @@ class Zoo:
         """Returns the zoo's name."""
         return self.__name
 
-    def get_enclosures(self)->list:
-        """Returns the list of enclosure objects at the zoo."""
+    def get_animals(self)->set:
+        """Returns the set of animal objects at the zoo."""
+        return self.__animals
+
+    def get_enclosures(self)->set:
+        """Returns the set of enclosure objects at the zoo."""
         return self.__enclosures
 
-    def get_staff(self)->list:
-        """Returns the list of staff objects at the zoo."""
+    def get_staff(self)->set:
+        """Returns the set of staff objects at the zoo."""
         return self.__staff
 
     # --------------
@@ -53,10 +59,8 @@ class Zoo:
 
     def set_name(self, name):
         """
-        Updates the zoo's name.
-
-        Args:
-            name (str): The new name for the zoo, ensuring only a string of a minimum length may be passed.
+        Sets the zoo's name.
+        Args: name (str): The zoo name, ensuring only a string of a minimum length may be passed.
         """
         MIN_LENGTH = 3
         if isinstance(name, str) and len(name) >= MIN_LENGTH:
@@ -76,20 +80,20 @@ class Zoo:
     # Behavioural methods
     # -------------------
 
-    def add_animal(self):
+    def add_animal(self, animal):
+        self.__animals.add(animal)
+
+    def remove_animal(self, animal):
         pass
 
-    def remove_animal(self):
-        pass
-
-    def add_enclosure(self, name, type, size):
-        self.__enclosures.append(Enclosure(name, type,size))
+    def add_enclosure(self, enclosure):
+        self.__enclosures.add(enclosure)
 
     def remove_enclosure(self):
         pass
 
-    def add_staff(self):
-        pass
+    def add_staff(self, staff):
+        self.__staff.add(staff)
 
 # TODO: Fix name parameter for removal
     def remove_staff(self, staff_name):
@@ -105,6 +109,24 @@ class Zoo:
             enclosure.add_animal(animal)
         else:
             print(f"Cannot add to this enclosure - must be of species {enclosure.animal_type}.")
+
+    def schedule_feeding(self):
+        pass
+
+    def schedule_cleaning(self):
+        pass
+
+    def schedule_health_check(self):
+        pass
+
+    def list_animals_by_species(self):
+        pass
+
+    def list_enclosure_status(self):
+        pass
+
+    def list_animals_under_treatement(self):
+        pass
 
     #TODO: Update with different format to list enclosures and staff properly
     def __str__(self)->str:

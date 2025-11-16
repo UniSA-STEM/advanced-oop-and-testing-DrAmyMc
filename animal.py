@@ -124,9 +124,7 @@ class Animal(ABC):
     def set_is_female(self, is_female):
         """
         Sets the sex of the animal.
-
-        Args:
-            is_female (bool): True if female, False if male. Must be boolean.
+        Args: is_female (bool): True if female, False if male. Must be boolean.
         """
         if isinstance(is_female, bool):
             self.__is_female = is_female
@@ -191,22 +189,6 @@ class Animal(ABC):
     # -------------------
     # Behavioural methods
     # -------------------
-
-    def add_health_record(self, issue_type, severity_level, date_reported, description, treatment_plan):
-        """
-        Initialises a new Health Record instance for the animal.
-
-        Args:
-            issue_type (str): The category of issue being reported.
-            severity_level (int): The severity level from 0-3.
-            date_reported (str): The date of the initial report.
-            description (str): A description of the health issue
-            treatment_plan (str): The initial treatment plan/notes.
-        """
-        new_record = HealthRecord(issue_type, severity_level, date_reported, description, treatment_plan)
-        self.health_record.append(new_record)
-        print(f"New health record created:\n"
-              f"{new_record}")
 
     def __str__(self):
         """
