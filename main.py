@@ -27,7 +27,7 @@ def test_create_animal():
     print("\n=== TEST: Creation of Animals ===\n")
 
     # --- Create and display valid animals ---
-    cat = Mammal("Paddy", 3, "Lion")
+    cat = Mammal("Paddy", 3, "Lion", False)
     pelican = Bird("Percival", 2, "Pelican")
     lizard = Reptile("Lizzie", 1, "Lace Monitor")
     print(cat)
@@ -35,13 +35,15 @@ def test_create_animal():
     print(lizard)
 
     # --- Attempt to create animals with invalid species ---
-    cat2 = Mammal("Paddy", 3, "llion")
+    cat2 = Mammal("Paddy", 3, "llion", False)
     print(cat2)
 
     # --- Modify animal attributes to valid values ---
     cat.name = "Puddy"
     cat.age = 0
     cat.species = "tiger"       # Will automatically convert to title case when matching
+    cat.is_female = True
+    cat.is_pregnant = True
     print(cat)
 
     # --- Attempt to modify animal attributes to invalid values ---
@@ -50,6 +52,8 @@ def test_create_animal():
     cat.age = 201
     cat.age = "old"
     cat.species = "llion"
+    cat.is_female = 'female'
+    cat.is_pregnant = 'yes'
     print(cat)
 
 def test_create_enclosure():
@@ -283,6 +287,23 @@ def test_update_health_record():
     record.issue_resolved()
     print(record)
 
+def test_add_health_record():
+    """
+    Tests creation of health records for an animal.
+
+    Tests:
+        - Creation of a Health Record instance for a specific animal.
+    """
+    print("\n=== TEST: Add Health Record to Animal ===\n")
+
+    # --- Create animal ---
+    cat = Mammal("Paddy", 3, "Lion", False)
+    print(cat)
+
+    # --- Create and display valid health record ---
+    cat.add_health_record("Injury", 3, "12 Nov 2025",
+                          "Laceration on left front leg", "Clean and bandage wound and monitor.")
+
 def test_create_zoo():
     """
     Direct tests for the Zoo class for zoo creation, setting attributes and string display.
@@ -330,7 +351,8 @@ def main():
 
     # --- Testing health record class ---
     #test_create_health_record()
-    test_update_health_record()
+    #test_update_health_record()
+    test_add_health_record()
 
     # --- Testing zoo class ---
     #test_create_zoo()

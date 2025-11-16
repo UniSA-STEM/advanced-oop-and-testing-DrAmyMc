@@ -130,8 +130,6 @@ class HealthRecord:
         else:
             print(f"Invalid description. Please enter text of at least {MIN_LENGTH} characters.")
 
-
-
     def set_treatment_plan(self, treatment_plan):
         """
         Sets the initial treatment plan/notes.
