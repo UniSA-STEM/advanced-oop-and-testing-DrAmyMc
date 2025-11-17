@@ -44,63 +44,99 @@ class TestAnimal:
 
     @pytest.fixture
     def animalB(self):
-        return DummyAnimal('Mutton', 1, True, 'Tiger')
+        return DummyAnimal('Blinky', 1, True, 'Koala')
 
     def test_get_name(self, animalA, animalB):
         assert animalA.name == 'Paddy'
-        assert animalB.name == 'Mutton'
+        assert animalB.name == 'Blinky'
 
-    def test_get_name(self, mammal):
-        assert mammal.name == 'Paddy'
+    def test_get_age(self, animalA, animalB):
+        assert animalA.age == 3
+        assert animalB.age == 1
 
-    def test_get_age(self, mammal):
-        assert mammal.age == 3
+    def test_get_is_female(self, animalA, animalB):
+        assert animalA.is_female == False
+        assert animalB.is_female == True
 
-    def test_get_is_female(self, mammal):
-        assert mammal.is_female == False
+    def test_get_species(self, animalA, animalB):
+        assert animalA.species == 'Lion'
+        assert animalB.species == 'Koala'
 
-    def test_get_species(self, mammal):
-        assert mammal.species == 'Lion'
+    def test_get_is_native(self, animalA, animalB):
+        assert animalA.is_native == False
+        assert animalB.is_native == True
 
-    def test_get_is_native(self, mammal):
-        assert mammal.is_native == False
+    def test_get_dietary_requirements(self, animalA, animalB):
+        assert animalA.dietary_requirements == 'meat'
+        assert animalB.dietary_requirements == 'leaves'
 
-    def test_get_dietary_requirements(self, mammal):
-        assert mammal.dietary_requirements == 'meat'
+    def test_get_environment(self, animalA, animalB):
+        assert animalA.environment == 'Savannah'
+        assert animalB.environment == 'Bushland'
 
-    def test_get_environment(self, mammal):
-        assert mammal.environemnt == 'Savannah'
+    def test_get_space(self, animalA, animalB):
+        assert animalA.space == 200
+        assert animalB.space == 20
 
-    def test_get_space(self, mammal):
-        assert mammal.space == 200
+    def test_get_health_record(self, animalA, animalB):
+        assert animalA.health_record == []
+        assert animalB.health_record == []
 
-    def test_get_health_record(self, mammal):
-        assert mammal.health_record == []
+    def test_set_name(self, animalA, animalB):
+        animalA.name = 'Pa'             # Edge case, 2 char min
+        assert animalA.name == 'Pa'     # Valid name change
+        animalB.name = 'K'              # Invalid input, only 1 char
+        animalB.name = 123              # Invalid input, not a string
+        assert animalB.name == 'Blinky' # Original name stands
 
-    def test_get_fur_type(self, mammal):
-        assert mammal.fur_type == 'Shaggy'
+    def test_set_age(self, animalA, animalB):
+        animalA.age = 0                 # Edge case, 0 min value
+        assert animalA.age == 0         # Valid age change
+        animalA.age = 200               # Edge case, 200 max value
+        assert animalA.age == 200       # Valid name change
+        animalB.age = -1                # Invalid input, less than min
+        assert animalB.age == 1         # Original age stands
+        animalB.age = 201               # Invalid input, greater than max
+        assert animalB.age == 1         # Original age stands
+        animalB.age = 'old'             # Invalid input, not an int
+        assert animalB.age == 1         # Original age stands
+        animalB.age = 10.5              # Invalid input, not an int
+        assert animalB.age == 1         # Original age stands
 
-    def test_get_is_pregnant(self, mammal):
-        assert mammal.is_pregnant == False
+    def test_set_is_female(self, animalA, animalB):
+        animalA.is_female = True            # Valid bool input
+        assert animalA.is_female == True    # Valid sex change
+        animalB.is_female = 'no'            # Invalid input, not bool
+        assert animalB.is_female == True    # Original sex stands
 
-    # --- Attempt to create animals with invalid species ---
-    cat2 = Mammal("Paddy", 3, False, "llion", "Shaggy")
-    print(cat2)
+    def test_set_species(self, animalA, animalB):
+        animalA.species = 'Pelican'         # Valid species name
+        assert animalA.species == 'Pelican' # Valid species change
+        animalA.species = 'tiger'           # Valid species name, lower case accepted
+        assert animalA.species == 'Tiger'   # Valid species change, changed to title case
+        animalB.species = 'Tigerrr'         # Invalid input, not in species dict
+        assert animalB.species == 'Koala'   # Original species stands
 
-    # --- Modify animal attributes to valid values ---
-    cat.name = "Puddy"
-    cat.age = 0
-    cat.species = "tiger"       # Will automatically convert to title case when matching
-    cat.is_female = True
-    cat.is_pregnant = True
-    print(cat)
+    def test_lookup_functions(self, animalA):
+        animalA.species = 'Fairy Penguin'
+        assert animalA.species == 'Fairy Penguin'
+        assert animalA.is_native == True
+        assert animalA.dietary_requirements == 'fish'
+        assert animalA.environment == 'Aquatic'
+        assert animalA.space == 4
 
-    # --- Attempt to modify animal attributes to invalid values ---
-    cat.name = "P"
-    cat.age = -1
-    cat.age = 201
-    cat.age = "old"
-    cat.species = "llion"
-    cat.is_female = 'female'
-    cat.is_pregnant = 'yes'
-    print(cat)
+    def test_make_sound(self, animalA, animalB):
+        assert animalA.make_sound() == 'Dummy sound'
+        assert animalB.make_sound() == 'Dummy sound'
+
+    def test_eat(self, animalA, animalB):
+        assert animalA.eat() == 'Dummy eat'
+        assert animalB.eat() == 'Dummy eat'
+
+    def test_sleep(self, animalA, animalB):
+        assert animalA.sleep() == 'Dummy sleep'
+        assert animalB.sleep() == 'Dummy sleep'
+
+    def test_move(self, animalA, animalB):
+        assert animalA.move() == 'Dummy move'
+        assert animalB.move() == 'Dummy move'
