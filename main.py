@@ -14,7 +14,7 @@ from zoo import Zoo
 from healthrecord import HealthRecord
 
 
-def test_create_animal():
+def demo_create_animal():
     """
         Direct tests for the Animal superclass and subclasses for animal creation, setting attributes
         and string display.
@@ -56,7 +56,8 @@ def test_create_animal():
     cat.is_pregnant = 'yes'
     print(cat)
 
-def test_create_enclosure():
+
+def demo_create_enclosure():
     """
     Direct tests for the Enclosure class for enclosure creation, setting attributes and string display.
 
@@ -95,7 +96,7 @@ def test_create_enclosure():
     enc.animal_type = 'Koalaass'
     print(enc)
 
-def test_report_status():
+def demo_report_status():
     """
     Direct tests for the Enclosure class for reporting enclosure status based on cleanliness level.
 
@@ -123,7 +124,7 @@ def test_report_status():
     enc.cleanliness_level = 0
     enc.report_status()
 
-def test_add_animals():
+def demo_add_animals():
     """
     Direct tests for the Enclosure class for add_animal.
 
@@ -154,7 +155,7 @@ def test_add_animals():
     enc.add_animal(bird4)       # No more space in enclosure
     print(enc)                  # Enclosure will now contain 3 pelicans
 
-def test_check_capacity_list_animals():
+def demo_check_capacity_list_animals():
     """
         Direct tests for the Enclosure class for list_animals and check_capacity.
 
@@ -186,7 +187,7 @@ def test_check_capacity_list_animals():
     enc.list_animals()
     enc.check_capacity()
 
-def test_create_staff():
+def demo_create_staff():
     """
     Direct tests for the Staff superclass and subclasses for staff creation, setting attributes
     and string display.
@@ -224,7 +225,7 @@ def test_create_staff():
     print(vet)
     print(zookeeper)
 
-def test_create_health_record():
+def demo_create_health_record():
     """
     Direct tests for the HealthRecord class for creation of health records.
 
@@ -265,7 +266,7 @@ def test_create_health_record():
     record.treatment_plan = "None"
     print(record)
 
-def test_update_health_record():
+def demo_update_health_record():
     """
     Direct tests for the HealthRecord class for updating health records.
 
@@ -287,7 +288,7 @@ def test_update_health_record():
     record.issue_resolved()
     print(record)
 
-def test_add_health_record():
+def demo_add_health_record():
     """
     Tests creation of health records for an animal.
 
@@ -304,7 +305,7 @@ def test_add_health_record():
     cat.add_health_record("Injury", 3, "12 Nov 2025",
                           "Laceration on left front leg", "Clean and bandage wound and monitor.")
 
-def test_create_zoo():
+def demo_create_zoo():
     """
     Direct tests for the Zoo class for zoo creation, setting attributes and string display.
 
@@ -329,34 +330,34 @@ def test_create_zoo():
     zoo.name = ''               # Invalid name (empty string)
     print(zoo)
 
-def test_add_enclosure():
+def demo_add_enclosure():
     zoo = Zoo("Halls Gap Zoo")
     zoo.add_enclosure("Reptile House", "Terrarium", 20)
     print(zoo)
 
 def main():
-    """Calls all the test functions"""
+    """Calls all the demo functions"""
 
-    # --- Testing animal class ---
-    test_create_animal()
+    # --- Demonstrating animal class ---
+    demo_create_animal()
 
-    # --- Testing enclosure class ---
-    #test_create_enclosure()
-    #test_report_status()
-    #test_add_animals()
-    #test_check_capacity_list_animals()
+    # --- Demonstrating enclosure class ---
+    #demo_create_enclosure()
+    #demo_report_status()
+    #demo_add_animals()
+    #demo_check_capacity_list_animals()
 
-    # --- Testing staff class ---
-    #test_create_staff()
+    # --- Demonstrating staff class ---
+    #demo_create_staff()
 
-    # --- Testing health record class ---
-    #test_create_health_record()
-    #test_update_health_record()
-    #test_add_health_record()
+    # --- Demonstrating health record class ---
+    #demo_create_health_record()
+    #demo_update_health_record()
+    #demo_add_health_record()
 
-    # --- Testing zoo class ---
-    #test_create_zoo()
-    #test_add_enclosure()
+    # --- Demonstrating zoo class ---
+    #demo_create_zoo()
+    #demo_add_enclosure()
 
 # Call main function to run tests
 if __name__ == "__main__":

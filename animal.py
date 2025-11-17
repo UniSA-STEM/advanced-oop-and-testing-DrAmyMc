@@ -10,7 +10,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 from abc import ABC, abstractmethod
 from species import species_dict
 from species import loc_dict
-from healthrecord import HealthRecord
 
 
 class Animal(ABC):
@@ -18,35 +17,36 @@ class Animal(ABC):
     Represents an animal in the abstract sense.
     The Animal class models general animal features, requirements, and methods.
     """
-
     def __init__(self, name, age, is_female, species):
         """
-           Initialises a new Animal instance when utilised through a concrete subclass.
+        Initialises a new Animal instance when utilised through a concrete subclass.
 
-           Args:
-               name (str): The name of the animal.
-               age (int): The age of the animal.
-               is_female (bool): The sex of the animal.
-               species (str): The species of the animal.
+        Args:
+            name (str): The name of the animal.
+            age (int): The age of the animal.
+            is_female (bool): The sex of the animal.
+            species (str): The species of the animal.
 
-           Attributes:
-               __name (str): The animal's name.
-               __age (int): The animal's age.
-               __is_female (bool): The animal's sex (True if female, False if male)
-               __species (str): The species of animal.
-               __is_native (bool): Whether the animal species is native to Australia.
-               __dietary_requirements (str): The diet of the animal species.
-               __environment (str): The environment requirement of the animal species.
-               __space (str): The amount of space required per animal of that animal species.
+        Attributes:
+            __name (str): The animal's name.
+            __age (int): The animal's age.
+            __is_female (bool): The animal's sex (True if female, False if male)
+            __species (str): The species of animal.
+            __is_native (bool): Whether the animal species is native to Australia.
+            __dietary_requirements (str): The diet of the animal species.
+            __environment (str): The environment requirement of the animal species.
+            __space (str): The amount of space required per animal of that animal species.
+            __health_record (list): List of health records for the animal.
         """
-        self.name = name                        # Utilises the setter for validation of new instances
-        self.age = age                          # Utilises the setter for validation of new instances
-        self.is_female = is_female              # Utilises the setter for validation of new instances
+        # User inputs for name, age, is_female, and species utilise setter for validation
+        self.name = name
+        self.age = age
+        self.is_female = is_female
         self.__is_native = None                 # Will be overridden when species is set
         self.__dietary_requirements = None      # Will be overridden when species is set
         self.__environment = None               # Will be overridden when species is set
         self.__space = None                     # Will be overridden when species is set
-        self.species = species                  # Utilises the setter for validation of new instances
+        self.species = species
         self.__health_record = []
 
     # --------------
@@ -190,25 +190,20 @@ class Animal(ABC):
     # Behavioural methods
     # -------------------
 
-    def __str__(self):
+    def __str__(self)->str:
         """
         Returns a formatted string containing the animal's details.
-
-        Returns:
-            str: The name, class, species, if native, age, sex, and required environment, space, and diet.
+        Returns: str: The name, class, species, if native, age, sex, and required environment, space, and diet.
         """
+        native = "native" if self.is_native else "not native"
         sex = 'Female' if self.is_female else 'Male'
-        details = [f"---{self.name.upper()} THE {self.__class__.__name__.upper()}---"]
-        if self.is_native:
-            details.append(f"I am a {self.species}, which is native to Australia.")
-        else:
-            details.append(f"I am a {self.species}, which is not native to Australia.")
-        details.append(f"Age: {self.age} years old\n"
-                       f"Sex: {sex}\n"
-                       f"Required environment: {self.environment}\n"
-                       f"Required space: {self.space}m\u00b2\n"
-                       f"Required diet: {self.dietary_requirements}")
-        return '\n'.join(details)
+        return (f"---{self.name.upper()} THE {self.__class__.__name__.upper()}---\n"
+                f"I am a {self.species}, which is {native} to Australia.\n"
+                f"Age: {self.age} years old\n"
+                f"Sex: {sex}\n"
+                f"Required environment: {self.environment}\n"
+                f"Required space: {self.space}m\u00b2\n"
+                f"Required diet: {self.dietary_requirements}\n")
 
     # -----------------
     # Abstract methods
@@ -229,260 +224,3 @@ class Animal(ABC):
     @abstractmethod
     def move(self):
         pass
-
-
-class Mammal(Animal):
-    def __init__(self, name, age, is_female, species, fur_type):
-        super().__init__(name, age, is_female, species)
-        self.fur_type = fur_type
-        self.__is_pregnant = False
-
-    # --------------
-    # Getter methods
-    # --------------
-
-    def get_fur_type(self)->str:
-        """Returns the animal's fur type."""
-        return self.__fur_type
-
-    def get_is_pregnant(self)->bool:
-        """Returns the animal's pregnancy status - True or False."""
-        return self.__is_pregnant
-
-    # --------------
-    # Setter methods
-    # --------------
-
-    def set_fur_type(self, fur_type):
-        """
-                Updates the date of the report.
-
-                Args:
-                    date_reported (str): The date that the issue was reported, ensuring only a string of a minimum
-                    length may be passed.
-                """
-        MIN_LENGTH = 3
-        if isinstance(fur_type, str) and len(fur_type) >= MIN_LENGTH:
-            self.__fur_type = fur_type
-        else:
-            print(f"Invalid fur type. Please enter text of at least {MIN_LENGTH} characters.")
-
-    def set_is_pregnant(self, is_pregnant):
-        """
-        Sets the pregnancy status of the mammal.
-
-        Args:
-            is_pregnant (bool): True if pregnant, False if not pregnant. Must be boolean.
-        """
-        if isinstance(is_pregnant, bool) and self.is_female:
-            self.__is_pregnant = is_pregnant
-        elif not self.is_female:
-            print(f"Invalid - male animal cannot be pregnant.")
-        else:
-            print(f"Invalid value. Please enter True if pregnant or False if not pregnant.")
-
-    # --------------------
-    # Property definitions
-    # --------------------
-
-    fur_type = property(get_fur_type, set_fur_type)
-    is_pregnant = property(get_is_pregnant, set_is_pregnant)
-
-    # -------------------
-    # Behavioural methods
-    # -------------------
-
-    def make_sound(self):
-        return f"{self.name} the {self.species} is making mammal noises."
-
-    def eat(self):
-        return f"{self.name} the {self.species} is eating their {self.dietary_requirements}."
-
-    def sleep(self):
-        return f"{self.name} the {self.species} is sleeping."
-
-    def move(self):
-        return f"{self.name} the {self.species} is walking around their enclosure."
-
-    def __str__(self):
-        try:
-            if not self.is_female:
-                pregnant = ''
-            else:
-                pregnant = 'Pregnancy status: PREGNANT\n' if self.is_pregnant else 'Pregnancy status: Not pregnant\n'
-            return super().__str__() + f"\nFur type: {self.fur_type}" + f"\n{pregnant}"
-        except:
-            return "Invalid object.\n"
-
-
-class Bird(Animal):
-    def __init__(self, name, age, is_female, species, wingspan, is_flightless):
-        super().__init__(name, age, is_female, species)
-        self.wingspan = wingspan
-        self.is_flightless = is_flightless
-
-    # --------------
-    # Getter methods
-    # --------------
-
-    def get_wingspan(self)->int:
-        """Returns the bird's wingspan in metres."""
-        return self.__wingspan
-
-    def get_is_flightless(self)->bool:
-        """Returns whether the bird is flightless."""
-        return self.__is_flightless
-
-    # --------------
-    # Setter methods
-    # --------------
-
-    def set_wingspan(self, wingspan):
-        """
-        Sets the wingspan, ensuring it remains within a valid range.
-
-        Args:
-            wingspan (float): The wingspan in metres
-        """
-        MIN_SPAN = 0.03
-        MAX_SPAN = 3.70
-        if isinstance(wingspan, float) and MIN_SPAN <= wingspan <= MAX_SPAN:
-            self.__wingspan = wingspan
-        else:
-            print(f"Invalid wingspan. Please enter the wingspan in metres between {MIN_LEVEL} and {MAX_LEVEL}.")
-
-    def set_is_flightless(self, is_flightless):
-        """
-       Sets whether the bird is flightless.
-
-       Args:
-           is_flightless (bool): True if flightless, False if able to fly. Must be boolean.
-       """
-        if isinstance(is_flightless, bool):
-            self.__is_flightless = is_flightless
-        else:
-            print(f"Invalid value. Please enter True if flightless or False if able to fly.")
-
-    # --------------------
-    # Property definitions
-    # --------------------
-
-    wingspan = property(get_wingspan, set_wingspan)
-    is_flightless = property(get_is_flightless, set_is_flightless)
-
-    # -------------------
-    # Behavioural methods
-    # -------------------
-
-    def make_sound(self):
-        print(f"{self.name} the {self.species} is tweeting and chirping.")
-
-    def eat(self):
-        print(f"{self.name} the {self.species} is now pecking at their {self.dietary_requirements}.")
-
-    def sleep(self):
-        print(f"{self.name} the {self.species} is now sleeping in its nest or perch.")
-
-    def move(self):
-        move = 'flying'
-        if self.is_flightless:
-            move = 'walking'
-        return f"{self.name} the {self.species} is {move} around the enclosure."
-
-    def lay_eggs(self):
-        if self.is_female:
-            return f"{self.name} the {self.species} has laid eggs."
-        else:
-            return f"{self.name} cannot lay eggs because they are male."
-
-    def __str__(self):
-        try:
-            flight = 'This bird is flightless.\n' if self.is_flightless else 'This bird can fly.\n'
-            return super().__str__() + f"\nWingspan: {self.wingspan}m\n" + flight
-        except:
-            return "Invalid object.\n"
-
-
-class Reptile(Animal):
-    def __init__(self, name, age, is_female, species, min_temp, is_venomous):
-        super().__init__(name, age, is_female, species)
-        self.min_temp = min_temp
-        self.is_venomous = is_venomous
-
-    # --------------
-    # Getter methods
-    # --------------
-
-    def get_min_temp(self)->int:
-        """Returns the minimum temperature required by the reptile."""
-        return self.__min_temp
-
-    def get_is_venomous(self)->bool:
-        """Returns whether the reptile is venomous."""
-        return self.__is_venomous
-
-    # --------------
-    # Setter methods
-    # --------------
-
-    def set_min_temp(self, min_temp):
-        """
-        Updates the minimum temperature, ensuring it is a valid value.
-
-        Args:
-            min_temp (int): The min temp in degrees C.
-        """
-        MIN_TEMP = 15
-        MAX_TEMP = 25
-        if isinstance(min_temp, int) and MIN_TEMP <= min_temp <= MAX_TEMP:
-            self.__min_temp = min_temp
-        else:
-            print(f"Invalid temperature. Please enter a integer between {MIN_TEMP} and {MAX_TEMP}.")
-
-    def set_is_venomous(self, is_venomous):
-        """
-       Sets whether the reptile is venomous.
-
-       Args:
-           is_venomous (bool): True if venomous, False if not. Must be boolean.
-       """
-        if isinstance(is_venomous, bool):
-            self.__is_venomous = is_venomous
-        else:
-            print(f"Invalid value. Please enter True if venomous or False if not venomous.")
-
-    # --------------------
-    # Property definitions
-    # --------------------
-
-    min_temp = property(get_min_temp, set_min_temp)
-    is_venomous = property(get_is_venomous, set_is_venomous)
-
-    # -------------------
-    # Behavioural methods
-    # -------------------
-
-    def make_sound(self):
-        return f"{self.name} the {self.species} is making reptile noises."
-
-    def eat(self):
-        return f"{self.name} the {self.species} is eating {self.dietary_requirements}."
-
-    def sleep(self):
-        return f"{self.name} the {self.species} is sleeping."
-
-    def move(self):
-        return f"{self.name} the {self.species} is moving about their enclosure."
-
-    def lay_eggs(self):
-        if self.is_female:
-            return f"{self.name} the {self.species} has laid eggs."
-        else:
-            return f"{self.name} cannot lay eggs because they are male."
-
-    def __str__(self):
-        try:
-            venomous = 'Handle with care - venomous.\n' if self.is_venomous else 'Safe to handle - not venomous.\n'
-            return super().__str__() + f"\nMinimum temperature: {self.min_temp}\u00b0C\n" + venomous
-        except:
-            return "Invalid object.\n"
