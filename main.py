@@ -7,11 +7,9 @@ Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 """
 
-from animal import Mammal, Bird, Reptile
-from enclosure import Enclosure
-from staff import Veterinarian, Zookeeper
-from zoo import Zoo
-from healthrecord import HealthRecord
+from mammal import Mammal
+from bird import Bird
+from reptile import Reptile
 
 
 def demo_create_animal():
@@ -35,26 +33,12 @@ def demo_create_animal():
     print(lizard)
 
     # --- Attempt to create animals with invalid species ---
-    cat2 = Mammal("Paddy", 3, False, "llion", "Shaggy")
+    cat2 = Mammal("Paddy", 3, False, "llion", 'shaggy')
+    print(cat2.name)
+    print(cat2.age)
+    print(cat2.is_female)
+    print(cat2.space)
     print(cat2)
-
-    # --- Modify animal attributes to valid values ---
-    cat.name = "Puddy"
-    cat.age = 0
-    cat.species = "tiger"       # Will automatically convert to title case when matching
-    cat.is_female = True
-    cat.is_pregnant = True
-    print(cat)
-
-    # --- Attempt to modify animal attributes to invalid values ---
-    cat.name = "P"
-    cat.age = -1
-    cat.age = 201
-    cat.age = "old"
-    cat.species = "llion"
-    cat.is_female = 'female'
-    cat.is_pregnant = 'yes'
-    print(cat)
 
 
 def demo_create_enclosure():

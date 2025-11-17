@@ -1,6 +1,6 @@
 """
 File: animal.py
-Description: Abstract 'Animal' class and its concrete subclasses, for use in a Zoo.
+Description: Abstract 'Animal' class for use in a Zoo.
 Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044
@@ -95,10 +95,8 @@ class Animal(ABC):
 
     def set_name(self, name):
         """
-        Updates the animal's name.
-
-        Args:
-            name (str): The new name for the animal, ensuring only a string of a minimum length may be passed.
+        Sets the animal's name.
+        Args: name (str): The name for the animal, ensuring only a string of a minimum length may be passed.
         """
         MIN_LENGTH = 2
         if isinstance(name, str) and len(name) >= MIN_LENGTH:
@@ -108,10 +106,8 @@ class Animal(ABC):
 
     def set_age(self, age):
         """
-        Updates the animal's age, ensuring it remains within a valid range.
-
-        Args:
-            size (int): The new animal age (0-200) in years.
+        Sets the animal's age, ensuring it remains within a valid range.
+        Args: size (int): The animal age (0-200) in years.
         """
         MIN_AGE = 0
         MAX_AGE = 200
@@ -134,9 +130,7 @@ class Animal(ABC):
     def set_species(self, species):
         """
         Sets the species type and updates information related to species.
-
-        Args:
-            species (str): The species of the animal. Must be a valid species.
+        Args: species (str): The species of the animal. Must be a valid species.
         """
         if species.title() in species_dict:
             self.__species = species.title()
@@ -182,7 +176,7 @@ class Animal(ABC):
             return species_dict[self.species][loc_dict['env']]
 
     def __lookup_space(self)->int:
-        """Returns the species' space requirements."""
+        """Returns the species' space requirements in square metres."""
         if self.species:
             return species_dict[self.species][loc_dict['space']]
 
