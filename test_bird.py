@@ -104,6 +104,16 @@ class TestBird:
         s2 = str(birdB.move())
         assert 'walks' in s2
 
+    def test_lay_eggs(self, birdA, birdB):
+        s = str(birdB.lay_eggs())  # Female can lay eggs
+        assert 'Evil' in s
+        assert 'Ostrich' in s
+        assert 'lays eggs' in s
+        s2 = str(birdA.lay_eggs())  # Male cannot lay eggs
+        assert 'Percy' in s2
+        assert 'cannot lay' in s2
+        assert 'they are male' in s2
+
     def test_string_display(self, birdA, birdB):
         s = str(birdA)
         assert 'PERCY' in s

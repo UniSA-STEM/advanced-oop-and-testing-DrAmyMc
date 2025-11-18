@@ -14,32 +14,34 @@ from species import loc_dict
 
 class Animal(ABC):
     """
-    Represents an animal in the abstract sense.
-    The Animal class models general animal features, requirements, and methods.
+    Abstract base class representing a generic animal.
+    This class defines shared attributes and behaviours common to all animals.
+    Concrete subclasses (Mammal, Bird, Reptile, etc.) extend this class and may introduce additional
+    attributes or override behaviour.
+
+    Attributes:
+        name (str): The animal's name.
+        age (int): The animal's age.
+        is_female (bool): The animal's sex (True if female, False if male)
+        species (str): The species of animal.
+        is_native (bool): Whether the animal species is native to Australia.
+        dietary_requirements (str): The diet of the animal species.
+        environment (str): The environment requirement of the animal species.
+        space (str): The amount of space required per animal of that animal species.
+        health_record (list): List of health records for the animal.
     """
 
     def __init__(self, name, age, is_female, species):
         """
-        Initialises a new Animal instance when utilised through a concrete subclass.
+        Initialises the shared attributes for an Animal.
+        This constructor is intended to be called through a concrete subclass.
 
         Args:
             name (str): The name of the animal.
             age (int): The age of the animal.
             is_female (bool): The sex of the animal.
             species (str): The species of the animal.
-
-        Attributes:
-            __name (str): The animal's name.
-            __age (int): The animal's age.
-            __is_female (bool): The animal's sex (True if female, False if male)
-            __species (str): The species of animal.
-            __is_native (bool): Whether the animal species is native to Australia.
-            __dietary_requirements (str): The diet of the animal species.
-            __environment (str): The environment requirement of the animal species.
-            __space (str): The amount of space required per animal of that animal species.
-            __health_record (list): List of health records for the animal.
         """
-        # User inputs for name, age, is_female, and species utilise setter for validation
         self.name = name
         self.age = age
         self.is_female = is_female

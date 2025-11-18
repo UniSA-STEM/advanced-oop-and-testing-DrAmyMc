@@ -11,35 +11,20 @@ from animal import Animal
 
 
 class Mammal(Animal):
-    """Represents a Mammal type of Animal with mammal-specific features."""
+    """A mammal with fur type and pregnancy status, extending Animal."""
 
     def __init__(self, name, age, is_female, species, fur_type):
         """
         Initialises a new Mammal instance of the Mammal subclass.
 
         Args:
-            name (str): The name of the animal.
-            age (int): The age of the animal.
-            is_female (bool): The sex of the animal.
-            species (str): The species of the animal.
             fur_type (str): The fur type of the mammal.
 
-        Attributes:
-            __name (str): The animal's name.
-            __age (int): The animal's age.
-            __is_female (bool): The animal's sex (True if female, False if male)
-            __species (str): The species of animal.
-            __is_native (bool): Whether the animal species is native to Australia.
-            __dietary_requirements (str): The diet of the animal species.
-            __environment (str): The environment requirement of the animal species.
-            __space (str): The amount of space required per animal of that animal species.
-            __health_record (list): List of health records for the animal.
-            __fur_type (str): The mammal's fur type.
-            __is_pregnant (bool): The mammal's pregnancy status.
+        Notes:
+            Other attributes such as name, age, species, etc. are initialised by the parent class.
         """
-        # User inputs for name, age, is_female, and species come from parent class
         super().__init__(name, age, is_female, species)
-        self.fur_type = fur_type  # User input for fur_type utilises setter for validation
+        self.fur_type = fur_type
         self.__is_pregnant = False  # False by default
 
     # --------------

@@ -11,7 +11,19 @@ from animal import Animal
 
 
 class Reptile(Animal):
+    """A reptile with min temperature and venomous status, extending Animal."""
+
     def __init__(self, name, age, is_female, species, min_temp, is_venomous):
+        """
+        Initialises a new Reptile instance of the Reptile subclass.
+
+        Args:
+            min_temp (int): The minimum temperature required by the reptile in degrees Celsius.
+            is_venomous (bool): The venomous state of the reptile.
+
+         Notes:
+            Other attributes such as name, age, species, etc. are initialised by the parent class.
+        """
         super().__init__(name, age, is_female, species)
         self.min_temp = min_temp
         self.is_venomous = is_venomous
@@ -20,11 +32,11 @@ class Reptile(Animal):
     # Getter methods
     # --------------
 
-    def get_min_temp(self)->int:
+    def get_min_temp(self) -> int:
         """Returns the minimum temperature required by the reptile."""
         return self.__min_temp
 
-    def get_is_venomous(self)->bool:
+    def get_is_venomous(self) -> bool:
         """Returns whether the reptile is venomous."""
         return self.__is_venomous
 
@@ -34,29 +46,25 @@ class Reptile(Animal):
 
     def set_min_temp(self, min_temp):
         """
-        Updates the minimum temperature, ensuring it is a valid value.
-
-        Args:
-            min_temp (int): The min temp in degrees C.
+        Sets the minimum temperature, ensuring it is a valid value.
+        Args: min_temp (int): The min temp in degrees C.
         """
         MIN_TEMP = 15
         MAX_TEMP = 25
         if isinstance(min_temp, int) and MIN_TEMP <= min_temp <= MAX_TEMP:
             self.__min_temp = min_temp
         else:
-            print(f"Invalid temperature. Please enter a integer between {MIN_TEMP} and {MAX_TEMP}.")
+            raise ValueError(f"Invalid temperature. Please enter a integer between {MIN_TEMP} and {MAX_TEMP}.")
 
     def set_is_venomous(self, is_venomous):
         """
-       Sets whether the reptile is venomous.
-
-       Args:
-           is_venomous (bool): True if venomous, False if not. Must be boolean.
-       """
+        Sets whether the reptile is venomous.
+        Args: is_venomous (bool): True if venomous, False if not. Must be boolean.
+        """
         if isinstance(is_venomous, bool):
             self.__is_venomous = is_venomous
         else:
-            print(f"Invalid value. Please enter True if venomous or False if not venomous.")
+            raise ValueError(f"Invalid value. Please enter True if venomous or False if not venomous.")
 
     # --------------------
     # Property definitions
@@ -69,27 +77,36 @@ class Reptile(Animal):
     # Behavioural methods
     # -------------------
 
-    def make_sound(self)->str:
-        return f"{self.name} the {self.species} is making reptile noises."
+    def make_sound(self) -> str:
+        """Returns the reptile making a sound."""
+        return f"{self.name} the {self.species} makes a soft reptilian sound."
 
-    def eat(self)->str:
-        return f"{self.name} the {self.species} is eating {self.dietary_requirements}."
+    def eat(self) -> str:
+        """Returns the reptile eating."""
+        return f"{self.name} the {self.species} slowly feeds on their {self.dietary_requirements}."
 
-    def sleep(self)->str:
-        return f"{self.name} the {self.species} is sleeping."
+    def sleep(self) -> str:
+        """Returns the reptile sleeping."""
+        return f"{self.name} the {self.species} becomes still and rests in a sheltered spot."
 
-    def move(self)->str:
-        return f"{self.name} the {self.species} is moving about their enclosure."
+    def move(self) -> str:
+        """Returns the reptile moving."""
+        return f"{self.name} the {self.species} moves slowly about their {self.environment.lower()} enclosure."
 
-    def lay_eggs(self)->str:
+    def bask(self) -> str:
+        """Returns the reptile basking."""
+        return f"{self.name} the {self.species} basks in the heat to warm their core temperature."
+
+    def lay_eggs(self) -> str:
         if self.is_female:
-            return f"{self.name} the {self.species} has laid eggs."
+            return f"{self.name} the {self.species} lays eggs."
         else:
             return f"{self.name} cannot lay eggs because they are male."
 
-    def __str__(self)->str:
-        try:
-            venomous = 'Handle with care - venomous.\n' if self.is_venomous else 'Safe to handle - not venomous.\n'
-            return super().__str__() + f"\nMinimum temperature: {self.min_temp}\u00b0C\n" + venomous
-        except:
-            return "Invalid object.\n"
+    def __str__(self) -> str:
+        """
+        Returns a formatted string containing the animal's details.
+        Returns: str: The animal class string plus reptile-specific min temp and venomous details.
+        """
+        venomous = 'Handle with care - venomous.\n' if self.is_venomous else 'Safe to handle - not venomous.\n'
+        return super().__str__() + f"Minimum temperature: {self.min_temp}\u00b0C\n" + venomous

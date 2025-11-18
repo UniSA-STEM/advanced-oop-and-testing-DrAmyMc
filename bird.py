@@ -11,37 +11,22 @@ from animal import Animal
 
 
 class Bird(Animal):
-    """Represents a Bird type of Animal with bird-specific features."""
+    """A bird with wingspan and flight ability, extending Animal."""
 
     def __init__(self, name, age, is_female, species, wingspan, is_flightless):
         """
         Initialises a new Bird instance of the Bird subclass.
 
         Args:
-            name (str): The name of the animal.
-            age (int): The age of the animal.
-            is_female (bool): The sex of the animal.
-            species (str): The species of the animal.
             wingspan (float): The wingspan of the bird in metres.
             is_flightless (bool): The flightless state of the bird.
 
-        Attributes:
-            __name (str): The animal's name.
-            __age (int): The animal's age.
-            __is_female (bool): The animal's sex (True if female, False if male)
-            __species (str): The species of animal.
-            __is_native (bool): Whether the animal species is native to Australia.
-            __dietary_requirements (str): The diet of the animal species.
-            __environment (str): The environment requirement of the animal species.
-            __space (str): The amount of space required per animal of that animal species.
-            __health_record (list): List of health records for the animal.
-            __wingspan (float): The bird's wingspan in metres.
-            __is_flightless (bool): The bird's flightless status.
+         Notes:
+            Other attributes such as name, age, species, etc. are initialised by the parent class.
         """
-        # User inputs for name, age, is_female, and species come from parent class
         super().__init__(name, age, is_female, species)
-        self.wingspan = wingspan  # User input for wingspan utilises setter for validation
-        self.is_flightless = is_flightless  # User input for is_flightless utilises setter for validation
+        self.wingspan = wingspan
+        self.is_flightless = is_flightless
 
     # --------------
     # Getter methods

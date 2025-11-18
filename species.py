@@ -19,6 +19,7 @@ species_dict = {
     "Otter": ["Aquatic", 4, "fish", False],
     "Fairy Penguin": ["Aquatic", 4, "fish", True],
     "Lace Monitor": ["Terrarium", 5, "insects", True],
+    "Brown Snake": ["Terrarium", 4, "rodents", True],
     "Koala": ["Bushland", 20, "leaves", True],
     "Kangaroo": ["Bushland", 20, "plants", True],
     "Quokka": ["Bushland", 10, "leaves", True]
