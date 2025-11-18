@@ -9,13 +9,20 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 from animal import Animal
 from species import species_dict, loc_dict
-from staff import Zookeeper
-from staff import Veterinarian
 
 
 class Enclosure:
     """
     Represents an enclosure in a zoo, of a particular type and size.
+
+    Attributes:
+        name (str): The enclosure's name.
+        type (str): The envrionmental type of the enclosure.
+        size (int): The size of the enclosure in square metres.
+        cleanliness_level (int): The cleanliness of the enclosure from 0 (filthy) to 5 (pristine).
+        on_display (bool): Whether an enclosure is on display to the public.
+        animal_type (str | None): The type of animal housed in the enclosure, None if empty.
+        animals_housed = (list[Animal]): A list of animal objects in the enclosure, initially empty.
     """
 
     # List of the valid enclosure types
@@ -23,70 +30,61 @@ class Enclosure:
 
     def __init__(self, name, type, size):
         """
-           Initialises a new Enclosure instance.
+        Initialises a new Enclosure instance.
 
-           Args:
-               name (str): The name of the enclosure.
-               type (str): The environmental type of the enclosure.
-               size (int): The size of the enclosure in square metres.
-
-           Attributes:
-               __name (str): The enclosure's name.
-               __type (str): The envrionmental type of the enclosure.
-               __size (int): The size of the enclosure in square metres.
-               __cleanliness_level (int): The cleanliness of the enclosure from 0 (filthy) to 5 (pristine).
-               __on_display (bool): Whether an enclosure is on display to the public.
-               __animal_type (str | None): The type of animal housed in the enclosure, None if empty.
-               __animals_housed = (list[Animal]): A list of animal objects in the enclosure, initially empty.
+        Args:
+            name (str): The name of the enclosure.
+            type (str): The environmental type of the enclosure.
+            size (int): The size of the enclosure in square metres.
         """
-        self.name = name                #Utilises the setter for validation of new instances
-        self.type = type                #Utilises the setter for validation of new instances
-        self.size = size                #Utilises the setter for validation of new instances
+        self.name = name  # Utilises the setter for validation of new instances
+        self.type = type  # Utilises the setter for validation of new instances
+        self.size = size  # Utilises the setter for validation of new instances
         self.__cleanliness_level = 5
-        self.__on_display   = False
+        self.__on_display = False
         self.__animal_type = None
         self.__animals_housed = []
-        self.__assigned_zookeeper = None
+        self.__assigned_keeper = None
         self.__assigned_vet = None
 
     # --------------
     # Getter methods
     # --------------
 
-    def get_name(self)->str:
+    def get_name(self) -> str:
         """Returns the enclosure's name."""
         return self.__name
 
-    def get_type(self)->str:
+    def get_type(self) -> str:
         """Returns the enclosure's environmental type."""
         return self.__type
 
-    def get_size(self)->int:
+    def get_size(self) -> int:
         """Returns the enclosure's size in square metres."""
         return self.__size
 
-    def get_cleanliness_level(self)->int:
+    def get_cleanliness_level(self) -> int:
         """Returns the enclosure's cleanliness level."""
         return self.__cleanliness_level
 
-    def get_on_display(self)->bool:
+    def get_on_display(self) -> bool:
         """Returns the enclosure's display status."""
         return self.__on_display
 
-    def get_animal_type(self)->str:
+    def get_animal_type(self) -> str:
         """Returns the enclosure's animal type or None if empty."""
         return self.__animal_type
 
-    def get_animals_housed(self)->list:
+    def get_animals_housed(self) -> list:
         """Returns the list of animals housed in the enclosure."""
         return self.__animals_housed
 
-    def get_assigned_zookeeper(self):
+    def get_assigned_keeper(self):
         """Returns the name of the zookeeper assigned to the enclosure."""
-        return self.__assigned_zookeeper
+        return self.__assigned_keeper
 
     def get_assigned_vet(self):
-        """Returns the name of the vet assigned to the enclosure."""
+        """Returns the name of the veterninarian assigned to the enclosure."""
         return self.__assigned_vet
 
     # --------------
@@ -102,7 +100,7 @@ class Enclosure:
         if isinstance(name, str) and len(name) >= MIN_LENGTH:
             self.__name = name
         else:
-            print(f"Invalid enclosure name. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid enclosure name. Please enter text of at least {MIN_LENGTH} characters.")
 
     def set_type(self, type):
         """
@@ -112,12 +110,12 @@ class Enclosure:
         if type in Enclosure.TYPE_LIST:
             self.__type = type
         else:
-            print(f"Invalid enclosure type. Please enter one of the following types: "
+            raise ValueError(f"Invalid enclosure type. Please enter one of the following types: "
                   f"{Enclosure.TYPE_LIST}")
 
     def set_size(self, size):
         """
-        Updates the enclosure size, ensuring it remains within a valid range.
+        Sets the enclosure size, ensuring it remains within a valid range.
         Args: size (int): The new enclosure size (0-5000) in square metres.
         """
         MIN_SIZE = 1
@@ -125,7 +123,7 @@ class Enclosure:
         if isinstance(size, int) and MIN_SIZE <= size <= MAX_SIZE:
             self.__size = size
         else:
-            print(f"Invalid size. Please enter an integer between {MIN_SIZE} and {MAX_SIZE}.")
+            raise ValueError(f"Invalid size. Please enter an integer between {MIN_SIZE} and {MAX_SIZE}.")
 
     def set_cleanliness_level(self, level):
         """
@@ -137,7 +135,7 @@ class Enclosure:
         if isinstance(level, int) and MIN_LEVEL <= level <= MAX_LEVEL:
             self.__cleanliness_level = level
         else:
-            print(f"Invalid cleanliness level. Please enter an integer between {MIN_LEVEL} and {MAX_LEVEL}.")
+            raise ValueError(f"Invalid cleanliness level. Please enter an integer between {MIN_LEVEL} and {MAX_LEVEL}.")
 
     def set_on_display(self, on_display):
         """
@@ -149,6 +147,7 @@ class Enclosure:
         else:
             print(f"Invalid status. Please enter True if on display or False if not currently on display.")
 
+
     def set_animal_type(self, species):
         """
         Sets the species to be housed in the enclosure.
@@ -159,13 +158,16 @@ class Enclosure:
         else:
             print(f"{species.title()} is not a valid species. Please enter a valid species only.")
 
-    def set_assigned_zookeeper(self, zookeeper):
+
+    def set_assigned_keeper(self, zookeeper):
         if isinstance(zookeeper, Zookeeper):
             self.__assigned_zookeeper = zookeeper
+
 
     def set_assigned_vet(self, vet):
         if isinstance(vet, Veterinarian):
             self.__assigned_vet = vet
+
 
     # --------------------
     # Property definitions
@@ -178,14 +180,15 @@ class Enclosure:
     on_display = property(get_on_display, set_on_display)
     animal_type = property(get_animal_type, set_animal_type)
     animals_housed = property(get_animals_housed)
-    assigned_zookeeper = property(get_assigned_zookeeper, set_assigned_zookeeper)
+    assigned_keeper = property(get_assigned_keeper, set_assigned_keeper)
     assigned_vet = property(get_assigned_vet, set_assigned_vet)
+
 
     # --------------
     # Helper methods
     # --------------
 
-    def calculate_max_animals(self)->int:
+    def calculate_max_animals(self) -> int:
         """
         Calculates maximum number of animals that can be held based on enclosure size
         and space requirements for the species housed.
@@ -196,6 +199,7 @@ class Enclosure:
             species_space = species_dict[self.animal_type][loc_dict['space']]
             max_animals = self.size // species_space
             return max_animals
+
 
     # -------------------
     # Behavioural methods
@@ -232,6 +236,7 @@ class Enclosure:
             self.__animals_housed.append(animal)
             print(f"You have successfully added another {animal.species} to this enclosure.")
 
+
     def list_animals(self):
         """Prints a list of animals housed in enclosure."""
         if self.animals_housed == []:
@@ -241,6 +246,7 @@ class Enclosure:
             for animal in self.animals_housed:
                 animals_housed_str += (f"{animal.name} the {animal.species}, aged {animal.age} years\n")
         print(animals_housed_str)
+
 
     def report_status(self):
         """Prints a cleanliness status message based on current cleanliness level."""
@@ -256,6 +262,7 @@ class Enclosure:
             print("This enclosure is quite clean. It does not need cleaning yet.")
         else:
             print("This enclosure is pristine. It has just been cleaned.")
+
 
     def check_capacity(self):
         """Prints a capacity message based on current capacity of enclosure."""
@@ -273,6 +280,7 @@ class Enclosure:
                 print(f"It has space available for {space_available} more {self.animal_type}s.")
             else:
                 print("It is at maximum capacity and has no more space available.")
+
 
     def __str__(self):
         """
