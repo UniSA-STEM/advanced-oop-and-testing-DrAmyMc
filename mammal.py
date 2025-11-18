@@ -39,18 +39,18 @@ class Mammal(Animal):
         """
         # User inputs for name, age, is_female, and species come from parent class
         super().__init__(name, age, is_female, species)
-        self.fur_type = fur_type    # User input for fur_type utilises setter for validation
+        self.fur_type = fur_type  # User input for fur_type utilises setter for validation
         self.__is_pregnant = False  # False by default
 
     # --------------
     # Getter methods
     # --------------
 
-    def get_fur_type(self)->str:
+    def get_fur_type(self) -> str:
         """Returns the animal's fur type."""
         return self.__fur_type
 
-    def get_is_pregnant(self)->bool:
+    def get_is_pregnant(self) -> bool:
         """Returns the animal's pregnancy status - True or False."""
         return self.__is_pregnant
 
@@ -94,21 +94,21 @@ class Mammal(Animal):
 
     def make_sound(self):
         """Returns the mammal making a sound."""
-        return f"{self.name} the {self.species} is making mammal noises."
+        return f"{self.name} the {self.species} makes low, rich mammalian noises."
 
     def eat(self):
         """Returns the mammal eating."""
-        return f"{self.name} the {self.species} is eating their {self.dietary_requirements}."
+        return f"{self.name} the {self.species} chews on their {self.dietary_requirements}."
 
     def sleep(self):
         """Returns the mammal sleeping."""
-        return f"{self.name} the {self.species} is sleeping."
+        return f"{self.name} the {self.species} curls up and goes to sleep."
 
     def move(self):
         """Returns the mammal moving"""
-        return f"{self.name} the {self.species} is walking around their enclosure."
+        return f"{self.name} the {self.species} roams around their {self.environment.lower()} enclosure."
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Returns a formatted string containing the animal's details.
         Returns: str: The animal class string plus mammal-specific fur type and pregnancy status details.
