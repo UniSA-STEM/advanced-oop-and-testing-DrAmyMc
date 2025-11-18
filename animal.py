@@ -17,6 +17,7 @@ class Animal(ABC):
     Represents an animal in the abstract sense.
     The Animal class models general animal features, requirements, and methods.
     """
+
     def __init__(self, name, age, is_female, species):
         """
         Initialises a new Animal instance when utilised through a concrete subclass.
@@ -42,10 +43,10 @@ class Animal(ABC):
         self.name = name
         self.age = age
         self.is_female = is_female
-        self.__is_native = None                 # Will be overridden when species is set
-        self.__dietary_requirements = None      # Will be overridden when species is set
-        self.__environment = None               # Will be overridden when species is set
-        self.__space = None                     # Will be overridden when species is set
+        self.__is_native = None  # Will be overridden when species is set
+        self.__dietary_requirements = None  # Will be overridden when species is set
+        self.__environment = None  # Will be overridden when species is set
+        self.__space = None  # Will be overridden when species is set
         self.species = species
         self.__health_record = []
 
@@ -53,39 +54,39 @@ class Animal(ABC):
     # Getter methods
     # --------------
 
-    def get_name(self)->str:
+    def get_name(self) -> str:
         """Returns the animal's name."""
         return self.__name
 
-    def get_age(self)->int:
+    def get_age(self) -> int:
         """Returns the animal's age."""
         return self.__age
 
-    def get_is_female(self)->bool:
+    def get_is_female(self) -> bool:
         """Returns the animal's sex - True is female, False is male."""
         return self.__is_female
 
-    def get_species(self)->str:
+    def get_species(self) -> str:
         """Returns the animal's species."""
         return self.__species
 
-    def get_is_native(self)->bool:
+    def get_is_native(self) -> bool:
         """Returns true/false for if the animal is native to Australia."""
         return self.__is_native
 
-    def get_dietary_requirements(self)->str:
+    def get_dietary_requirements(self) -> str:
         """Returns the animal's dietary requirements."""
         return self.__dietary_requirements
 
-    def get_environment(self)->str:
+    def get_environment(self) -> str:
         """Returns the animal's required enclosure environment."""
         return self.__environment
 
-    def get_space(self)->int:
+    def get_space(self) -> int:
         """Returns the animal's space requirements in square metres."""
         return self.__space
 
-    def get_health_record(self)->list:
+    def get_health_record(self) -> list:
         """Returns the list of health records for the animal."""
         return self.__health_record
 
@@ -102,7 +103,7 @@ class Animal(ABC):
         if isinstance(name, str) and len(name) >= MIN_LENGTH:
             self.__name = name
         else:
-            print(f"Invalid animal name. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid animal name. Please enter text of at least {MIN_LENGTH} characters.")
 
     def set_age(self, age):
         """
@@ -114,8 +115,8 @@ class Animal(ABC):
         if isinstance(age, int) and MIN_AGE <= age <= MAX_AGE:
             self.__age = age
         else:
-            print(f"Invalid animal age. Please enter age in years, as an integer between "
-                  f"{MIN_AGE} and {MAX_AGE}.")
+            raise ValueError(f"Invalid animal age. Please enter age in years, as an integer between "
+                             f"{MIN_AGE} and {MAX_AGE}.")
 
     def set_is_female(self, is_female):
         """
@@ -125,7 +126,7 @@ class Animal(ABC):
         if isinstance(is_female, bool):
             self.__is_female = is_female
         else:
-            print(f"Invalid sex. Please enter True if female or False if male.")
+            raise ValueError(f"Invalid sex. Please enter True if female or False if male.")
 
     def set_species(self, species):
         """
@@ -140,7 +141,7 @@ class Animal(ABC):
             self.__environment = self.__lookup_environment()
             self.__space = self.__lookup_space()
         else:
-            print(f"{species.title()} is not a valid species. Please enter a valid species only.")
+            raise ValueError(f"{species.title()} is not a valid species. Please enter a valid species only.")
 
     # --------------------
     # Property definitions
@@ -160,22 +161,22 @@ class Animal(ABC):
     # Helper methods
     # --------------
 
-    def __lookup_is_native(self)->bool:
+    def __lookup_is_native(self) -> bool:
         """Returns the species' native status."""
         if self.species:
             return species_dict[self.species][loc_dict['native']]
 
-    def __lookup_diet(self)->str:
+    def __lookup_diet(self) -> str:
         """Returns the species' dietary requirements."""
         if self.species:
             return species_dict[self.species][loc_dict['diet']]
 
-    def __lookup_environment(self)->str:
+    def __lookup_environment(self) -> str:
         """Returns the species' environmental type."""
         if self.species:
             return species_dict[self.species][loc_dict['env']]
 
-    def __lookup_space(self)->int:
+    def __lookup_space(self) -> int:
         """Returns the species' space requirements in square metres."""
         if self.species:
             return species_dict[self.species][loc_dict['space']]
@@ -184,7 +185,7 @@ class Animal(ABC):
     # Behavioural methods
     # -------------------
 
-    def __str__(self)->str:
+    def __str__(self) -> str:
         """
         Returns a formatted string containing the animal's details.
         Returns: str: The name, class, species, if native, age, sex, and required environment, space, and diet.

@@ -22,4 +22,4 @@ species_dict = {
     "Koala": ["Bushland", 20, "leaves", True],
     "Kangaroo": ["Bushland", 20, "plants", True],
     "Quokka": ["Bushland", 10, "leaves", True]
-    }
+}

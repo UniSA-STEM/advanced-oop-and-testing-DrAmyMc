@@ -35,10 +35,10 @@ def demo_create_animal():
     # --- Attempt to create animals with invalid species ---
     cat2 = Mammal("Paddy", 3, False, "llion", 'shaggy')
     print(cat2.name)
-    print(cat2.age)
-    print(cat2.is_female)
-    print(cat2.space)
-    print(cat2)
+    # print(cat2.age)
+    # print(cat2.is_female)
+    # print(cat2.space)
+    # print(cat2)
 
 
 def demo_create_enclosure():

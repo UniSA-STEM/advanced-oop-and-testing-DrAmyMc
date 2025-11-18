@@ -40,11 +40,19 @@ class TestAnimal:
     def animalB(self):
         return DummyAnimal('Blinky', 1, True, 'Koala')
 
-    # --- Testing direct instantiation of abstract class ---
+    # --- Testing invalid instantiation ---
 
     def test_abstract_class_cannot_be_instantiated(self):
         with pytest.raises(TypeError):
             Animal('Blinky', 1, True, 'Koala')
+
+    def test_instantiation_with_invalid_arguments(self):
+        with pytest.raises(ValueError):
+            DummyAnimal('B', 1, True, 'Koala')  # Invalid name
+            DummyAnimal('Blinky', 0.5, True, 'Koala')  # Invalid age
+            DummyAnimal('Blinky', 1, 'yes', 'Koala')  # Invalid is_female
+            DummyAnimal('Blinky', 1, True, 'Koaaaala')  # Invalid species
+            DummyAnimal('Blinky', 1, True)  # Missing argument
 
     # --- Testing getters ---
 
@@ -87,50 +95,71 @@ class TestAnimal:
     # --- Testing setters ---
 
     def test_set_name(self, animalA, animalB):
-        """Name setter should accept only str of min 2 char. Invalid input ignored."""
-        animalA.name = 'Pa'             # Edge case, 2 char min
-        assert animalA.name == 'Pa'     # Valid name change
-        animalB.name = 'K'              # Invalid input, only 1 char
-        animalB.name = 123              # Invalid input, not a string
-        assert animalB.name == 'Blinky' # Original name stands
+        """Name setter should accept only str of min 2 char."""
+        animalA.name = 'Pa'  # Edge case, 2 char min
+        assert animalA.name == 'Pa'  # Valid name change
+        animalB.name = 'Ba'  # Edge case, 2 char min
+        assert animalB.name == 'Ba'  # Valid name change
+        with pytest.raises(ValueError):
+            animalB.name = 'K'  # Invalid input, only 1 char
+            animalB.name = 123  # Invalid input, not a string
 
     def test_set_age(self, animalA, animalB):
-        """Age setter should accept only int between 0-200. Invalid input ignored."""
-        animalA.age = 0                 # Edge case, 0 min value
-        assert animalA.age == 0         # Valid age change
-        animalA.age = 200               # Edge case, 200 max value
-        assert animalA.age == 200       # Valid name change
-        animalB.age = -1                # Invalid input, less than min
-        animalB.age = 201               # Invalid input, greater than max
-        animalB.age = 'old'             # Invalid input, not an int
-        animalB.age = 10.5              # Invalid input, not an int
-        assert animalB.age == 1         # Original age stands
+        """Age setter should accept only int between 0-200."""
+        animalA.age = 0  # Edge case, 0 min value
+        assert animalA.age == 0  # Valid age change
+        animalB.age = 200  # Edge case, 200 max value
+        assert animalB.age == 200  # Valid name change
+        with pytest.raises(ValueError):
+            animalB.age = -1  # Invalid input, less than min
+            animalB.age = 201  # Invalid input, greater than max
+            animalB.age = 'old'  # Invalid input, not an int
+            animalB.age = 10.5  # Invalid input, not an int
 
     def test_set_is_female(self, animalA, animalB):
-        """Is_female setter should accept only bool values. Invalid input ignored."""
-        animalA.is_female = True            # Valid bool input
-        assert animalA.is_female is True    # Valid sex change
-        animalB.is_female = 'no'            # Invalid input, not bool
-        assert animalB.is_female is True    # Original sex stands
+        """Is_female setter should accept only bool values."""
+        animalA.is_female = True  # Valid bool input
+        assert animalA.is_female is True  # Valid sex change
+        animalB.is_female = False  # Valid bool input
+        assert animalB.is_female is False  # Valid sex change
+        with pytest.raises(ValueError):
+            animalA.is_female = 'no'  # Invalid input, not bool
+            animalB.is_female = 1  # Invalid input, not bool
 
     def test_set_species(self, animalA, animalB):
-        """Species setter should accept only values found in species dictionary (any case). Invalid input ignored."""
-        animalA.species = 'Pelican'         # Valid species name
-        assert animalA.species == 'Pelican' # Valid species change
-        animalA.species = 'tiger'           # Valid species name, lower case accepted
-        assert animalA.species == 'Tiger'   # Valid species change, changed to title case
-        animalB.species = 'Tigerrr'         # Invalid input, not in species dict
-        assert animalB.species == 'Koala'   # Original species stands
+        """Species setter should accept only values found in species dictionary (any case)."""
+        animalA.species = 'Pelican'  # Valid species name
+        assert animalA.species == 'Pelican'  # Valid species change
+        animalB.species = 'tiger'  # Valid species name, lower case accepted
+        assert animalB.species == 'Tiger'  # Valid species change, changed to title case
+        with pytest.raises(ValueError):
+            animalA.species = 'Tigerrr'  # Invalid input, not in species dict
+            animalB.species = 1  # Invalid input, not in species dict
 
     # --- Testing helper methods ---
 
-    def test_lookup_functions(self, animalA):
+    def test_lookup_is_native(self, animalA):
         animalA.species = 'Fairy Penguin'
         assert animalA.species == 'Fairy Penguin'
-        # Values will be automatically updated to Fairy Penguin values due to lookup functions
+        # Value will be automatically updated to Fairy Penguin value due to lookup functions
         assert animalA.is_native is True
+
+    def test_lookup_diet(self, animalA):
+        animalA.species = 'Fairy Penguin'
+        assert animalA.species == 'Fairy Penguin'
+        # Value will be automatically updated to Fairy Penguin value due to lookup functions
         assert animalA.dietary_requirements == 'fish'
+
+    def test_lookup_environment(self, animalA):
+        animalA.species = 'Fairy Penguin'
+        assert animalA.species == 'Fairy Penguin'
+        # Value will be automatically updated to Fairy Penguin value due to lookup functions
         assert animalA.environment == 'Aquatic'
+
+    def test_lookup_space(self, animalA):
+        animalA.species = 'Fairy Penguin'
+        assert animalA.species == 'Fairy Penguin'
+        # Value will be automatically updated to Fairy Penguin value due to lookup functions
         assert animalA.space == 4
 
     # --- Testing behavioural methods ---
