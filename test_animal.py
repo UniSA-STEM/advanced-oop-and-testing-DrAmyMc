@@ -1,6 +1,6 @@
 """
 File: test_animal.py
-Description: Tests for the abstract Animal parent class.
+Description: Testing suite for the abstract Animal parent class.
 Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044

@@ -1,145 +1,120 @@
-'''
-File: test_animal.py
-Description: A brief description of this Python module.
+"""
+File: test_reptile.py
+Description: Testing suite for the Bird child class.
 Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
-'''
+"""
 
 import pytest
-
-from animal import Animal
-from animal import Mammal
-from animal import Bird
-from animal import Reptile
+from bird import Bird
 
 
-class TestMammal:
-    """
-    Direct tests for the Animal superclass and subclasses for animal creation, setting attributes
-    and string display.
+class TestBird:
+    """Testing suite for the Bird child class of Animal parent class."""
 
-    Tests:
-        - Creation of animal instances (valid and invalid cases).
-        - Setting attributes manually (valid and invalid cases).
-        - Displaying string representations.
-    """
+    # --- Bird instances for testing ---
 
     @pytest.fixture
-    def mammal(self):
-        return Mammal("Paddy", 3, False, "Lion", "Shaggy")
+    def birdA(self):
+        return Bird('Percy', 3, False, 'Pelican', 1.5, False)
 
     @pytest.fixture
-    def bird(self):
-        return Bird("Percival", 2, True, "Pelican", 2.1, False)
+    def birdB(self):
+        return Bird('Evil', 1, True, 'Ostrich', 3.2, True)
 
-    @pytest.fixture
-    def reptile(self):
-        return Reptile("Lizzie", 1, False, "Lace Monitor", 18, False)
+    # --- Testing invalid instantiation ---
 
-    def test_get_name(self, mammal):
-        assert mammal.name == 'Paddy'
+    def test_instantiation_with_invalid_arguments(self):
+        with pytest.raises(ValueError):
+            # Invalid name, age, is_female, species name, wingspan, is_flightless, and missing argument
+            Bird('E', 1, True, 'Ostrich', 3.2, True)
+            Bird('Evil', 0.5, True, 'Ostrich', 3.2, True)
+            Bird('Evil', 1, 'yes', 'Ostrich', 3.2, True)
+            Bird('Evil', 1, True, 'Astrich', 3.2, True)
+            Bird('Evil', 1, True, 'Ostrich', 3, True)
+            Bird('Evil', 1, True, 'Ostrich', 3.2, 'yes')
+            Bird('Evil', 1, True, 'Ostrich', 3.2)
 
-    assert mammal.age == 3
-    assert mammal.is_female == False
-    assert mammal.species == 'Lion'
-    assert mammal.is_native == False
-    assert mammal.dietary_requirements == 'meat'
-    assert mammal.environemnt == 'Savannah'
-    assert mammal.space == 200
-    assert mammal.health_record == []
-    assert mammal.fur_type == 'Shaggy'
+    # --- Testing getters ---
 
-    # --- Attempt to create animals with invalid species ---
-    cat2 = Mammal("Paddy", 3, False, "llion", "Shaggy")
-    print(cat2)
+    def test_get_wingspan(self, birdA, birdB):
+        assert birdA.wingspan == 1.5
+        assert birdB.wingspan == 3.2
 
-    # --- Modify animal attributes to valid values ---
-    cat.name = "Puddy"
-    cat.age = 0
-    cat.species = "tiger"  # Will automatically convert to title case when matching
-    cat.is_female = True
-    cat.is_pregnant = True
-    print(cat)
+    def test_get_is_flightless(self, birdA, birdB):
+        assert birdA.is_flightless is False
+        assert birdB.is_flightless is True
 
-    # --- Attempt to modify animal attributes to invalid values ---
-    cat.name = "P"
-    cat.age = -1
-    cat.age = 201
-    cat.age = "old"
-    cat.species = "llion"
-    cat.is_female = 'female'
-    cat.is_pregnant = 'yes'
-    print(cat)
+    # --- Testing setters ---
 
+    def test_set_wingspan(self, birdA, birdB):
+        """Wingspan setter should accept only a float between 0.03 and 3.70."""
+        birdA.wingspan = 0.03  # Edge case, 0.03 min
+        assert birdA.wingspan == 0.03  # Valid wingspan change
+        birdB.wingspan = 3.7  # Edge case, 3.7 max
+        assert birdB.wingspan == 3.7  # Valid wingspan change
+        birdB.wingspan = 2.0  # Supplied as a float
+        assert birdB.wingspan == 2.0  # Valid wingspan change
+        with pytest.raises(ValueError):
+            birdA.wingspan = 0.02999  # Invalid input, below min value (edge)
+            birdA.wingspan = 3.70001  # Invalid input, above max value (edge)
+            birdA.wingspan = -0.05  # Invalid input, negative value
+            birdB.wingspan = 'big'  # Invalid input, not a float
+            birdB.wingspan = 2  # Invalid input, not a float
 
-class TestMammal:
-    """
-    Direct tests for the Animal superclass and subclasses for animal creation, setting attributes
-    and string display.
+    def test_set_is_flightless(self, birdA, birdB):
+        """Is flightless setter should accept only true and false."""
+        birdA.is_flightless = True  # Valid input
+        assert birdA.is_flightless is True  # Valid status change
+        birdB.is_flightless = False  # Valid input
+        assert birdB.is_flightless is False  # Valid status change
+        with pytest.raises(ValueError):
+            birdA.is_flightless = 'Yes'  # Invalid input, not bool value
+            birdB.is_flightless = 1  # Invalid input, not bool value
 
-    Tests:
-        - Creation of animal instances (valid and invalid cases).
-        - Setting attributes manually (valid and invalid cases).
-        - Displaying string representations.
-    """
+    # --- Testing behavioural methods ---
 
-    @pytest.fixture
-    def mammal(self):
-        return Mammal("Paddy", 3, False, "Lion", "Shaggy")
+    def test_make_sound(self, birdA):
+        s = str(birdA.make_sound())
+        assert 'Percy' in s
+        assert 'Pelican' in s
+        assert 'bird call' in s
 
-    def test_get_name(self, mammal):
-        assert mammal.name == 'Paddy'
+    def test_eat(self, birdA):
+        s = str(birdA.eat())
+        assert 'Percy' in s
+        assert 'Pelican' in s
+        assert 'pecks' in s
+        assert 'fish' in s
 
-    def test_get_age(self, mammal):
-        assert mammal.age == 3
+    def test_sleep(self, birdA):
+        s = str(birdA.sleep())
+        assert 'Percy' in s
+        assert 'Pelican' in s
+        assert 'roosts' in s
 
-    def test_get_is_female(self, mammal):
-        assert mammal.is_female == False
+    def test_move(self, birdA, birdB):
+        s = str(birdA.move())
+        assert 'Percy' in s
+        assert 'Pelican' in s
+        assert 'flies' in s
+        assert 'aquatic' in s
+        s2 = str(birdB.move())
+        assert 'walks' in s2
 
-    def test_get_species(self, mammal):
-        assert mammal.species == 'Lion'
-
-    def test_get_is_native(self, mammal):
-        assert mammal.is_native == False
-
-    def test_get_dietary_requirements(self, mammal):
-        assert mammal.dietary_requirements == 'meat'
-
-    def test_get_environment(self, mammal):
-        assert mammal.environemnt == 'Savannah'
-
-    def test_get_space(self, mammal):
-        assert mammal.space == 200
-
-    def test_get_health_record(self, mammal):
-        assert mammal.health_record == []
-
-    def test_get_fur_type(self, mammal):
-        assert mammal.fur_type == 'Shaggy'
-
-    def test_get_is_pregnant(self, mammal):
-        assert mammal.is_pregnant == False
-
-    # --- Attempt to create animals with invalid species ---
-    cat2 = Mammal("Paddy", 3, False, "llion", "Shaggy")
-    print(cat2)
-
-    # --- Modify animal attributes to valid values ---
-    cat.name = "Puddy"
-    cat.age = 0
-    cat.species = "tiger"  # Will automatically convert to title case when matching
-    cat.is_female = True
-    cat.is_pregnant = True
-    print(cat)
-
-    # --- Attempt to modify animal attributes to invalid values ---
-    cat.name = "P"
-    cat.age = -1
-    cat.age = 201
-    cat.age = "old"
-    cat.species = "llion"
-    cat.is_female = 'female'
-    cat.is_pregnant = 'yes'
-    print(cat)
+    def test_string_display(self, birdA, birdB):
+        s = str(birdA)
+        assert 'PERCY' in s
+        assert '3' in s
+        assert 'Pelican' in s
+        assert 'Male' in s
+        assert 'fish' in s
+        assert 'Aquatic' in s
+        assert 'native' in s
+        assert '1.5m' in s
+        assert 'can fly' in s
+        s2 = str(birdB)
+        assert 'Female' in s2
+        assert 'flightless' in s2

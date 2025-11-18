@@ -92,20 +92,20 @@ class Mammal(Animal):
     # Behavioural methods
     # -------------------
 
-    def make_sound(self):
+    def make_sound(self) -> str:
         """Returns the mammal making a sound."""
         return f"{self.name} the {self.species} makes low, rich mammalian noises."
 
-    def eat(self):
+    def eat(self) -> str:
         """Returns the mammal eating."""
         return f"{self.name} the {self.species} chews on their {self.dietary_requirements}."
 
-    def sleep(self):
+    def sleep(self) -> str:
         """Returns the mammal sleeping."""
         return f"{self.name} the {self.species} curls up and goes to sleep."
 
-    def move(self):
-        """Returns the mammal moving"""
+    def move(self) -> str:
+        """Returns the mammal moving."""
         return f"{self.name} the {self.species} roams around their {self.environment.lower()} enclosure."
 
     def __str__(self) -> str:

@@ -1,6 +1,6 @@
 """
 File: test_mammal.py
-Description: Tests for the Mammal child class.
+Description: Testing suite for the Mammal child class.
 Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044
@@ -8,7 +8,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 """
 
 import pytest
-from animal import Animal
 from mammal import Mammal
 
 
@@ -71,26 +70,26 @@ class TestMammal:
 
     # --- Testing behavioural methods ---
 
-    def test_make_sound(self, mammalA, mammalB):
+    def test_make_sound(self, mammalA):
         s = str(mammalA.make_sound())
         assert 'Paddy' in s
         assert 'Lion' in s
         assert 'rich mammalian noises' in s
 
-    def test_eat(self, mammalA, mammalB):
+    def test_eat(self, mammalA):
         s = str(mammalA.eat())
         assert 'Paddy' in s
         assert 'Lion' in s
         assert 'chews' in s
         assert 'meat' in s
 
-    def test_sleep(self, mammalA, mammalB):
+    def test_sleep(self, mammalA):
         s = str(mammalA.sleep())
         assert 'Paddy' in s
         assert 'Lion' in s
         assert 'curls up and goes to sleep' in s
 
-    def test_move(self, mammalA, mammalB):
+    def test_move(self, mammalA):
         s = str(mammalA.move())
         assert 'Paddy' in s
         assert 'Lion' in s
