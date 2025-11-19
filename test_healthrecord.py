@@ -29,13 +29,20 @@ class TestHealthRecord:
 
     # --- Testing invalid instantiation ---
 
-    # def test_instantiation_with_invalid_arguments(self):
-    #     with pytest.raises(ValueError):
-    #         # Invalid name, type, size, and missing argument
-    #         Enclosure('R', 'Terrarium', 20)
-    #         Enclosure('Reptile House', 'Terrrrarium', 20)
-    #         Enclosure('Reptile House', 'Terrarium', 0)
-    #         Enclosure('Reptile House', 'Terrarium')
+    def test_instantiation_with_invalid_arguments(self):
+        with pytest.raises(ValueError):
+            # Invalid issue type, severity level, date, description, treatment plan, and missing argument
+            HealthRecord('Behavioural', 1, '8/9/2024',
+                         'Lethargy', 'Monitor for signs of fever.')
+            HealthRecord('Behavioural Issue', 4, '8/9/2024',
+                         'Lethargy', 'Monitor for signs of fever.')
+            HealthRecord('Behavioural Issue', 1, '8/9/24',
+                         'Lethargy', 'Monitor for signs of fever.')
+            HealthRecord('Behavioural Issue', 1, '8/9/2024',
+                         'Sick', 'Monitor for signs of fever.')
+            HealthRecord('Behavioural Issue', 1, '8/9/2024',
+                         'Lethargy', 'Mon')
+            HealthRecord('Behavioural Issue', 1, '8/9/2024','Lethargy')
 
     # --- Testing getters ---
 
@@ -59,7 +66,7 @@ class TestHealthRecord:
         assert recA.treatment_plan == ['Clean and bandage wound and monitor.']
         assert recB.treatment_plan == ['Monitor for signs of fever.']
 
-    def test_is_current(self, recA, recB):
+    def test_get_is_current(self, recA, recB):
         assert recA.is_current is True
         assert recB.is_current is True
 
@@ -88,7 +95,7 @@ class TestHealthRecord:
             recB.severity_level = 2.5
             recB.severity_level = 'bad'
 
-    def test_date_reported(self, recA, recB):
+    def test_set_date_reported(self, recA, recB):
         """Date reported setter should only accept dates in string format dd/mm/yyyy."""
         recA.date_reported = '4/5/2023'
         assert recA.date_reported == date(2023, 5, 4)
@@ -101,61 +108,40 @@ class TestHealthRecord:
             recB.date_reported = '4 Nov 2024'
             recB.date_reported = 123
 
-    def test_description(self, recA, recB):
-        pass
+    def test_set_description(self, recA, recB):
+        """Description setter should only accept a string of min legnth 6 char."""
+        recA.description = 'Unwell' # Edge case, 6 char min
+        assert recA.description == 'Unwell'
+        recB.description = 'Wobbly'
+        assert recB.description == 'Wobbly'
+        with pytest.raises(ValueError):
+            recA.description = 'Limpy'
+            recB.description = 123
 
-    # def test_set_name(self, encA, encB):
-    #     """Name setter should only accept a string of min length 3 char."""
-    #     encA.name = 'Wow'  # Edge case, 3 char min
-    #     assert encA.name == 'Wow'  # Valid name change
-    #     encB.name = 'Lap'  # Edge case, 3 char min
-    #     assert encB.name == 'Lap'  # Valid name change
-    #     with pytest.raises(ValueError):
-    #         encA.name = ''  # Invalid input, empty string
-    #         encA.name = 'La'  # Invalid input, below min char
-    #         encB.name = 123  # Invalid input, not a string
+    def test_set_treatment_plan(self, recA, recB):
+        """Treatment splan setter should only accept a string of min length 6 char."""
+        recA.treatment_plan = 'New plan'
+        assert recA.treatment_plan == ['New plan']
+        recB.treatment_plan = 'Newone'
+        assert recB.treatment_plan == ['Newone']
+        with pytest.raises(ValueError):
+            recA.treatment_plan = 'Check'
+            recB.treatment_plan = 123
 
-# def test_create_health_record():
-#
-#     # --- Create and display valid health record ---
-#     record = HealthRecord("Injury", 3, "12 Nov 2025",
-#                           "Laceration on left front leg", "Clean and bandage wound and monitor.")
-#     print(record)
-#
-#     # --- Attempt to create health record with invalid type ---
-#     record2 = HealthRecord("Leg", 3, "12 Nov 2025",
-#                           "Laceration on left front leg", "Clean and bandage wound and monitor.")
-#     print(record2)
-#
-#     # --- Modify health record attributes to valid values ---
-#     record.issue_type = 'Illness'
-#     record.severity_level = 0
-#     record.date_reported = "10 Nov 2025"
-#     record.description = "Lethargic due to minor fever"
-#     record.is_current = False
-#     record.treatment_plan = "Monitor, but no other changes necessary."
-#     print(record)
-#
-#     # --- Attempt to modify health record attributes to invalid values ---
-#     record.issue_type = 'Leg'
-#     record.severity_level = -1
-#     record.severity_level = 4
-#     record.severity_level = "bad"
-#     record.date_reported = "10th"
-#     record.description = "Bad"
-#     record.is_current = "yes"
-#     record.treatment_plan = "None"
-#     print(record)
+    def test_set_is_current(self, recA, recB):
+        """Is current setter should only accept bool value."""
+        recA.is_current = False
+        assert recA.is_current is False
+        recB.is_current = False
+        assert recB.is_current is False
+        recB.is_current = True
+        assert recB.is_current is True
+        with pytest.raises(ValueError):
+            recA.is_current = 'no'
+            recB.is_current = 1
+
 #
 # def test_update_health_record():
-#     """
-#     Direct tests for the HealthRecord class for updating health records.
-#
-#     Tests:
-#         - Updating health record (valid and invalid cases).
-#         - Displaying string representations.
-#     """
-#     print("\n=== TEST: Updating of Health Record ===\n")
 #
 #     # --- Create and display valid health record ---
 #     record = HealthRecord("Injury", 3, "12 Nov 2025",
@@ -169,15 +155,7 @@ class TestHealthRecord:
 #     record.issue_resolved()
 #     print(record)
 #
-# def test_add_health_record():
-#     """
-#     Tests creation of health records for an animal.
-#
-#     Tests:
-#         - Creation of a Health Record instance for a specific animal.
-#     """
-#     print("\n=== TEST: Add Health Record to Animal ===\n")
-#
+# def test_add_health_record():#
 #     # --- Create animal ---
 #     cat = Mammal("Paddy", 3, "Lion", False)
 #     print(cat)

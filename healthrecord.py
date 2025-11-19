@@ -42,7 +42,7 @@ class HealthRecord:
         self.severity_level = severity_level
         self.date_reported = date_reported
         self.description = description
-        self.__treatment_plan = [treatment_plan]
+        self.treatment_plan = treatment_plan
         self.is_current = True
 
     # --------------
@@ -103,8 +103,7 @@ class HealthRecord:
     def set_date_reported(self, date_reported):
         """
         Sets the date of the report in date format.
-        Args:
-            date_reported (str): The date that the issue was reported as a string (dd/mm/yyyy).
+        Args: date_reported (str): The date that the issue was reported as a string (dd/mm/yyyy).
         """
         try:
             self.__date_reported = datetime.strptime(date_reported, "%d/%m/%Y").date()
@@ -113,43 +112,36 @@ class HealthRecord:
 
     def set_description(self, description):
         """
-        Updates the description of the health issue.
-
-        Args:
-            description (str): Sets the description of the health issue, ensuring only a string of a minimum
-            length may be passed.
+        Sets the description of the health issue.
+        Args: description (str): Description of the health issue, with a string of min length.
         """
         MIN_LENGTH = 6
         if isinstance(description, str) and len(description) >= MIN_LENGTH:
             self.__description = description
         else:
-            print(f"Invalid description. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid description. Please enter text of at least {MIN_LENGTH} characters.")
 
     def set_treatment_plan(self, treatment_plan):
         """
         Sets the initial treatment plan/notes.
-
-        Args:
-            treatment_plan (str): The treatment plan/notes for the health issue, ensuring only a string
+        Args: treatment_plan (str): The treatment plan/notes for the health issue, ensuring only a string
              of a minimum length may be passed.
         """
         MIN_LENGTH = 6
         if isinstance(treatment_plan, str) and len(treatment_plan) >= MIN_LENGTH:
             self.__treatment_plan = [treatment_plan]
         else:
-            print(f"Invalid treatment plan. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid treatment plan. Please enter text of at least {MIN_LENGTH} characters.")
 
     def set_is_current(self, is_current):
         """
-        Updates the status of the health issue (current = True, resolved = False).
-
-        Args:
-            is_current (bool): The status of the health issue.
+        Sets the status of the health issue (current = True, resolved = False).
+        Args: is_current (bool): The status of the health issue.
         """
         if isinstance(is_current, bool):
             self.__is_current = is_current
         else:
-            print(f"Invalid current health status. Please enter either True (issue still current) or "
+            raise ValueError(f"Invalid current health status. Please enter either True (issue still current) or "
                   f"False (issue resolved).")
 
     # --------------------
@@ -175,40 +167,30 @@ class HealthRecord:
     def update_treatment_plan(self, treatment_plan):
         """
         Updates the treatment plan with further notes.
-
-        Args:
-            treatment_plan (str): The treatment plan/notes for the health issue, ensuring only a string
+        Args: treatment_plan (str): The treatment plan/notes for the health issue, ensuring only a string
              of a minimum length may be passed.
         """
-        MIN_LENGTH = 12
+        MIN_LENGTH = 6
         if isinstance(treatment_plan, str) and len(treatment_plan) >= MIN_LENGTH:
             self.__treatment_plan.append(treatment_plan)
             print("Your new treatment plan/notes have been successfully added to this record.")
         else:
-            print(f"Invalid treatment plan. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid treatment plan. Please enter text of at least {MIN_LENGTH} characters.")
 
     def __str__(self):
         """
         Returns a formatted string containing the health record's details.
-
-        Returns:
-            str: The type, severity, date, description, treatment plan and current status of issue.
+        Returns: str: The type, severity, date, description, treatment plan and current status of issue.
         """
-        try:
-            if self.is_current:
-                status = 'CURRENT'
-            else:
-                status = 'RESOLVED'
-            severity = ['Negligible', 'Minor', 'Moderate', 'Severe'][self.severity_level]
-            details = [f"---{self.issue_type.upper()} REPORT---\n"
-                       f"This issue is {status}.\n"
-                       f"Severity: {severity}\n"
-                       f"Date reported: {self.date_reported}\n"
-                       f"Description: {self.description}\n"
-                       f"Treatment plan/Notes:"]
-            for treatment in self.treatment_plan:
-                details.append(treatment)
-            details.append("")
-            return '\n'.join(details)
-        except:
-            return "Invalid object.\n"
+        status = 'CURRENT' if self.is_current else 'RESOLVED'
+        severity = ['Negligible', 'Minor', 'Moderate', 'Severe'][self.severity_level]
+        details = [f"---{self.issue_type.upper()} REPORT---\n"
+                   f"This issue is {status}.\n"
+                   f"Severity: {severity}\n"
+                   f"Date reported: {self.date_reported}\n"
+                   f"Description: {self.description}\n"
+                   f"Treatment plan/Notes:"]
+        for treatment in self.treatment_plan:
+            details.append(treatment)
+        details.append("")
+        return '\n'.join(details)
