@@ -9,7 +9,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 from datetime import datetime
 from enclosure import Enclosure
-from healthrecord import HealthRecord
 
 
 class Staff:
@@ -171,48 +170,3 @@ class Staff:
                 details.append(enclosure)
         details.append("")
         return '\n'.join(details)
-
-
-class Veterinarian(Staff):
-    def __init__(self, staff_id, first_name, last_name, year_hired):
-        super().__init__(staff_id, first_name, last_name, year_hired)
-        self._responsibilities = ['Conduct health checks', 'Treat animals', 'Plan preventive health care']
-
-    # -------------------
-    # Behavioural methods
-    # -------------------
-
-    def conduct_health_check(self, animal):
-        pass
-
-    def add_health_record(self, issue_type, severity_level, date_reported, description, treatment_plan):
-        """
-        Initialises a new Health Record instance for the animal.
-
-        Args:
-            issue_type (str): The category of issue being reported.
-            severity_level (int): The severity level from 0-3.
-            date_reported (str): The date of the initial report.
-            description (str): A description of the health issue
-            treatment_plan (str): The initial treatment plan/notes.
-        """
-        new_record = HealthRecord(issue_type, severity_level, date_reported, description, treatment_plan)
-        self.health_record.append(new_record)
-        print(f"New health record created:\n"
-              f"{new_record}")
-
-
-class Zookeeper(Staff):
-    def __init__(self, staff_id, first_name, last_name, year_hired):
-        super().__init__(staff_id, first_name, last_name, year_hired)
-        self._responsibilities = ['Feed animals', 'Clean enclosures', 'Exhibit planning']
-
-    # -------------------
-    # Behavioural methods
-    # -------------------
-
-    def clean_enclosure(self, enclosure_name):
-        pass
-
-    def feed_animals(self, species):
-        pass

@@ -118,6 +118,7 @@ class TestStaff:
             staffB.date_hired = 123
 
     def test_set_role(self, staffA, staffB):
+        """Role setter should only accept string of 4 char min."""
         staffA.role = 'Security'
         assert staffA.role == 'Security'
         staffB.role = 'Food'
