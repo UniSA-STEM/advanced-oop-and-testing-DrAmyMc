@@ -10,6 +10,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 import pytest
 from enclosure import Enclosure
 
+
 class TestEnclosure:
     """Testing suite for the Enclosure class."""
 
@@ -29,13 +30,13 @@ class TestEnclosure:
 
     # --- Testing invalid instantiation ---
 
-    # def test_instantiation_with_invalid_arguments(self):
-    #     with pytest.raises(ValueError):
-    #         # Invalid name, type, size, and missing argument
-    #         Enclosure('R', 'Terrarium', 20)
-    #         Enclosure('Reptile House', 'Terrrrarium', 20)
-    #         Enclosure('Reptile House', 'Terrarium', 0)
-    #         Enclosure('Reptile House', 'Terrarium')
+    def test_instantiation_with_invalid_arguments(self):
+        with pytest.raises(ValueError):
+            # Invalid name, type, size, and missing argument
+            Enclosure('R', 'Terrarium', 20)
+            Enclosure('Reptile House', 'Terrrrarium', 20)
+            Enclosure('Reptile House', 'Terrarium', 0)
+            Enclosure('Reptile House', 'Terrarium')
 
     # --- Testing getters ---
 
