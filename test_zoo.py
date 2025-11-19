@@ -1,41 +1,63 @@
-'''
+"""
 File: test_zoo.py
-Description: A brief description of this Python module.
+Description: Testing suite for the Zoo class.
 Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
-'''
+"""
+
+import pytest
+from zoo import Zoo
+
 
 class TestZoo:
-    pass
+    """Testing suite for the Zoo class."""
 
-def test_create_zoo():
-    """
-    Direct tests for the Zoo class for zoo creation, setting attributes and string display.
+    # --- Zoo instances for testing ---
 
-    Tests:
-        - Creation of a zoo instance (valid and invalid case).
-        - Setting name manually (valid and invalid cases).
-        - Displaying string representations.
-    """
-    print("\n=== TEST: Creation of Zoo ===\n")
+    @pytest.fixture
+    def zooA(self):
+        return Zoo('Halls Gap Zoo')
 
-    # --- Create and display valid zoo ---
-    zoo = Zoo("Halls Gap Zoo")
-    print(zoo)
+    @pytest.fixture
+    def zooB(self):
+        return Zoo('Grampians Zoo')
 
-    # --- Attempt to create zoo with invalid name ---
-    zoo2 = Zoo(123)
-    print(zoo2)
+    # --- Testing invalid instantiation ---
 
-    # --- Modify zoo name ---
-    zoo.name = 'Grampians Zoo'  # Valid name
-    zoo.name = 1234             # Invalid name (not a string)
-    zoo.name = ''               # Invalid name (empty string)
-    print(zoo)
+    def test_instantiation_with_invalid_arguments(self):
+        with pytest.raises(ValueError):
+            # Invalid name, and missing argument
+            Zoo('X')
+            Zoo()
 
-def test_add_enclosure():
-    zoo = Zoo("Halls Gap Zoo")
-    zoo.add_enclosure("Reptile House", "Terrarium", 20)
-    print(zoo)
+    # --- Testing getters ---
+
+    def test_get_name(self, zooA, zooB):
+        assert zooA.name == 'Halls Gap Zoo'
+        assert zooB.name == 'Grampians Zoo'
+
+    def test_get_animals(self, zooA, zooB):
+        assert zooA.animals == []
+        assert zooB.animals == []
+
+    def test_get_enclosures(self, zooA, zooB):
+        assert zooA.enclosures == []
+        assert zooB.enclosures == []
+
+    def test_get_staff(self, zooA, zooB):
+        assert zooA.staff == []
+        assert zooB.staff == []
+
+    # --- Testing setters ---
+
+    def test_set_name(self, zooA, zooB):
+        zooA.name = 'Zoo'
+        assert zooA.name == 'Zoo'
+        zooB.name = 'Australian Zoo'
+        assert zooB.name == 'Australian Zoo'
+        with pytest.raises(ValueError):
+            zooA.name = 'Zo'
+            zooB.name = 1
+            zooA.name = False

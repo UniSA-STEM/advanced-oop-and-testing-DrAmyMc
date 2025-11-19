@@ -7,8 +7,13 @@ Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 """
 
+from mammal import Mammal
+from bird import Bird
+from reptile import Reptile
 from enclosure import Enclosure
 from staff import Staff
+from veterinarian import Veterinarian
+from zookeeper import Zookeeper
 
 
 class Zoo:
@@ -18,20 +23,13 @@ class Zoo:
 
     def __init__(self, name):
         """
-           Initialises a new Zoo instance.
-
-           Args:
-               name (str): The name of the zoo.
-
-           Attributes:
-               __name (str): The zoo's name.
-               __enclosures (list[Enclosure]): A list of Enclosure objects at the zoo, initially empty.
-               __staff (list[Staff]): A list of Staff objects at the zoo, initially empty.
+        Initialises a new Zoo instance.
+        Args: name (str): The name of the zoo.
         """
-        self.name = name            #Utilises the setter for validation of new instances
-        self.__animals = {}
-        self.__enclosures = {}
-        self.__staff = {}
+        self.name = name
+        self.__animals = []
+        self.__enclosures = []
+        self.__staff = []
 
     # --------------
     # Getter methods
@@ -41,16 +39,16 @@ class Zoo:
         """Returns the zoo's name."""
         return self.__name
 
-    def get_animals(self)->set:
-        """Returns the set of animal objects at the zoo."""
+    def get_animals(self)->list:
+        """Returns the list of animal objects at the zoo."""
         return self.__animals
 
-    def get_enclosures(self)->set:
-        """Returns the set of enclosure objects at the zoo."""
+    def get_enclosures(self)->list:
+        """Returns the list of enclosure objects at the zoo."""
         return self.__enclosures
 
-    def get_staff(self)->set:
-        """Returns the set of staff objects at the zoo."""
+    def get_staff(self)->list:
+        """Returns the list of staff objects at the zoo."""
         return self.__staff
 
     # --------------
@@ -66,13 +64,14 @@ class Zoo:
         if isinstance(name, str) and len(name) >= MIN_LENGTH:
             self.__name = name
         else:
-            print(f"Invalid zoo name. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid zoo name. Please enter text of at least {MIN_LENGTH} characters.")
 
     # --------------------
     # Property definitions
     # --------------------
 
     name = property(get_name, set_name)
+    animals = property(get_animals)
     enclosures = property(get_enclosures)
     staff = property(get_staff)
 
@@ -132,11 +131,6 @@ class Zoo:
     def __str__(self)->str:
         """
         Returns a formatted string containing the zoo's details.
-
-        Returns:
-            str: The name, enclosure list, and staff list.
+        Returns: str: The name, enclosure list, and staff list.
         """
-        try:
-            return f"{self.name} has {self.enclosures} enclosures and {self.staff} staff.\n"
-        except:
-            return "Invalid object.\n"
+        return f"{self.name} has {self.enclosures} enclosures and {self.staff} staff.\n"
