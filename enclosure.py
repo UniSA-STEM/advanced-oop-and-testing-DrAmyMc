@@ -26,7 +26,7 @@ class Enclosure:
     """
 
     # List of the valid enclosure types
-    TYPE_LIST = ["Aquatic", "Savannah", "Terrarium", "Bushland", "Forrest", "Jungle", "Aviary"]
+    TYPE_LIST = ["Aquatic", "Savannah", "Terrarium", "Bushland", "Forest", "Jungle", "Aviary"]
 
     def __init__(self, name, type, size):
         """
@@ -107,8 +107,8 @@ class Enclosure:
         Sets the environmental type of the enclosure.
         Args: type (str): The environmental type of the enclosure. Must be a valid type.
         """
-        if type in Enclosure.TYPE_LIST:
-            self.__type = type
+        if type.title() in Enclosure.TYPE_LIST:
+            self.__type = type.title()
         else:
             raise ValueError(f"Invalid enclosure type. Please enter one of the following types: "
                   f"{Enclosure.TYPE_LIST}")
@@ -145,29 +145,25 @@ class Enclosure:
         if isinstance(on_display, bool):
             self.__on_display = on_display
         else:
-            print(f"Invalid status. Please enter True if on display or False if not currently on display.")
-
+            raise ValueError(f"Invalid status. Please enter True if on display or False if not currently on display.")
 
     def set_animal_type(self, species):
         """
         Sets the species to be housed in the enclosure.
         Args: species (str): The species to be housed in the enclosure. Must be a valid species.
         """
-        if species.title() in species_dict:
+        if str(species).title() in species_dict:
             self.__animal_type = species.title()
         else:
-            print(f"{species.title()} is not a valid species. Please enter a valid species only.")
+            raise ValueError(f"{species} is not a valid species. Please enter a valid species only.")
 
-
-    def set_assigned_keeper(self, zookeeper):
-        if isinstance(zookeeper, Zookeeper):
-            self.__assigned_zookeeper = zookeeper
-
+    def set_assigned_keeper(self, keeper):
+        """Sets the assigned keeper to zookeeper name."""
+        self.__assigned_keeper = keeper
 
     def set_assigned_vet(self, vet):
-        if isinstance(vet, Veterinarian):
-            self.__assigned_vet = vet
-
+        """Sets the assigned vet to veterinarian name."""
+        self.__assigned_vet = vet
 
     # --------------------
     # Property definitions
@@ -183,7 +179,6 @@ class Enclosure:
     assigned_keeper = property(get_assigned_keeper, set_assigned_keeper)
     assigned_vet = property(get_assigned_vet, set_assigned_vet)
 
-
     # --------------
     # Helper methods
     # --------------
@@ -192,14 +187,12 @@ class Enclosure:
         """
         Calculates maximum number of animals that can be held based on enclosure size
         and space requirements for the species housed.
-
         Returns: max_animals
         """
         if self.animal_type is not None:
             species_space = species_dict[self.animal_type][loc_dict['space']]
             max_animals = self.size // species_space
             return max_animals
-
 
     # -------------------
     # Behavioural methods
@@ -236,7 +229,6 @@ class Enclosure:
             self.__animals_housed.append(animal)
             print(f"You have successfully added another {animal.species} to this enclosure.")
 
-
     def list_animals(self):
         """Prints a list of animals housed in enclosure."""
         if self.animals_housed == []:
@@ -246,7 +238,6 @@ class Enclosure:
             for animal in self.animals_housed:
                 animals_housed_str += (f"{animal.name} the {animal.species}, aged {animal.age} years\n")
         print(animals_housed_str)
-
 
     def report_status(self):
         """Prints a cleanliness status message based on current cleanliness level."""
@@ -262,7 +253,6 @@ class Enclosure:
             print("This enclosure is quite clean. It does not need cleaning yet.")
         else:
             print("This enclosure is pristine. It has just been cleaned.")
-
 
     def check_capacity(self):
         """Prints a capacity message based on current capacity of enclosure."""
@@ -281,31 +271,21 @@ class Enclosure:
             else:
                 print("It is at maximum capacity and has no more space available.")
 
-
     def __str__(self):
         """
         Returns a formatted string containing the enclosure's details.
         Returns: str: The enclosure name, type, size, cleanliness level, and animal species housed.
         """
-        try:
-            if self.assigned_zookeeper is None:
-                zookeeper = 'None assigned'
-            else:
-                zookeeper = f"{self.assigned_zookeeper.first_name} {self.assigned_zookeeper.last_name}"
-            if self.assigned_vet is None:
-                vet = 'None assigned'
-            else:
-                vet = f"{self.assigned_vet.first_name} {self.assigned_vet.last_name}"
-            if self.animal_type is None:
-                animal_type = f"This enclosure is currently empty.\n"
-            else:
-                animal_type = f"Houses: {len(self.animals_housed)} {self.animal_type}s\n"
-            return [f"---{self.name.upper()}---\n"
-                    f"{self.type} Enclosure\n"
-                    f"Size: {self.size}m\u00b2\n"
-                    f"Cleanliness level: {self.cleanliness_level}\n"
-                    f"Assigned zookeeper: {zookeeper}\n"
-                    f"Assigned veterinarian: {vet}\n"
-                    f"{animal_type}\n"]
-        except:
-            return "Invalid object.\n"
+        if self.animal_type is None:
+            animal_type = f"This enclosure is currently empty.\n"
+        else:
+            animal_type = f"Houses: {len(self.animals_housed)} {self.animal_type}s\n"
+        display = "" if self.on_display is True else "NOT "
+        return [f"---{self.name.upper()}---\n"
+                f"{self.type} Enclosure\n"
+                f"Size: {self.size}m\u00b2\n"
+                f"Cleanliness level: {self.cleanliness_level}\n"
+                f"Assigned zookeeper: {self.assigned_keeper}\n"
+                f"Assigned veterinarian: {self.assigned_vet}\n"
+                f"{animal_type}\n"
+                f"This enclosure is {display}currently on display.\n"]

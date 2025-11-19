@@ -8,8 +8,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 """
 
 from abc import ABC, abstractmethod
-from species import species_dict
-from species import loc_dict
+from species import species_dict, loc_dict
 
 
 class Animal(ABC):
@@ -135,7 +134,7 @@ class Animal(ABC):
         Sets the species type and updates information related to species.
         Args: species (str): The species of the animal. Must be a valid species.
         """
-        if species.title() in species_dict:
+        if str(species).title() in species_dict:
             self.__species = species.title()
             # Updates attributes determined by species type
             self.__is_native = self.__lookup_is_native()
@@ -143,7 +142,7 @@ class Animal(ABC):
             self.__environment = self.__lookup_environment()
             self.__space = self.__lookup_space()
         else:
-            raise ValueError(f"{species.title()} is not a valid species. Please enter a valid species only.")
+            raise ValueError(f"{species} is not a valid species. Please enter a valid species only.")
 
     # --------------------
     # Property definitions

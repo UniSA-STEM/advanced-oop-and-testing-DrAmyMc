@@ -10,7 +10,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 import pytest
 from enclosure import Enclosure
 
-
 class TestEnclosure:
     """Testing suite for the Enclosure class."""
 
@@ -76,26 +75,94 @@ class TestEnclosure:
         assert encA.assigned_vet is None
         assert encB.assigned_vet is None
 
-#     # --- Modify enclosure attributes to valid values ---
-#     enc.name = 'Koala Land'
-#     enc.type = 'Bushland'
-#     enc.size = 5000
-#     enc.cleanliness_level = 0
-#     enc.animal_type = 'koala'   # Will automatically convert to title case when matching
-#     print(enc)
-#
-#     # --- Attempt to modify enclosure attributes to invalid values ---
-#     enc.name = 'Ba'
-#     enc.type = 'Bush'
-#     enc.size = 0
-#     enc.size = 5001
-#     enc.size = 'big'
-#     enc.cleanliness_level = -1
-#     enc.cleanliness_level = 6
-#     enc.cleanliness_level = 'dirty'
-#     enc.animal_type = 'Koalaass'
-#     print(enc)
-#
+    # --- Testing setters ---
+
+    def test_set_name(self, encA, encB):
+        """Name setter should only accept a string of min length 3 char."""
+        encA.name = 'Wow'           # Edge case, 3 char min
+        assert encA.name == 'Wow'   # Valid name change
+        encB.name = 'Lap'           # Edge case, 3 char min
+        assert encB.name == 'Lap'   # Valid name change
+        with pytest.raises(ValueError):
+            encA.name = ''          # Invalid input, empty string
+            encA.name = 'La'        # Invalid input, below min char
+            encB.name = 123         # Invalid input, not a string
+
+    def test_set_type(self, encA, encB):
+        """Type setter should only accept a type from the class type list."""
+        encA.type = 'Forest'
+        assert encA.type == 'Forest'
+        encB.type = 'Aviary'
+        assert encB.type == 'Aviary'
+        encB.type = 'bushland'          # Will automatically change to title case
+        assert encB.type == 'Bushland'
+        with pytest.raises(ValueError):
+            encA.type = ''              # Invalid input, empty string
+            encA.type = 1               # Invalid input, integer
+            encB.type = 'Tundra'        # Invalid input, not in type list
+
+    def test_set_size(self, encA, encB):
+        """Size setter should only accept integers between 1 and 5000."""
+        encA.size = 5000 # Edge case, max value
+        assert encA.size == 5000
+        encB.size = 1   # Edge case, min value
+        assert encB.size == 1
+        with pytest.raises(ValueError):
+            encA.size = 0       # below min
+            encA.size = 5001    # above max
+            encA.size = -10     # negative
+            encA.size = 100.5   # float
+            encB.size = 'big'   # str
+
+    def test_set_cleanliness_level(self, encA, encB):
+        """Cleanliness level setter should only accept integers between 0 and 5."""
+        encA.cleanliness_level = 3          # Change level from default
+        assert encA.cleanliness_level == 3
+        encA.cleanliness_level = 5          # Edge case, max value
+        assert encA.cleanliness_level == 5
+        encB.cleanliness_level = 0
+        assert encB.cleanliness_level == 0  # Edge case, min value
+        with pytest.raises(ValueError):
+            encA.cleanliness_level = 6  # above max
+            encA.cleanliness_level = -1 # negative, below min
+            encA.cleanliness_level = 3.5 # float
+            encB.cleanliness_level = 'dirty'    # str
+
+    def test_set_on_displau(self, encA, encB):
+        """On displa setter should only accept bool values."""
+        encA.on_display = True
+        assert encA.on_display is True
+        encB.on_display = True
+        assert encB.on_display is True
+        encB.on_display = False
+        assert encB.on_display is False
+        with pytest.raises(ValueError):
+            encA.on_display = 'yes'
+            encB.on_display = 1
+
+    def test_set_animal_type(self, encA, encB):
+        """Animal type setter should accept only values found in species dictionary (any case)."""
+        encA.animal_type = 'Pelican'
+        assert encA.animal_type == 'Pelican'
+        encB.animal_type = 'tiger'  # Valid species name, lower case accepted
+        assert encB.animal_type == 'Tiger'  # Valid animal type, changed to title case
+        with pytest.raises(ValueError):
+            encA.animal_type = 'Tigerrr'  # Invalid input, not in species dict
+            encB.animal_type = 1  # Invalid input, not in species dict
+
+    def test_set_assigned_keeper(self, encA, encB):
+        encA.assigned_keeper = 'Joe Bloggs'
+        assert encA.assigned_keeper == 'Joe Bloggs'
+        encB.assigned_keeper = 'Zoe Bloggs'
+        assert encB.assigned_keeper == 'Zoe Bloggs'
+
+    def test_set_assigned_vet(self, encA, encB):
+        encA.assigned_vet = 'Joe Bloggs'
+        assert encA.assigned_vet == 'Joe Bloggs'
+        encB.assigned_vet = 'Zoe Bloggs'
+        assert encB.assigned_vet == 'Zoe Bloggs'
+
+
 # def test_report_status():
 #     """
 #     Direct tests for the Enclosure class for reporting enclosure status based on cleanliness level.
