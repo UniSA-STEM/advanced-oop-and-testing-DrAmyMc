@@ -1,21 +1,32 @@
 """
 File: staff.py
-Description: Abstract 'Staff' class and its concrete subclasses, for use in a Zoo.
+Description: 'Staff' parent class, for use in a Zoo.
 Author: Amellia (Amy) McCormack
 ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 """
 
+from datetime import datetime
 from enclosure import Enclosure
 from healthrecord import HealthRecord
 
 
 class Staff:
     """
-    Represents an employee at the zoo. Subclasses exist for specialised employee types.
+    Represents an employee at the zoo. Subclasses exist for specialised employee types, such as
+    zookeeper and veterinarian.
+
+    Attributes:
+        staff_id (int): The ID of the employee at the zoo.
+        first_name (str): The employee's first name.
+        last_name (str): The employee's last name.
+        date_hired (date): The date the employee was hired.
+        role (str): The role that the employee has been hired to fill.
+        responsibilities (list): List of the employee's responsibilities.
+        assigned_enclosures (list): List of enclosure's assigned to the employee.
     """
-    def __init__(self, staff_id, first_name, last_name, year_hired):
+    def __init__(self, staff_id, first_name, last_name, date_hired):
         """
         Initialises a new Staff instance.
 
@@ -23,20 +34,12 @@ class Staff:
             staff_id (int): The ID of the employee at the zoo.
             first_name (str): The employee's first name.
             last_name (str): The employee's last name.
-            year_hired (int): The year the employee was hired.
-
-        Attributes:
-            __staff_id (int): The ID of the employee at the zoo.
-            __first_name (str): The employee's first name.
-            __last_name (str): The employee's last name.
-            __year_hired (int): The year the employee was hired.
-            __role (str): The role that the employee has been hired to fill.
-            __responsibilities (list): List of the employee's responsibilities.
+            date_hired (str): The date the employee was hired dd/mm/yyyy.
         """
-        self.staff_id = staff_id                #Utilises the setter for validation of new instances
-        self.first_name = first_name            #Utilises the setter for validation of new instances
-        self.last_name = last_name              #Utilises the setter for validation of new instances
-        self.year_hired = year_hired            #Utilises the setter for validation of new instances
+        self.staff_id = staff_id
+        self.first_name = first_name
+        self.last_name = last_name
+        self.date_hired = date_hired
         self.__role = self.__class__.__name__   #Utilises the name of the class to label the role
         self._responsibilities = []
         self.__assigned_enclosures = []
@@ -57,9 +60,9 @@ class Staff:
         """Returns the employee's last name."""
         return self.__last_name
 
-    def get_year_hired(self)->int:
-        """Returns the year the employee was hired ."""
-        return self.__year_hired
+    def get_date_hired(self)->datetime:
+        """Returns the date the employee was hired ."""
+        return self.__date_hired
 
     def get_role(self)->str:
         """Returns the employee's role."""
@@ -80,14 +83,14 @@ class Staff:
     def set_staff_id(self, staff_id):
         """
         Sets the staff id number, ensuring it is a valid id number.
-        Args: staff_id (int): The staff id number.
+        Args: staff_id (int): The staff id number of 6 digits.
         """
         MIN = 100000
         MAX = 999999
         if isinstance(staff_id, int) and MIN <= staff_id <= MAX:
             self.__staff_id = staff_id
         else:
-            print(f"Invalid staff id number. Please enter an integer between {MIN_LEVEL} and {MAX_LEVEL}.")
+            raise ValueError(f"Invalid staff id number. Please enter an integer between {MIN} and {MAX}.")
 
     def set_first_name(self, first_name):
         """
@@ -98,7 +101,7 @@ class Staff:
         if isinstance(first_name, str) and len(first_name) >= MIN_LENGTH:
             self.__first_name = first_name
         else:
-            print(f"Invalid employee first name. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid employee first name. Please enter text of at least {MIN_LENGTH} characters.")
 
     def set_last_name(self, last_name):
         """
@@ -109,19 +112,17 @@ class Staff:
         if isinstance(last_name, str) and len(last_name) >= MIN_LENGTH:
             self.__last_name = last_name
         else:
-            print(f"Invalid employee last name. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid employee last name. Please enter text of at least {MIN_LENGTH} characters.")
 
-    def set_year_hired(self, year_hired):
+    def set_date_hired(self, date_hired):
         """
-        Updates the year hired, ensuring it remains within a valid range.
-        Args: year_hired (int): The year hired.
+        Set the date the employee was hired in date format.
+        Args: date_hired (str): The date the employee was hired as a string (dd/mm/yyyy)..
         """
-        MIN_YEAR = 2010
-        MAX_YEAR = 2050
-        if isinstance(year_hired, int) and MIN_YEAR <= year_hired <= MAX_YEAR:
-            self.__year_hired = year_hired
-        else:
-            print(f"Please enter a valid year between {MIN_YEAR} and {MAX_YEAR}.")
+        try:
+            self.__date_hired = datetime.strptime(date_hired, "%d/%m/%Y").date()
+        except:
+            raise ValueError(f"Invalid date reported. Must be in format dd/mm/yyyy.")
 
     def set_role(self, role):
         """
@@ -132,7 +133,7 @@ class Staff:
         if isinstance(role, str) and len(role) >= MIN_LENGTH:
             self.__role = role
         else:
-            print(f"Invalid employee role. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid employee role. Please enter text of at least {MIN_LENGTH} characters.")
 
     # --------------------
     # Property definitions
@@ -141,7 +142,7 @@ class Staff:
     staff_id = property(get_staff_id, set_staff_id)
     first_name = property(get_first_name, set_first_name)
     last_name = property(get_last_name, set_last_name)
-    year_hired = property(get_year_hired, set_year_hired)
+    date_hired = property(get_date_hired, set_date_hired)
     role = property(get_role, set_role)
     responsibilities = property(get_responsibilities)
     assigned_enclosures = property(get_assigned_enclosures)
@@ -150,34 +151,26 @@ class Staff:
     # Behavioural methods
     # -------------------
 
-    def __str__(self):
-        """
-        Returns a formatted string containing the employee's details.
-        Returns: str: The name, year hired, and role.
-        """
-        try:
-            responsibilities_str = ""
-            assigned_enclosures_str = ""
-            if self.responsibilities != []:
-                responsibilities_str = 'Responsibilities:\n'
-                for responsibility in self.responsibilities:
-                    responsibilities_str += f"   {responsibility}\n"
-            if self.assigned_enclosures != []:
-                assigned_enclosures_str = 'Assigned Enclosures:\n'
-                for enclosure in self.assigned_enclosures:
-                    assigned_enclosures_str += "   {enclosure}\n"
-            return (f"{self.first_name} {self.last_name} was hired in {self.year_hired} in the role of {self.role}.\n"
-                    + responsibilities_str + assigned_enclosures_str)
-        except:
-            return f"Invalid object.\n"
-
-    # -------------------
-    # Behavioural methods
-    # -------------------
-
     def assign_enclosure(self, enclosure):
         if isinstance(enclosure, Enclosure):
             self.__assigned_enclosures.append(enclosure)
+
+    def __str__(self):
+        """
+        Returns a formatted string containing the employee's details.
+        Returns: str: The staff ID, name, date hired, and role.
+        """
+        details = [f"{self.first_name} {self.last_name} was hired on {self.date_hired} in the role of {self.role}."]
+        if self.responsibilities != []:
+            details.append('---Responsibilities---')
+            for responsibility in self.responsibilities:
+                details.append(responsibility)
+        if self.assigned_enclosures != []:
+            details.append('---Assigned Enclosures---')
+            for enclosure in self.assigned_enclosures:
+                details.append(enclosure)
+        details.append("")
+        return '\n'.join(details)
 
 
 class Veterinarian(Staff):

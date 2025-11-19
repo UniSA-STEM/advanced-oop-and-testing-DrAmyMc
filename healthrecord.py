@@ -19,7 +19,7 @@ class HealthRecord:
     Attributes:
         issue_type (str): The category of issue being reported.
         severity_level (int): The severity level from 0-3 (Negligible, Minor, Moderate, Severe).
-        date_reported (str): The date of the initial report.
+        date_reported (date): The date of the initial report.
         description (str): Description of the health issue.
         treatment_plan = (list): Treatment plan and notes, including subsequent updates.
     """
@@ -57,7 +57,7 @@ class HealthRecord:
         """Returns the severity level of the health issue."""
         return self.__severity_level
 
-    def get_date_reported(self)->str:
+    def get_date_reported(self)->datetime:
         """Returns the date that the health issue was reported."""
         return self.__date_reported
 
