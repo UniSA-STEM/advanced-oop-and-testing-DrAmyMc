@@ -161,9 +161,11 @@ class Staff:
     # Behavioural methods
     # -------------------
 
-    def assign_enclosure(self, enclosure):
+    def add_enclosure(self, enclosure):
         if isinstance(enclosure, Enclosure):
-            self.__assigned_enclosures.append(enclosure)
+            self.assigned_enclosures.append(enclosure)
+        else:
+            raise ValueError(f"This is not an enclosure. Cannot assign to staff.")
 
     def __str__(self):
         """

@@ -154,29 +154,86 @@ class Zoo:
         else:
             raise ValueError(f"Staff with staff id {staff_id} does not exist.")
 
-    def assign_animal(self, animal_name, species, enclosure_name):
+    def assign_animal_to_enclosure(self, animal_name, species, enclosure_name):
         animal = self.lookup_animal(animal_name, species)
         enclosure = self.lookup_enclosure(enclosure_name)
         if animal is None:
             raise ValueError(f"{animal_name} the {species} does not exist.")
         elif enclosure is None:
             raise ValueError(f"Enclosure with name {enclosure_name} does not exist.")
+        elif any(record.is_current for record in animal.health_record):
+            raise ValueError(f"Cannot move this animal while under treatment for a health condition.")
         else:
             enclosure.add_animal(animal)
             # Removes from any other enclosure currently assigned to
             for other in self.enclosures:
-                if animal in other.animals_housed:
+                if other is not enclosure and animal in other.animals_housed:
                     other.animals_housed.remove(animal)
             return f"{animal.name} the {animal.species} assigned to {enclosure.name} enclosure."
 
+    def assign_enclosure_to_staff(self, enclosure_name, staff_id):
+        enclosure = self.lookup_enclosure(enclosure_name)
+        staff = self.lookup_staff(staff_id)
+        if enclosure is None:
+            raise ValueError(f"Enclosure with name {enclosure_name} does not exist.")
+        elif staff is None:
+            raise ValueError(f"Staff with staff id {staff_id} does not exist.")
+        else:
+            staff.add_enclosure(enclosure)
+            # Removes enclosure from any other staff members it is currently assigned to
+            for other_staff in self.staff:
+                if other_staff is not staff and staff.role == other_staff.role:
+                    if enclosure in other_staff.assigned_enclosures:
+                        other_staff.assigned_enclosures.remove(enclosure)
+            # Updates assignment in enclosure
+            if staff.role == 'Zookeeper':
+                enclosure.assigned_keeper = f"{staff.first_name} {staff.last_name}"
+            if staff.role == 'Veterinarian':
+                enclosure.assigned_vet = f"{staff.first_name} {staff.last_name}"
+            return (f"{staff.first_name} {staff.last_name} is now the assigned {staff.role} for "
+                    f"the {enclosure.name} enclosure.")
+
     def schedule_feeding(self):
-        pass
+        """
+        Schedules feeding of all enclosures in the zoo by their assigned zookeepers.
+        Calls each Zookeeper's feed_animals method for each assigned enclosure.
+        Returns: a summary of feeding actions.
+        """
+        details = []
+        for staff in self.staff:
+            if isinstance(staff, Zookeeper):
+                for enclosure in staff.assigned_enclosures:
+                    str = staff.feed_animals(enclosure.name)
+                    details.append(str)
+        return '\n'.join(details)
 
     def schedule_cleaning(self):
-        pass
+        """
+        Schedules cleaning of all enclosures in the zoo by their assigned zookeepers.
+        Calls each Zookeeper's clean_enclosure method for each assigned enclosure.
+        Returns: a summary of cleaning actions.
+        """
+        details = []
+        for staff in self.staff:
+            if isinstance(staff, Zookeeper):
+                for enclosure in staff.assigned_enclosures:
+                    str = staff.clean_enclosure(enclosure.name)
+                    details.append(str)
+        return '\n'.join(details)
 
     def schedule_health_check(self):
-        pass
+        """
+        Schedules health checks of all enclosures in the zoo by their assigned veterinarians.
+        Calls each Veterinarian's conduct_health_checks method for each assigned enclosure.
+        Returns: a summary of health check actions.
+        """
+        details = []
+        for staff in self.staff:
+            if isinstance(staff, Veterinarian):
+                for enclosure in staff.assigned_enclosures:
+                    str = staff.conduct_health_checks(enclosure.name)
+                    details.append(str)
+        return '\n'.join(details)
 
     def list_animals_by_species(self):
         pass
