@@ -7,6 +7,7 @@ Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 """
 
+from animal import Animal
 from mammal import Mammal
 from bird import Bird
 from reptile import Reptile
@@ -27,9 +28,9 @@ class Zoo:
         Args: name (str): The name of the zoo.
         """
         self.name = name
-        self.__animals = []
-        self.__enclosures = []
-        self.__staff = []
+        self.__animals = set()
+        self.__enclosures = set()
+        self.__staff = set()
 
     # --------------
     # Getter methods
@@ -76,38 +77,97 @@ class Zoo:
     staff = property(get_staff)
 
     # -------------------
+    # Helper methods
+    # -------------------
+
+    def lookup_animal(self, animal_name, species)->Animal | None:
+        target = None
+        for animal in self.animals:
+            if animal.name == animal_name and animal.species == species:
+                target = animal
+        return target
+
+    def lookup_enclosure(self, enclosure_name)->Enclosure | None:
+        target = None
+        for enclosure in self.enclosures:
+            if enclosure.name == enclosure_name:
+                target = enclosure
+        return target
+
+    def lookup_staff(self, staff_id)->Staff | None:
+        target = None
+        for staff in self.staff:
+            if staff.staff_id == staff_id:
+                target = staff
+        return target
+
+    # -------------------
     # Behavioural methods
     # -------------------
 
-    def add_animal(self, animal):
-        self.__animals.add(animal)
-
-    def remove_animal(self, animal):
-        pass
-
-    def add_enclosure(self, enclosure):
-        self.__enclosures.add(enclosure)
-
-    def remove_enclosure(self):
-        pass
-
-    def add_staff(self, staff):
-        self.__staff.add(staff)
-
-# TODO: Fix name parameter for removal
-    def remove_staff(self, staff_name):
-        if staff_name in self.staff.name:
-            self.staff.remove(staff_name)
-
-# TODO: Fix animal / enclosure parameters
-    def assign_animal(self, animal, enclosure):
-        if enclosure.animal_type is None:
-            enclosure.animal_type(animal.species)
-            enclosure.add_animal(animal)
-        elif enclosure.animal_type == animal.species:
-            enclosure.add_animal(animal)
+    def add_animal(self, animal)->str:
+        if isinstance(animal, Animal):
+            self.__animals.add(animal)
+            return f"{animal.name} the {animal.species} added to the zoo."
         else:
-            print(f"Cannot add to this enclosure - must be of species {enclosure.animal_type}.")
+            raise ValueError(f"Invalid object - must be an Animal object to add to animals.")
+
+    def remove_animal(self, animal_name, species)->str:
+        target = self.lookup_animal(animal_name, species)
+        if target:
+            self.animals.remove(target)
+            # Also remove from any enclosure
+            for enclosure in self.enclosures:
+                if target in enclosure.animals_housed:
+                    enclosure.animals_housed.remove(target)
+            return f"{target.name} the {target.species} removed from the zoo."
+        else:
+            raise ValueError(f"{animal_name} the {species} does not exist.")
+
+    def add_enclosure(self, enclosure)->str:
+        if isinstance(enclosure, Enclosure):
+            self.__enclosures.add(enclosure)
+            return f"{enclosure.name} enclosure added to the zoo."
+        else:
+            raise ValueError(f"Invalid object - must be an Enclosure object to add to enclosures.")
+
+    def remove_enclosure(self, enclosure_name)->str:
+        target = self.lookup_enclosure(enclosure_name)
+        if target:
+            self.enclosures.remove(target)
+            return f"{target.name} enclosure removed from the zoo."
+        else:
+            raise ValueError(f"Enclosure with name {enclosure_name} does not exist.")
+
+    def add_staff(self, staff)->str:
+        if isinstance(staff, Staff):
+            self.__staff.add(staff)
+            return f"Staff member {staff.first_name} {staff.last_name} added to the zoo."
+        else:
+            raise ValueError(f"Invalid object - must be a Staff object to add to staff.")
+
+    def remove_staff(self, staff_id)->str:
+        target = self.lookup_staff(staff_id)
+        if target:
+            self.staff.remove(target)
+            return f"Staff member {target.first_name} {target.last_name} removed from the zoo."
+        else:
+            raise ValueError(f"Staff with staff id {staff_id} does not exist.")
+
+    def assign_animal(self, animal_name, species, enclosure_name):
+        animal = self.lookup_animal(animal_name, species)
+        enclosure = self.lookup_enclosure(enclosure_name)
+        if animal is None:
+            raise ValueError(f"{animal_name} the {species} does not exist.")
+        elif enclosure is None:
+            raise ValueError(f"Enclosure with name {enclosure_name} does not exist.")
+        else:
+            enclosure.add_animal(animal)
+            # Removes from any other enclosure currently assigned to
+            for other in self.enclosures:
+                if animal in other.animals_housed:
+                    other.animals_housed.remove(animal)
+            return f"{animal.name} the {animal.species} assigned to {enclosure.name} enclosure."
 
     def schedule_feeding(self):
         pass

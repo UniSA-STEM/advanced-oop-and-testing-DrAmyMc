@@ -233,33 +233,33 @@ class Enclosure:
     def add_animal(self, animal):
         """
         Adds an animal to the enclosure.
-
-        Args:
-            animal (Animal): Adds an animal to the list of animals housed in the enclosure.
-                             Must be Animal class.
+        Args: animal (Animal): Adds an animal to the list of animals housed in the enclosure. Must be Animal class.
         """
         # Ensures only animal objects can be added to enclosure
         if not isinstance(animal, Animal):
-            print(f"This is not an animal. Cannot add to enclosure.")
+            raise ValueError(f"This is not an animal. Cannot add to enclosure.")
         # Ensures environmental type of enclosure is suitable for species being added
         elif animal.environment != self.type:
-            print(f"Cannot add {animal.species} to this {self.type} enclosure - must be in {animal.environment} enclosure.")
+            raise ValueError(f"Cannot add {animal.species} to this {self.type} enclosure - must be in {animal.environment} enclosure.")
         # Ensures enclosure is restricted to a single type of animal as per assignment specification
         elif self.animal_type is not None and self.animal_type != animal.species:
-            print(f"Cannot add {animal.species} to this {self.animal_type} enclosure - must be same species.")
-        # Ensures enclosure has enough space before successfully adding animal
+            raise ValueError(f"Cannot add {animal.species} to this {self.animal_type} enclosure - must be same species.")
+        # Ensures enclosure has enough space before successfully adding animal when enclosure emptu.
         elif self.animal_type is None and self.size < animal.space:
-            print(f"Cannot add {animal.species} - you need a bigger enclosure of at least {animal.size}m\u00b2.")
+            raise ValueError(f"Cannot add {animal.species} - you need a bigger enclosure of at least {animal.size}m\u00b2.")
+        # Adds animal to empty enclosure of appropriate size and type.
         elif self.animal_type is None and self.size >= animal.space:
             self.__animals_housed.append(animal)
             # Sets animal type of enclosure when first species successfully added
             self.animal_type = animal.species
-            print(f"You have successfully added a {animal.species}. This is now a {self.animal_type} enclosure.")
+            return f"You have successfully added a {animal.species}. This is now a {self.animal_type} enclosure."
+        # Ensures enclosure has enough space before adding animal when animals already present.
         elif len(self.animals_housed) >= self.calculate_max_animals():
-            print(f"Cannot add {animal.species} - the enclosure is already full of {animal.species}s.")
+            raise ValueError(f"Cannot add {animal.species} - the enclosure is already full of {animal.species}s.")
+        # Adds animal to enclosure of appropriate size and type with same species
         else:
             self.__animals_housed.append(animal)
-            print(f"You have successfully added another {animal.species} to this enclosure.")
+            return(f"You have successfully added another {animal.species} to this enclosure.")
 
     def list_animals(self)-> str:
         """Returns a list of animals housed in enclosure."""

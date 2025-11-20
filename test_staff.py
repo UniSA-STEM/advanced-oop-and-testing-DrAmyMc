@@ -31,10 +31,10 @@ class TestStaff:
         with pytest.raises(ValueError):
             # Invalid staff id, first name, last name, date hired, and missing argument
             Staff(12345, 'Joe', 'Blogg', '12/11/2025')
-            Staff(123456, 'J', 'Blogg', '12/11/2025')
-            Staff(123456, 'Joe', 'B', '12/11/2025')
-            Staff(123456, 'Joe', 'Blogg', '12/11')
-            Staff(123456, 'Joe', 'Blogg')
+            Staff(123458, 'J', 'Blogg', '12/11/2025')
+            Staff(123459, 'Joe', 'B', '12/11/2025')
+            Staff(123452, 'Joe', 'Blogg', '12/11')
+            Staff(123451, 'Joe', 'Blogg')
 
     # --- Testing getters ---
 

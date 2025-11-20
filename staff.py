@@ -25,6 +25,7 @@ class Staff:
         responsibilities (list): List of the employee's responsibilities.
         assigned_enclosures (list): List of enclosure's assigned to the employee.
     """
+
     def __init__(self, staff_id, first_name, last_name, date_hired):
         """
         Initialises a new Staff instance.
