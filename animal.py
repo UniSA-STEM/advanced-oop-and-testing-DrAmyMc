@@ -9,6 +9,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 from abc import ABC, abstractmethod
 from species import species_dict, loc_dict
+from healthrecord import HealthRecord
 
 
 class Animal(ABC):
@@ -185,6 +186,13 @@ class Animal(ABC):
     # -------------------
     # Behavioural methods
     # -------------------
+
+    def add_health_record(self, record):
+        """Adds a health record to the animals health record history."""
+        if isinstance(record, HealthRecord):
+            self.__health_record.append(record)
+        else:
+            raise ValueError("Not a health record object.")
 
     def __str__(self) -> str:
         """

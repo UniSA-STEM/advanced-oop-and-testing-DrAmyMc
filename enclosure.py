@@ -183,7 +183,7 @@ class Enclosure:
     # Helper methods
     # --------------
 
-    def calculate_max_animals(self) -> int:
+    def calculate_max_animals(self) -> int | None:
         """
         Calculates maximum number of animals that can be held based on enclosure size
         and space requirements for the species housed.
@@ -197,6 +197,29 @@ class Enclosure:
     # -------------------
     # Behavioural methods
     # -------------------
+
+    def report_status(self)->str:
+        """Returns a cleanliness status message based on current cleanliness level."""
+        if self.cleanliness_level == 0:
+            return "This enclosure is filthy. Immediate action is required."
+        elif self.cleanliness_level == 1:
+            return "This enclosure is very dirty. It should be cleaned urgently."
+        elif self.cleanliness_level == 2:
+            return "This enclosure is now dirty. It should be cleaned now."
+        elif self.cleanliness_level == 3:
+            return "This enclosure is becoming dirty. It should be cleaned soon."
+        elif self.cleanliness_level == 4:
+            return "This enclosure is quite clean. It does not need cleaning yet."
+        else:
+            return "This enclosure is pristine. It has just been cleaned."
+
+    def become_poopy(self)->str:
+        if self.animal_type is None:
+            return f"{self.name} has no animals in the enclosure to poop in it."
+        else:
+            if self.cleanliness_level > 0:
+                self.cleanliness_level -= 1
+            return f"{self.name} is becoming dirtier as the {self.animal_type}s poop. " + self.report_status()
 
     def add_animal(self, animal):
         """
@@ -229,49 +252,35 @@ class Enclosure:
             self.__animals_housed.append(animal)
             print(f"You have successfully added another {animal.species} to this enclosure.")
 
-    def list_animals(self):
-        """Prints a list of animals housed in enclosure."""
+    def list_animals(self)-> str:
+        """Returns a list of animals housed in enclosure."""
         if self.animals_housed == []:
             animals_housed_str = f"{self.name} is currently empty.\n"
         else:
             animals_housed_str = f"---Animals Housed in {self.name}---\n"
             for animal in self.animals_housed:
                 animals_housed_str += (f"{animal.name} the {animal.species}, aged {animal.age} years\n")
-        print(animals_housed_str)
+        return animals_housed_str
 
-    def report_status(self):
-        """Prints a cleanliness status message based on current cleanliness level."""
-        if self.cleanliness_level == 0:
-            print("This enclosure is filthy. Immediate action is required.")
-        elif self.cleanliness_level == 1:
-            print("This enclosure is very dirty. It should be cleaned urgently.")
-        elif self.cleanliness_level == 2:
-            print("This enclosure is now dirty. It should be cleaned now.")
-        elif self.cleanliness_level == 3:
-            print("This enclosure is becoming dirty. It should be cleaned soon.")
-        elif self.cleanliness_level == 4:
-            print("This enclosure is quite clean. It does not need cleaning yet.")
-        else:
-            print("This enclosure is pristine. It has just been cleaned.")
-
-    def check_capacity(self):
-        """Prints a capacity message based on current capacity of enclosure."""
+    def check_capacity(self)->str:
+        """Returns a capacity message based on current capacity of enclosure."""
         if self.animal_type is None:
-            print(f"This enclosure is currently empty. It has {self.size}m\u00b2 of space available.")
+            return f"This enclosure is currently empty. It has {self.size}m\u00b2 of space available."
         else:
             # Calculates current, maximum, and available animal numbers
             current_animals = len(self.animals_housed)
             max_animals = self.calculate_max_animals()
             space_available = max_animals - current_animals
-            # Displays current animal numbers
-            print(f"This enclosure currently houses {current_animals} {self.animal_type}s.")
-            # Displays custom capacity message based on whether space is available or not
+            # Message re: current animal numbers
+            current = f"This enclosure currently houses {current_animals} {self.animal_type}s. "
+            # Custom capacity message based on whether space is available or not
             if space_available > 0:
-                print(f"It has space available for {space_available} more {self.animal_type}s.")
+                available = f"It has space available for {space_available} more {self.animal_type}s."
             else:
-                print("It is at maximum capacity and has no more space available.")
+                available = "It is at maximum capacity and has no more space available."
+            return current + available
 
-    def __str__(self):
+    def __str__(self)->str:
         """
         Returns a formatted string containing the enclosure's details.
         Returns: str: The enclosure name, type, size, cleanliness level, and animal species housed.

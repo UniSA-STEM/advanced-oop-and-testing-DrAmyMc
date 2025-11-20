@@ -10,6 +10,13 @@ This is my own work as defined by the University's Academic Integrity Policy.
 import pytest
 from enclosure import Enclosure
 
+# Dummy class for testing enclosure
+class DummyAnimal:
+    def __init__(self, name, species, age):
+        self.name = name
+        self.species = species
+        self.age = age
+
 
 class TestEnclosure:
     """Testing suite for the Enclosure class."""
@@ -129,8 +136,8 @@ class TestEnclosure:
             encA.cleanliness_level = 3.5 # float
             encB.cleanliness_level = 'dirty'    # str
 
-    def test_set_on_displau(self, encA, encB):
-        """On displa setter should only accept bool values."""
+    def test_set_on_display(self, encA, encB):
+        """On display setter should only accept bool values."""
         encA.on_display = True
         assert encA.on_display is True
         encB.on_display = True
@@ -163,76 +170,65 @@ class TestEnclosure:
         encB.assigned_vet = 'Zoe Bloggs'
         assert encB.assigned_vet == 'Zoe Bloggs'
 
+    # --- Testing helper methods ---
 
-# def test_report_status():
-#     """
-#     Direct tests for the Enclosure class for reporting enclosure status based on cleanliness level.
-#
-#     Tests:
-#         - Creation of an enclosure instance.
-#         - Manually setting cleanliness level.
-#         - Reporting status corresponding to cleanliness.
-#     """
-#     print("\n=== TEST: Report Enclosure Status ===\n")
-#
-#     # --- Create and display valid enclosure ---
-#     enc = Enclosure("Reptile House", "Terrarium", 20)
-#     print(enc)
-#
-#     # --- Report enclosures statuses for various cleanliness levels ---
-#     enc.report_status()
-#     enc.cleanliness_level = 4
-#     enc.report_status()
-#     enc.cleanliness_level = 3
-#     enc.report_status()
-#     enc.cleanliness_level = 2
-#     enc.report_status()
-#     enc.cleanliness_level = 1
-#     enc.report_status()
-#     enc.cleanliness_level = 0
-#     enc.report_status()
-#
-# def test_add_animals():
-#     """
-#     Direct tests for the Enclosure class for add_animal.
-#
-#     Tests:
-#         - Creating an empty enclosure with no animals.
-#         - Adding valid animals and attempting to add invalid animals to enclosure.
-#     """
-#     print("\n=== TEST: Adding Animal to Enclosure ===\n")
-#
-#     # --- Create and display valid enclosure and animals ---
-#     enc = Enclosure("Test Enclosure", "Aquatic", 30)
-#     print(enc)
-#     person = Veterinarian("Test Vet", 2025)
-#     bird1 = Bird("Percy1", 2, "Pelican")
-#     bird2 = Bird("Percy2", 2, "Pelican")
-#     bird3 = Bird("Percy3", 2, "Pelican")
-#     bird4 = Bird("Percy4", 2, "Pelican")
-#     cat = Mammal("Puddy", 3, "Lion")
-#     otter = Mammal("Otty", 1, "Otter")
-#
-#     # --- Add valid and attempt to add invalid selections to enclosure --
-#     enc.add_animal(person)      # Not a valid animal object
-#     enc.add_animal(cat)         # Not an environmental match
-#     enc.add_animal(bird1)       # Valid addition, sets enclosure to Pelican
-#     enc.add_animal(otter)       # Not the correct species
-#     enc.add_animal(bird2)       # Valid addition
-#     enc.add_animal(bird3)       # Valid addition
-#     enc.add_animal(bird4)       # No more space in enclosure
-#     print(enc)                  # Enclosure will now contain 3 pelicans
+    def test_calculate_max_animals(self, encB):
+        assert encB.calculate_max_animals() is None
+        encB.animal_type = 'Pelican'
+        assert encB.calculate_max_animals() == 3
+        encB.size = 25
+        assert encB.calculate_max_animals() == 2
+        encB.size = 9
+        assert encB.calculate_max_animals() == 0
+
+    # --- Testing behavioural methods ---
+
+    def test_report_status(self, encA):
+        encA.report_status() == 'This enclosure is pristine. It has just been cleaned.'
+        encA.cleanliness_level = 4
+        encA.report_status() == 'This enclosure is quite clean. It does not need cleaning yet.'
+        encA.cleanliness_level = 3
+        encA.report_status() == 'This enclosure is becoming dirty. It should be cleaned soon.'
+        encA.cleanliness_level = 2
+        encA.report_status() == 'This enclosure is now dirty. It should be cleaned now.'
+        encA.cleanliness_level = 1
+        encA.report_status() == 'This enclosure is very dirty. It should be cleaned urgently.'
+        encA.cleanliness_level = 0
+        encA.report_status() == 'This enclosure is filthy. Immediate action is required.'
+
+    def test_become_poopy_when_empty(self, encB):
+        encB.become_poopy()
+        assert encB.cleanliness_level == 5  # Cleanliness level will not reduce when no animals present
+
+    def test_become_poopy_with_animals(self, encB):
+        encB.animal_type = 'Pelican'
+        encB.become_poopy()
+        assert encB.cleanliness_level == 4
+        encB.become_poopy()
+        assert encB.cleanliness_level == 3
+        encB.become_poopy()
+        assert encB.cleanliness_level == 2
+        encB.become_poopy()
+        assert encB.cleanliness_level == 1
+        encB.become_poopy()
+        assert encB.cleanliness_level == 0
+        encB.become_poopy()
+        assert encB.cleanliness_level == 0  # Cleanliness cannot reduce below 0
+
+    def test_list_animals_when_empty(self, encA, encB):
+        assert encA.list_animals() == 'Reptile House is currently empty.\n'
+        assert encB.list_animals() == 'Pelican Palace is currently empty.\n'
+
+    # def test_list_animals_with_animals(self, encB):
+    #     a1 = DummyAnimal("Pelly", "Pelican", 5)
+    #     a2 = DummyAnimal("Percy", "Pelican", 2)
+    #     a3 = DummyAnimal("Pedro", "Pelican", 1)
+    #     encB.animals_housed = [a1, a2, a3]  THIS WON"T WORK ADD ANIMALS FIRST NOT A SETTER
+    #     s = encB.list_animals()
+    #     assert 'Pelican Palace' in s
+
 #
 # def test_check_capacity_list_animals():
-#     """
-#         Direct tests for the Enclosure class for list_animals and check_capacity.
-#
-#         Tests:
-#             - Creating an empty enclosure with no animals listed in list_animals.
-#             - Adding animals with updated list_animals and check_capacity displayed.
-#         """
-#     print("\n=== TEST: Checking Enclosure Capacity and Animal Listing ===\n")
-#
 #     # --- Create and display empty enclosure ---
 #     enc = Enclosure("Test Enclosure", "Aquatic", 30)
 #     print(enc)
@@ -254,3 +250,25 @@ class TestEnclosure:
 #     enc.add_animal(bird3)
 #     enc.list_animals()
 #     enc.check_capacity()
+#
+# def test_add_animals():
+#     # --- Create and display valid enclosure and animals ---
+#     enc = Enclosure("Test Enclosure", "Aquatic", 30)
+#     print(enc)
+#     person = Veterinarian("Test Vet", 2025)
+#     bird1 = Bird("Percy1", 2, "Pelican")
+#     bird2 = Bird("Percy2", 2, "Pelican")
+#     bird3 = Bird("Percy3", 2, "Pelican")
+#     bird4 = Bird("Percy4", 2, "Pelican")
+#     cat = Mammal("Puddy", 3, "Lion")
+#     otter = Mammal("Otty", 1, "Otter")
+#
+#     # --- Add valid and attempt to add invalid selections to enclosure --
+#     enc.add_animal(person)      # Not a valid animal object
+#     enc.add_animal(cat)         # Not an environmental match
+#     enc.add_animal(bird1)       # Valid addition, sets enclosure to Pelican
+#     enc.add_animal(otter)       # Not the correct species
+#     enc.add_animal(bird2)       # Valid addition
+#     enc.add_animal(bird3)       # Valid addition
+#     enc.add_animal(bird4)       # No more space in enclosure
+#     print(enc)                  # Enclosure will now contain 3 pelicans

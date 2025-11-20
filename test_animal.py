@@ -9,6 +9,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 import pytest
 from animal import Animal
+from healthrecord import HealthRecord
 
 
 class DummyAnimal(Animal):
@@ -179,6 +180,16 @@ class TestAnimal:
     def test_move(self, animalA, animalB):
         assert animalA.move() == 'Dummy move'
         assert animalB.move() == 'Dummy move'
+
+    def test_add_health_record(self, animalA):
+        recordA = HealthRecord('Injury', 2, '12/11/2025', 'Laceration on'
+                                ' front leg', 'Clean and bandage wound.')
+        animalA.add_health_record(recordA)
+        assert animalA.health_record == [recordA]
+        recordB = HealthRecord('Behavioural Issue', 1, '8/9/2024','Lethargy',
+                               'Monitor for signs of fever.')
+        animalA.add_health_record(recordB)
+        assert animalA.health_record == [recordA, recordB]
 
     def test_string_display(self, animalA):
         s = str(animalA)
