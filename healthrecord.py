@@ -9,6 +9,8 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 from datetime import datetime
 
+from veterinarian import Veterinarian
+
 
 class HealthRecord:
     """
@@ -23,13 +25,13 @@ class HealthRecord:
         description (str): Description of the health issue.
         treatment_plan (list): Treatment plan and notes, including subsequent updates.
         is_current (bool): If the issue is current.
-        treating_vet (str): The vet treating the animal
+        vet (object): The vet treating the animal
     """
 
     # Three categories for health issues recorded
     ISSUE_TYPE = ['Injury', 'Illness', 'Behavioural Issue']
 
-    def __init__(self, issue_type, severity_level, date_reported, description, treatment_plan, vet_name):
+    def __init__(self, issue_type, severity_level, date_reported, description, initial_plan, vet):
         """
         Initialises a new Health Record instance.
 
@@ -38,16 +40,16 @@ class HealthRecord:
             severity_level (int): The severity level from 0-3.
             date_reported (str): The date of the initial report.
             description (str): A description of the health issue
-            treatment_plan (str): The initial treatment plan/notes.
-            vet_name (str): The name of the treating vet.
+            initial_plan (str): The initial treatment plan/notes.
+            vet (object): The treating vet.
         """
         self.issue_type = issue_type
         self.severity_level = severity_level
         self.date_reported = date_reported
         self.description = description
-        self.treatment_plan = treatment_plan
+        self.treatment_plan = initial_plan
         self.is_current = True
-        self.treating_vet = vet_name
+        self.treating_vet = vet
 
     # --------------
     # Getter methods
@@ -77,9 +79,9 @@ class HealthRecord:
         """Returns whether the health issue is current (True) or resolved (False)."""
         return self.__is_current
 
-    def get_treating_vet(self)->str:
-        """Returns the name of the treating vet."""
-        return self.__treating_vet
+    def get_vet(self)->Veterinarian:
+        """Returns the treating vet."""
+        return self.__vet
 
     # --------------
     # Setter methods
@@ -129,15 +131,15 @@ class HealthRecord:
         else:
             raise ValueError(f"Invalid description. Please enter text of at least {MIN_LENGTH} characters.")
 
-    def set_treatment_plan(self, treatment_plan):
+    def set_treatment_plan(self, initial_plan):
         """
         Sets the initial treatment plan/notes.
         Args: treatment_plan (str): The treatment plan/notes for the health issue, ensuring only a string
              of a minimum length may be passed.
         """
         MIN_LENGTH = 6
-        if isinstance(treatment_plan, str) and len(treatment_plan) >= MIN_LENGTH:
-            self.__treatment_plan = [treatment_plan]
+        if isinstance(initial_plan, str) and len(initial_plan) >= MIN_LENGTH:
+            self.__treatment_plan = [initial_plan]
         else:
             raise ValueError(f"Invalid treatment plan. Please enter text of at least {MIN_LENGTH} characters.")
 
@@ -152,16 +154,15 @@ class HealthRecord:
             raise ValueError(f"Invalid current health status. Please enter either True (issue still current) or "
                   f"False (issue resolved).")
 
-    def set_treating_vet(self, vet_name):
+    def set_vet(self, vet):
         """
-        Sets the description of the health issue.
-        Args: description (str): Description of the health issue, with a string of min length.
+        Sets the treating veterinarian.
+        Args: vet (obj): The treating vet, must be an instance of Veterinarian.
         """
-        MIN_LENGTH = 5
-        if isinstance(vet_name, str) and len(vet_name) >= MIN_LENGTH:
-            self.__treating_vet = vet_name
+        if isinstance(vet, Veterinarian):
+            self.__vet = vet
         else:
-            raise ValueError(f"Invalid vet name. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid vet. Must be a veterinarian object to be assigned to animal treatment.")
 
     # --------------------
     # Property definitions
@@ -173,27 +174,27 @@ class HealthRecord:
     description = property(get_description, set_description)
     treatment_plan = property(get_treatment_plan, set_treatment_plan)
     is_current = property(get_is_current, set_is_current)
-    treating_vet = property(get_treating_vet, set_treating_vet)
+    vet = property(get_vet, set_vet)
 
     # -------------------
     # Behavioural methods
     # -------------------
 
-    def issue_resolved(self):
+    def mark_issue_resolved(self):
         """Marks the health issue as resolved."""
         self.is_current = False
 
-    def update_treatment_plan(self, treatment_plan):
+    def update_treatment_plan(self, treatment_note):
         """
         Updates the treatment plan with further notes.
-        Args: treatment_plan (str): The treatment plan/notes for the health issue, ensuring only a string
+        Args: treatment_note (str): The treatment note for the health issue, ensuring only a string
              of a minimum length may be passed.
         """
         MIN_LENGTH = 6
-        if isinstance(treatment_plan, str) and len(treatment_plan) >= MIN_LENGTH:
-            self.__treatment_plan.append(treatment_plan)
+        if isinstance(treatment_note, str) and len(treatment_note) >= MIN_LENGTH:
+            self.__treatment_plan.append(treatment_note)
         else:
-            raise ValueError(f"Invalid treatment plan. Please enter text of at least {MIN_LENGTH} characters.")
+            raise ValueError(f"Invalid treatment note. Please enter text of at least {MIN_LENGTH} characters.")
 
     def __str__(self):
         """

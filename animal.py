@@ -29,6 +29,7 @@ class Animal(ABC):
         environment (str): The environment requirement of the animal species.
         space (str): The amount of space required per animal of that animal species.
         health_record (list): List of health records for the animal.
+        on_display (bool): Whether an enclosure is on display to the public.
     """
 
     def __init__(self, name, age, is_female, species):
@@ -51,6 +52,7 @@ class Animal(ABC):
         self.__space = None  # Will be overridden when species is set
         self.species = species
         self.__health_record = []
+        self.__on_display = False
 
     # --------------
     # Getter methods
@@ -91,6 +93,10 @@ class Animal(ABC):
     def get_health_record(self) -> list:
         """Returns the list of health records for the animal."""
         return self.__health_record
+
+    def get_on_display(self) -> bool:
+        """Returns the animal's display status."""
+        return self.__on_display
 
     # --------------
     # Setter methods
@@ -145,6 +151,16 @@ class Animal(ABC):
         else:
             raise ValueError(f"{species} is not a valid species. Please enter a valid species only.")
 
+    def set_on_display(self, on_display):
+        """
+        Sets the display status of the animal.
+        Args: on_display (bool): True if on display, False if not. Must be boolean.
+        """
+        if isinstance(on_display, bool):
+            self.__on_display = on_display
+        else:
+            raise ValueError(f"Invalid status. Please enter True if on display or False if not currently on display.")
+
     # --------------------
     # Property definitions
     # --------------------
@@ -158,6 +174,7 @@ class Animal(ABC):
     environment = property(get_environment)
     space = property(get_space)
     health_record = property(get_health_record)
+    on_display = property(get_on_display, set_on_display)
 
     # --------------
     # Helper methods
@@ -183,16 +200,22 @@ class Animal(ABC):
         if self.species:
             return species_dict[self.species][loc_dict['space']]
 
-    # -------------------
-    # Behavioural methods
-    # -------------------
-
     def add_health_record(self, record):
         """Adds a health record to the animals health record history."""
         if isinstance(record, HealthRecord):
             self.__health_record.append(record)
         else:
             raise ValueError("Not a health record object.")
+
+    def lookup_current_record(self)->HealthRecord | None:
+        """Returns the current health record for the animal (if it exists)."""
+        for record in self.health_record:
+            if record.is_current:
+                return record
+
+    # -------------------
+    # Behavioural methods
+    # -------------------
 
     def __str__(self) -> str:
         """

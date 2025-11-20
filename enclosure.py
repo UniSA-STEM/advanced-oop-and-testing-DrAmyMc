@@ -20,9 +20,10 @@ class Enclosure:
         type (str): The envrionmental type of the enclosure.
         size (int): The size of the enclosure in square metres.
         cleanliness_level (int): The cleanliness of the enclosure from 0 (filthy) to 5 (pristine).
-        on_display (bool): Whether an enclosure is on display to the public.
         animal_type (str | None): The type of animal housed in the enclosure, None if empty.
-        animals_housed = (list[Animal]): A list of animal objects in the enclosure, initially empty.
+        animals_housed (list[Animal]): A list of animal objects in the enclosure, initially empty.
+        assigned_keeper (obj): The zookeeper assigned to the enclosure.
+        assigned_vet (obj): The vet assigned to the enclosure.
     """
 
     # List of the valid enclosure types
@@ -41,7 +42,6 @@ class Enclosure:
         self.type = type  # Utilises the setter for validation of new instances
         self.size = size  # Utilises the setter for validation of new instances
         self.__cleanliness_level = 5
-        self.__on_display = False
         self.__animal_type = None
         self.__animals_housed = []
         self.__assigned_keeper = None
@@ -67,10 +67,6 @@ class Enclosure:
         """Returns the enclosure's cleanliness level."""
         return self.__cleanliness_level
 
-    def get_on_display(self) -> bool:
-        """Returns the enclosure's display status."""
-        return self.__on_display
-
     def get_animal_type(self) -> str:
         """Returns the enclosure's animal type or None if empty."""
         return self.__animal_type
@@ -80,11 +76,11 @@ class Enclosure:
         return self.__animals_housed
 
     def get_assigned_keeper(self):
-        """Returns the name of the zookeeper assigned to the enclosure."""
+        """Returns the zookeeper assigned to the enclosure."""
         return self.__assigned_keeper
 
     def get_assigned_vet(self):
-        """Returns the name of the veterninarian assigned to the enclosure."""
+        """Returns the veterninarian assigned to the enclosure."""
         return self.__assigned_vet
 
     # --------------
@@ -137,16 +133,6 @@ class Enclosure:
         else:
             raise ValueError(f"Invalid cleanliness level. Please enter an integer between {MIN_LEVEL} and {MAX_LEVEL}.")
 
-    def set_on_display(self, on_display):
-        """
-        Sets the display status of the enclosure.
-        Args: on_display (bool): True if on display, False if not. Must be boolean.
-        """
-        if isinstance(on_display, bool):
-            self.__on_display = on_display
-        else:
-            raise ValueError(f"Invalid status. Please enter True if on display or False if not currently on display.")
-
     def set_animal_type(self, species):
         """
         Sets the species to be housed in the enclosure.
@@ -173,7 +159,6 @@ class Enclosure:
     type = property(get_type, set_type)
     size = property(get_size, set_size)
     cleanliness_level = property(get_cleanliness_level, set_cleanliness_level)
-    on_display = property(get_on_display, set_on_display)
     animal_type = property(get_animal_type, set_animal_type)
     animals_housed = property(get_animals_housed)
     assigned_keeper = property(get_assigned_keeper, set_assigned_keeper)
@@ -246,7 +231,7 @@ class Enclosure:
             raise ValueError(f"Cannot add {animal.species} to this {self.animal_type} enclosure - must be same species.")
         # Ensures enclosure has enough space before successfully adding animal when enclosure emptu.
         elif self.animal_type is None and self.size < animal.space:
-            raise ValueError(f"Cannot add {animal.species} - you need a bigger enclosure of at least {animal.size}m\u00b2.")
+            raise ValueError(f"Cannot add {animal.species} - you need a bigger enclosure of at least {animal.space}m\u00b2.")
         # Adds animal to empty enclosure of appropriate size and type.
         elif self.animal_type is None and self.size >= animal.space:
             self.__animals_housed.append(animal)
@@ -298,12 +283,10 @@ class Enclosure:
             animal_type = f"This enclosure is currently empty.\n"
         else:
             animal_type = f"Houses: {len(self.animals_housed)} {self.animal_type}s\n"
-        display = "" if self.on_display is True else "NOT "
         return [f"---{self.name.upper()}---\n"
                 f"{self.type} Enclosure\n"
                 f"Size: {self.size}m\u00b2\n"
                 f"Cleanliness level: {self.cleanliness_level}\n"
-                f"Assigned zookeeper: {self.assigned_keeper}\n"
-                f"Assigned veterinarian: {self.assigned_vet}\n"
-                f"{animal_type}\n"
-                f"This enclosure is {display}currently on display.\n"]
+                f"Assigned zookeeper: {self.assigned_keeper.first_name} {self.assigned_keeper.last_name}\n"
+                f"Assigned veterinarian: {self.assigned_vet.first_name} {self.assigned_vet.last_name}\n"
+                f"{animal_type}\n"]
