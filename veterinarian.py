@@ -8,6 +8,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 """
 
 from staff import Staff
+from healthrecord import HealthRecord
 
 
 class Veterinarian(Staff):
@@ -27,10 +28,20 @@ class Veterinarian(Staff):
     # Behavioural methods
     # -------------------
 
-    def conduct_health_check(self, animal):
-        pass
+    def conduct_health_checks(self, enclosure_name):
+        """Checks the health status of the animals in an assigned enclosure."""
+        enclosure = self.search_assigned_enclosures(enclosure_name)
+        # Will not conduct health checks if not assigned
+        if enclosure is None:
+            return f"Cannot conduct health checks in {enclosure_name}. Not assigned to this enclosure."
+        # Will not conduct health checks if enclosure is empty
+        elif enclosure.animal_type is None:
+            return f"Cannot conduct health checks in {enclosure_name}. This enclosure is empty."
+        # Conducts health checks if assigned to enclosure and animals present.
+        else:
+            return f"{self.first_name} {self.last_name} conducted health checks in {enclosure.name} enclosure."
 
-    def add_health_record(self, issue_type, severity_level, date_reported, description, treatment_plan):
+    def create_health_record(self, animal, issue_type, severity_level, date_reported, description, treatment_plan):
         """
         Initialises a new Health Record instance for the animal.
 
@@ -41,8 +52,13 @@ class Veterinarian(Staff):
             description (str): A description of the health issue
             treatment_plan (str): The initial treatment plan/notes.
         """
-        new_record = HealthRecord(issue_type, severity_level, date_reported, description, treatment_plan)
-        self.health_record.append(new_record)
-        print(f"New health record created:\n"
-              f"{new_record}")
 
+        new_record = HealthRecord(issue_type, severity_level, date_reported, description, treatment_plan, {self.first_name, self.last_name})
+        animal.add_health_record(new_record)
+        return new_record
+
+    def add_treatment_note(self, record):
+        pass
+
+    def mark_issue_resolved(self, record):
+        pass

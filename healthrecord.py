@@ -21,13 +21,15 @@ class HealthRecord:
         severity_level (int): The severity level from 0-3 (Negligible, Minor, Moderate, Severe).
         date_reported (date): The date of the initial report.
         description (str): Description of the health issue.
-        treatment_plan = (list): Treatment plan and notes, including subsequent updates.
+        treatment_plan (list): Treatment plan and notes, including subsequent updates.
+        is_current (bool): If the issue is current.
+        treating_vet (str): The vet treating the animal
     """
 
     # Three categories for health issues recorded
     ISSUE_TYPE = ['Injury', 'Illness', 'Behavioural Issue']
 
-    def __init__(self, issue_type, severity_level, date_reported, description, treatment_plan):
+    def __init__(self, issue_type, severity_level, date_reported, description, treatment_plan, vet_name):
         """
         Initialises a new Health Record instance.
 
@@ -37,6 +39,7 @@ class HealthRecord:
             date_reported (str): The date of the initial report.
             description (str): A description of the health issue
             treatment_plan (str): The initial treatment plan/notes.
+            vet_name (str): The name of the treating vet.
         """
         self.issue_type = issue_type
         self.severity_level = severity_level
@@ -44,6 +47,7 @@ class HealthRecord:
         self.description = description
         self.treatment_plan = treatment_plan
         self.is_current = True
+        self.treating_vet = vet_name
 
     # --------------
     # Getter methods
@@ -72,6 +76,10 @@ class HealthRecord:
     def get_is_current(self) -> bool:
         """Returns whether the health issue is current (True) or resolved (False)."""
         return self.__is_current
+
+    def get_treating_vet(self)->str:
+        """Returns the name of the treating vet."""
+        return self.__treating_vet
 
     # --------------
     # Setter methods
@@ -144,6 +152,17 @@ class HealthRecord:
             raise ValueError(f"Invalid current health status. Please enter either True (issue still current) or "
                   f"False (issue resolved).")
 
+    def set_treating_vet(self, vet_name):
+        """
+        Sets the description of the health issue.
+        Args: description (str): Description of the health issue, with a string of min length.
+        """
+        MIN_LENGTH = 5
+        if isinstance(vet_name, str) and len(vet_name) >= MIN_LENGTH:
+            self.__treating_vet = vet_name
+        else:
+            raise ValueError(f"Invalid vet name. Please enter text of at least {MIN_LENGTH} characters.")
+
     # --------------------
     # Property definitions
     # --------------------
@@ -154,6 +173,7 @@ class HealthRecord:
     description = property(get_description, set_description)
     treatment_plan = property(get_treatment_plan, set_treatment_plan)
     is_current = property(get_is_current, set_is_current)
+    treating_vet = property(get_treating_vet, set_treating_vet)
 
     # -------------------
     # Behavioural methods
@@ -162,7 +182,6 @@ class HealthRecord:
     def issue_resolved(self):
         """Marks the health issue as resolved."""
         self.is_current = False
-        print("You have successfully marked this issue as resolved.")
 
     def update_treatment_plan(self, treatment_plan):
         """
@@ -173,7 +192,6 @@ class HealthRecord:
         MIN_LENGTH = 6
         if isinstance(treatment_plan, str) and len(treatment_plan) >= MIN_LENGTH:
             self.__treatment_plan.append(treatment_plan)
-            print("Your new treatment plan/notes have been successfully added to this record.")
         else:
             raise ValueError(f"Invalid treatment plan. Please enter text of at least {MIN_LENGTH} characters.")
 

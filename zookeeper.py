@@ -24,16 +24,6 @@ class Zookeeper(Staff):
         self._responsibilities = ['Feed animals', 'Clean enclosures', 'Exhibit planning']
 
     # -------------------
-    # Helper methods
-    # -------------------
-
-    def search_assigned_enclosures(self, enclosure_name)-> object | None:
-        """Returns the assigned enclosure if found in the assigned enclosure list, otherwise None."""
-        for enclosure in self.assigned_enclosures:
-            if enclosure.name == enclosure_name:
-                return enclosure
-
-    # -------------------
     # Behavioural methods
     # -------------------
 
