@@ -181,6 +181,16 @@ class TestEnclosure:
         encB.size = 9
         assert encB.calculate_max_animals() == 0
 
+    def test_be_cleaned(self, encA, encB):
+        encA.cleanliness_level = 3
+        assert encA.cleanliness_level == 3
+        encB.cleanliness_level = 0
+        assert encB.cleanliness_level == 0
+        encA.be_cleaned()
+        assert encA.cleanliness_level == 5
+        encB.be_cleaned()
+        assert encB.cleanliness_level == 5
+
     # --- Testing behavioural methods ---
 
     def test_report_status(self, encA):

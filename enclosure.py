@@ -194,6 +194,15 @@ class Enclosure:
             max_animals = self.size // species_space
             return max_animals
 
+    def be_cleaned(self):
+        """Returns the enclosure to a cleaned state."""
+        self.cleanliness_level = 5
+
+    def lookup_feed(self):
+        if self.animal_type is not None:
+            species_feed = species_dict[self.animal_type][loc_dict['diet']]
+            return species_feed
+
     # -------------------
     # Behavioural methods
     # -------------------

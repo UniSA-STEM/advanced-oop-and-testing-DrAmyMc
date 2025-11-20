@@ -10,18 +10,13 @@ This is my own work as defined by the University's Academic Integrity Policy.
 from mammal import Mammal
 from bird import Bird
 from reptile import Reptile
+from enclosure import Enclosure
+from veterinarian import Veterinarian
+from zookeeper import Zookeeper
+from zoo import Zoo
 
 
 def demo_create_animal():
-    """
-        Direct tests for the Animal superclass and subclasses for animal creation, setting attributes
-        and string display.
-
-        Tests:
-            - Creation of animal instances (valid and invalid cases).
-            - Setting attributes manually (valid and invalid cases).
-            - Displaying string representations.
-        """
     print("\n=== TEST: Creation of Animals ===\n")
 
     # --- Create and display valid animals ---
@@ -32,90 +27,15 @@ def demo_create_animal():
     print(pelican)
     print(lizard)
 
-    # --- Attempt to create animals with invalid species ---
-    cat2 = Mammal("Paddy", 3, False, "llion", 'shaggy')
-    print(cat2.name)
-    # print(cat2.age)
-    # print(cat2.is_female)
-    # print(cat2.space)
-    # print(cat2)
-
 
 def demo_create_enclosure():
-    """
-    Direct tests for the Enclosure class for enclosure creation, setting attributes and string display.
-
-    Tests:
-        - Creation of an enclosure instance (valid and invalid case).
-        - Setting attributes manually (valid and invalid cases).
-        - Displaying string representations.
-    """
     print("\n=== TEST: Creation of Enclosure ===\n")
 
     # --- Create and display valid enclosure ---
     enc = Enclosure("Reptile House", "Terrarium", 20)
     print(enc)
 
-    # --- Attempt to create enclosure with invalid name ---
-    enc2 = Enclosure(123, "Terrarium", 20)
-    print(enc2)
-
-    # --- Modify enclosure attributes to valid values ---
-    enc.name = 'Koala Land'
-    enc.type = 'Bushland'
-    enc.size = 5000
-    enc.cleanliness_level = 0
-    enc.animal_type = 'koala'   # Will automatically convert to title case when matching
-    print(enc)
-
-    # --- Attempt to modify enclosure attributes to invalid values ---
-    enc.name = 'Ba'
-    enc.type = 'Bush'
-    enc.size = 0
-    enc.size = 5001
-    enc.size = 'big'
-    enc.cleanliness_level = -1
-    enc.cleanliness_level = 6
-    enc.cleanliness_level = 'dirty'
-    enc.animal_type = 'Koalaass'
-    print(enc)
-
-def demo_report_status():
-    """
-    Direct tests for the Enclosure class for reporting enclosure status based on cleanliness level.
-
-    Tests:
-        - Creation of an enclosure instance.
-        - Manually setting cleanliness level.
-        - Reporting status corresponding to cleanliness.
-    """
-    print("\n=== TEST: Report Enclosure Status ===\n")
-
-    # --- Create and display valid enclosure ---
-    enc = Enclosure("Reptile House", "Terrarium", 20)
-    print(enc)
-
-    # --- Report enclosures statuses for various cleanliness levels ---
-    enc.report_status()
-    enc.cleanliness_level = 4
-    enc.report_status()
-    enc.cleanliness_level = 3
-    enc.report_status()
-    enc.cleanliness_level = 2
-    enc.report_status()
-    enc.cleanliness_level = 1
-    enc.report_status()
-    enc.cleanliness_level = 0
-    enc.report_status()
-
 def demo_add_animals():
-    """
-    Direct tests for the Enclosure class for add_animal.
-
-    Tests:
-        - Creating an empty enclosure with no animals.
-        - Adding valid animals and attempting to add invalid animals to enclosure.
-    """
     print("\n=== TEST: Adding Animal to Enclosure ===\n")
 
     # --- Create and display valid enclosure and animals ---
@@ -140,13 +60,6 @@ def demo_add_animals():
     print(enc)                  # Enclosure will now contain 3 pelicans
 
 def demo_check_capacity_list_animals():
-    """
-        Direct tests for the Enclosure class for list_animals and check_capacity.
-
-        Tests:
-            - Creating an empty enclosure with no animals listed in list_animals.
-            - Adding animals with updated list_animals and check_capacity displayed.
-        """
     print("\n=== TEST: Checking Enclosure Capacity and Animal Listing ===\n")
 
     # --- Create and display empty enclosure ---
