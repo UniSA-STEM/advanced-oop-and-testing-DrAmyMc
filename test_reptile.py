@@ -26,16 +26,33 @@ class TestReptile:
 
     # --- Testing invalid instantiation ---
 
-    def test_instantiation_with_invalid_arguments(self):
-        with pytest.raises(ValueError):
-            # Invalid name, age, is_female, species name, min_temp, is_venomous, and missing argument
-            Reptile("L", 1, False, "Lace Monitor", 18, False)
-            Reptile("Lizzie", 0.5, False, "Lace Monitor", 18, False)
-            Reptile("Lizzie", 1, 'yes', "Lace Monitor", 18, False)
-            Reptile("Lizzie", 1, False, "Snake", 18, False)
-            Reptile("Lizzie", 1, False, "Lace Monitor", 10, False)
-            Reptile("Lizzie", 1, False, "Lace Monitor", 18, 'no')
+    def test_instantiation_with_missing_argument(self):
+        with pytest.raises(TypeError):
             Reptile("Lizzie", 1, False, "Lace Monitor", 18)
+
+    def test_instantiation_with_invalid_name(self):
+        with pytest.raises(ValueError):
+            Reptile("L", 1, False, "Lace Monitor", 18, False)
+
+    def test_instantiation_with_invalid_age(self):
+        with pytest.raises(ValueError):
+            Reptile("Lizzie", 0.5, False, "Lace Monitor", 18, False)
+
+    def test_instantiation_with_invalid_is_female(self):
+        with pytest.raises(ValueError):
+            Reptile("Lizzie", 1, 'yes', "Lace Monitor", 18, False)
+
+    def test_instantiation_with_invalid_species(self):
+        with pytest.raises(ValueError):
+            Reptile("Lizzie", 1, False, "Snake", 18, False)
+
+    def test_instantiation_with_invalid_min_temp(self):
+        with pytest.raises(ValueError):
+            Reptile("Lizzie", 1, False, "Lace Monitor", 10, False)
+
+    def test_instantiation_with_invalid_venomous(self):
+        with pytest.raises(ValueError):
+            Reptile("Lizzie", 1, False, "Lace Monitor", 18, 'no')
 
     # --- Testing getters ---
 
@@ -49,85 +66,74 @@ class TestReptile:
 
     # --- Testing setters ---
 
-    def test_set_min_temp(self, reptileA, reptileB):
-        """Min temp setter should accept only an int between 15 and 25."""
-        reptileA.min_temp = 15  # Edge case, 15 min
-        assert reptileA.min_temp == 15  # Valid min_temp change
-        reptileB.min_temp = 25  # Edge case, 25 max
-        assert reptileB.min_temp == 25  # Valid min_temp change
-        with pytest.raises(ValueError):
-            reptileA.min_temp = 14  # Invalid input, below min value (edge)
-            reptileA.min_temp = 26  # Invalid input, above max value (edge)
-            reptileB.min_temp = -20  # Invalid input, negative value
-            reptileB.min_temp = 'low'  # Invalid input, not an int
-            reptileB.min_temp = 20.1  # Invalid input, not an int
+    def test_set_min_temp_valid_min_value(self, reptileA):
+        reptileA.min_temp = 15
+        assert reptileA.min_temp == 15
 
-    def test_set_is_venomous(self, reptileA, reptileB):
-        """Is venomous setter should accept only true and false."""
-        reptileA.is_venomous = True  # Valid input
-        assert reptileA.is_venomous is True  # Valid status change
-        reptileB.is_venomous = False  # Valid input
-        assert reptileB.is_venomous is False  # Valid status change
+    def test_set_min_temp_valid_max_value(self, reptileA):
+        reptileA.min_temp = 25
+        assert reptileA.min_temp == 25
+
+    def test_set_min_temp_invalid_below_min(self, reptileA):
         with pytest.raises(ValueError):
-            reptileA.is_venomous = 'Yes'  # Invalid input, not bool value
-            reptileB.is_venomous = 1  # Invalid input, not bool value
+            reptileA.min_temp = 14
+
+    def test_set_min_temp_invalid_above_max(self, reptileA):
+        with pytest.raises(ValueError):
+            reptileA.min_temp = 26
+
+    def test_set_min_temp_invalid_input_float(self, reptileA):
+        with pytest.raises(ValueError):
+            reptileA.min_temp = 20.5
+
+    def test_set_min_temp_invalid_input_bool(self, reptileA):
+        with pytest.raises(ValueError):
+            reptileA.min_temp = False
+
+    def test_set_is_venomous_valid(self, reptileA, reptileB):
+        reptileA.is_venomous = True
+        assert reptileA.is_venomous is True
+        reptileB.is_venomous = False
+        assert reptileB.is_venomous is False
+
+    def test_set_is_venomous_invalid_input_int(self, reptileA):
+        with pytest.raises(ValueError):
+            reptileA.is_venomous = 1
 
     # --- Testing behavioural methods ---
 
     def test_make_sound(self, reptileA):
-        s = str(reptileA.make_sound())
-        assert 'Lizzie' in s
-        assert 'Lace Monitor' in s
-        assert 'reptilian' in s
+        assert reptileA.make_sound() == 'Lizzie the Lace Monitor makes a soft reptilian sound.'
 
     def test_eat(self, reptileA):
-        s = str(reptileA.eat())
-        assert 'Lizzie' in s
-        assert 'Lace Monitor' in s
-        assert 'slowly feeds' in s
-        assert 'insects' in s
+        assert reptileA.eat() == 'Lizzie the Lace Monitor slowly feeds on their insects.'
 
     def test_sleep(self, reptileA):
-        s = str(reptileA.sleep())
-        assert 'Lizzie' in s
-        assert 'Lace Monitor' in s
-        assert 'becomes still and rests' in s
+        assert reptileA.sleep() == 'Lizzie the Lace Monitor becomes still and rests in a sheltered spot.'
 
     def test_move(self, reptileA):
-        s = str(reptileA.move())
-        assert 'Lizzie' in s
-        assert 'Lace Monitor' in s
-        assert 'moves slowly' in s
-        assert 'terrarium' in s
+        assert reptileA.move() == 'Lizzie the Lace Monitor moves slowly about their terrarium enclosure.'
 
     def test_bask(self, reptileA):
-        s = str(reptileA.bask())
-        assert 'Lizzie' in s
-        assert 'Lace Monitor' in s
-        assert 'basks in the heat' in s
+        assert reptileA.bask() == 'Lizzie the Lace Monitor basks in the heat to warm their core temperature.'
 
-    def test_lay_eggs(self, reptileA, reptileB):
-        s = str(reptileB.lay_eggs())  # Female can lay eggs
-        assert 'Hissy' in s
-        assert 'Brown Snake' in s
-        assert 'lays eggs' in s
-        s2 = str(reptileA.lay_eggs())  # Male cannot lay eggs
-        assert 'Lizzie' in s2
-        assert 'cannot lay' in s2
-        assert 'they are male' in s2
+    def test_lay_eggs_valid_female(self, reptileB):
+        assert reptileB.lay_eggs() == 'Hissy the Brown Snake lays eggs.'
 
-    def test_string_display(self, reptileA, reptileB):
+    def test_lay_eggs_invalid_male(self, reptileA):
+        assert reptileA.lay_eggs() == 'Lizzie cannot lay eggs because he is male.'
+
+    # --- Testing string display ---
+
+    def test_string_display_not_venomous(self, reptileA):
         s = str(reptileA)
         assert 'LIZZIE' in s
-        assert '1' in s
-        assert 'Lace Monitor' in s
-        assert 'Male' in s
-        assert 'insects' in s
-        assert 'Terrarium' in s
-        assert 'native' in s
+        assert 'REPTILE' in s
+        assert 'Minimum temperature' in s
         assert '18' in s
-        assert 'Safe to handle' in s
-        s2 = str(reptileB)
-        assert 'Female' in s2
-        assert 'venomous' in s2
-        assert 'Handle with care' in s2
+        assert 'Safe to handle - not venomous' in s
+
+    def test_string_display_venomous(self, reptileB):
+        s = str(reptileB)
+        assert '21' in s
+        assert 'Handle with care - VENOMOUS' in s

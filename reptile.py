@@ -21,8 +21,7 @@ class Reptile(Animal):
             min_temp (int): The minimum temperature required by the reptile in degrees Celsius.
             is_venomous (bool): The venomous state of the reptile.
 
-         Notes:
-            Other attributes such as name, age, species, etc. are initialised by the parent class.
+         Notes: Other attributes such as name, age, species, etc. are initialised by the parent class.
         """
         super().__init__(name, age, is_female, species)
         self.min_temp = min_temp
@@ -51,7 +50,7 @@ class Reptile(Animal):
         """
         MIN_TEMP = 15
         MAX_TEMP = 25
-        if isinstance(min_temp, int) and MIN_TEMP <= min_temp <= MAX_TEMP:
+        if type(min_temp) is int and MIN_TEMP <= min_temp <= MAX_TEMP:
             self.__min_temp = min_temp
         else:
             raise ValueError(f"Invalid temperature. Please enter a integer between {MIN_TEMP} and {MAX_TEMP}.")
@@ -61,7 +60,7 @@ class Reptile(Animal):
         Sets whether the reptile is venomous.
         Args: is_venomous (bool): True if venomous, False if not. Must be boolean.
         """
-        if isinstance(is_venomous, bool):
+        if type(is_venomous) is bool:
             self.__is_venomous = is_venomous
         else:
             raise ValueError(f"Invalid value. Please enter True if venomous or False if not venomous.")
@@ -101,12 +100,12 @@ class Reptile(Animal):
         if self.is_female:
             return f"{self.name} the {self.species} lays eggs."
         else:
-            return f"{self.name} cannot lay eggs because they are male."
+            return f"{self.name} cannot lay eggs because he is male."
 
     def __str__(self) -> str:
         """
         Returns a formatted string containing the animal's details.
         Returns: str: The animal class string plus reptile-specific min temp and venomous details.
         """
-        venomous = 'Handle with care - venomous.\n' if self.is_venomous else 'Safe to handle - not venomous.\n'
+        venomous = 'Handle with care - VENOMOUS.\n' if self.is_venomous else 'Safe to handle - not venomous.\n'
         return super().__str__() + f"Minimum temperature: {self.min_temp}\u00b0C\n" + venomous
