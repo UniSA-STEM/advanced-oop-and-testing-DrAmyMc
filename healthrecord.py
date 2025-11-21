@@ -26,15 +26,12 @@ class HealthRecord:
         vet (object): The vet treating the animal
     """
 
-    # Three categories for health issues recorded
-    ISSUE_TYPE = ['Injury', 'Illness', 'Behavioural Issue']
-
     def __init__(self, issue_type, severity_level, date_reported, description, initial_plan, vet):
         """
         Initialises a new Health Record instance.
 
         Args:
-            issue_type (str): The category of issue being reported.
+            issue_type (int): The category number of the issue being reported.
             severity_level (int): The severity level from 0-3.
             date_reported (str): The date of the initial report.
             description (str): A description of the health issue
@@ -47,7 +44,7 @@ class HealthRecord:
         self.description = description
         self.treatment_plan = initial_plan
         self.is_current = True
-        self.treating_vet = vet
+        self.vet = vet
 
     # --------------
     # Getter methods
@@ -88,13 +85,14 @@ class HealthRecord:
     def set_issue_type(self, issue_type):
         """
         Sets the health issue type.
-        Args: type (str): The type of health issue being recorded. Must be a valid type.
+        Args: type (int): The type of health issue being recorded.
         """
-        if issue_type in HealthRecord.ISSUE_TYPE:
-            self.__issue_type = issue_type
+        MIN = 0
+        MAX = 2
+        if type(issue_type) is int and MIN <= issue_type <= MAX:
+            self.__issue_type = ['Injury', 'Illness', 'Behavioural Issue'][issue_type]
         else:
-            raise ValueError(f"Invalid issue type. Please enter one of the following types:\n"
-                  f"{HealthRecord.ISSUE_TYPE}")
+            raise ValueError(f"Invalid issue type. Please enter an integer between {MIN} and {MAX}.")
 
     def set_severity_level(self, level):
         """
@@ -103,7 +101,7 @@ class HealthRecord:
         """
         MIN_LEVEL = 0
         MAX_LEVEL = 3
-        if isinstance(level, int) and MIN_LEVEL <= level <= MAX_LEVEL:
+        if type(level) is int and MIN_LEVEL <= level <= MAX_LEVEL:
             self.__severity_level = level
         else:
             raise ValueError(f"Invalid severity level. Please enter an integer between {MIN_LEVEL} and {MAX_LEVEL}.")
@@ -124,7 +122,7 @@ class HealthRecord:
         Args: description (str): Description of the health issue, with a string of min length.
         """
         MIN_LENGTH = 6
-        if isinstance(description, str) and len(description) >= MIN_LENGTH:
+        if type(description) is str and len(description) >= MIN_LENGTH:
             self.__description = description
         else:
             raise ValueError(f"Invalid description. Please enter text of at least {MIN_LENGTH} characters.")
@@ -136,7 +134,7 @@ class HealthRecord:
              of a minimum length may be passed.
         """
         MIN_LENGTH = 6
-        if isinstance(initial_plan, str) and len(initial_plan) >= MIN_LENGTH:
+        if type(initial_plan) is str and len(initial_plan) >= MIN_LENGTH:
             self.__treatment_plan = [initial_plan]
         else:
             raise ValueError(f"Invalid treatment plan. Please enter text of at least {MIN_LENGTH} characters.")
@@ -146,7 +144,7 @@ class HealthRecord:
         Sets the status of the health issue (current = True, resolved = False).
         Args: is_current (bool): The status of the health issue.
         """
-        if isinstance(is_current, bool):
+        if type(is_current) is bool:
             self.__is_current = is_current
         else:
             raise ValueError(f"Invalid current health status. Please enter either True (issue still current) or "
@@ -186,7 +184,7 @@ class HealthRecord:
              of a minimum length may be passed.
         """
         MIN_LENGTH = 6
-        if isinstance(treatment_note, str) and len(treatment_note) >= MIN_LENGTH:
+        if type(treatment_note) is str and len(treatment_note) >= MIN_LENGTH:
             self.__treatment_plan.append(treatment_note)
         else:
             raise ValueError(f"Invalid treatment note. Please enter text of at least {MIN_LENGTH} characters.")
