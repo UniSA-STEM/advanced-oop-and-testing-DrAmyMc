@@ -9,7 +9,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 import pytest
 from animal import Animal
-from healthrecord import HealthRecord
 
 
 class DummyAnimal(Animal):
@@ -26,6 +25,13 @@ class DummyAnimal(Animal):
 
     def move(self):
         return "Dummy move"
+
+
+class DummyHealthRecord:
+    """Dummy record class for testing add/check health record functionality."""
+
+    def __init__(self, is_current):
+        self.is_current = is_current
 
 
 class TestAnimal:
@@ -47,13 +53,25 @@ class TestAnimal:
         with pytest.raises(TypeError):
             Animal('Blinky', 1, True, 'Koala')
 
-    def test_instantiation_with_invalid_arguments(self):
+    def test_instantiation_with_missing_argument(self):
+        with pytest.raises(TypeError):
+            DummyAnimal('Blinky', 1, True)
+
+    def test_instantiation_with_invalid_name(self):
         with pytest.raises(ValueError):
-            DummyAnimal('B', 1, True, 'Koala')  # Invalid name
-            DummyAnimal('Blinky', 0.5, True, 'Koala')  # Invalid age
-            DummyAnimal('Blinky', 1, 'yes', 'Koala')  # Invalid is_female
-            DummyAnimal('Blinky', 1, True, 'Koaaaala')  # Invalid species
-            DummyAnimal('Blinky', 1, True)  # Missing argument
+            DummyAnimal('B', 1, True, 'Koala')
+
+    def test_instantiation_with_invalid_age(self):
+        with pytest.raises(ValueError):
+            DummyAnimal('Blinky', 0.5, True, 'Koala')
+
+    def test_instantiation_with_invalid_is_female(self):
+        with pytest.raises(ValueError):
+            DummyAnimal('Blinky', 1, 'yes', 'Koala')
+
+    def test_instantiation_with_invalid_species(self):
+        with pytest.raises(ValueError):
+            DummyAnimal('Blinky', 1, True, 'Koaaaala')
 
     # --- Testing getters ---
 
@@ -93,51 +111,85 @@ class TestAnimal:
         assert animalA.health_record == []
         assert animalB.health_record == []
 
+    def test_get_on_display(self, animalA, animalB):
+        assert animalA.on_display is True
+        assert animalB.on_display is True
+
     # --- Testing setters ---
 
-    def test_set_name(self, animalA, animalB):
-        """Name setter should accept only str of min 2 char."""
-        animalA.name = 'Pa'  # Edge case, 2 char min
-        assert animalA.name == 'Pa'  # Valid name change
-        animalB.name = 'Ba'  # Edge case, 2 char min
-        assert animalB.name == 'Ba'  # Valid name change
-        with pytest.raises(ValueError):
-            animalB.name = 'K'  # Invalid input, only 1 char
-            animalB.name = 123  # Invalid input, not a string
+    def test_set_name_valid(self, animalA):
+        animalA.name = 'Pa'
+        assert animalA.name == 'Pa'
 
-    def test_set_age(self, animalA, animalB):
-        """Age setter should accept only int between 0-200."""
-        animalA.age = 0  # Edge case, 0 min value
-        assert animalA.age == 0  # Valid age change
-        animalB.age = 200  # Edge case, 200 max value
-        assert animalB.age == 200  # Valid name change
+    def test_set_name_invalid_short_string(self, animalA):
         with pytest.raises(ValueError):
-            animalB.age = -1  # Invalid input, less than min
-            animalB.age = 201  # Invalid input, greater than max
-            animalB.age = 'old'  # Invalid input, not an int
-            animalB.age = 10.5  # Invalid input, not an int
+            animalA.name = 'K'
 
-    def test_set_is_female(self, animalA, animalB):
-        """Is_female setter should accept only bool values."""
-        animalA.is_female = True  # Valid bool input
-        assert animalA.is_female is True  # Valid sex change
-        animalB.is_female = False  # Valid bool input
-        assert animalB.is_female is False  # Valid sex change
+    def test_set_name_invalid_input_type_int(self, animalA):
         with pytest.raises(ValueError):
-            animalA.is_female = 'no'  # Invalid input, not bool
-            animalB.is_female = 1  # Invalid input, not bool
+            animalA.name = 123
 
-    def test_set_species(self, animalA, animalB):
-        """Species setter should accept only values found in species dictionary (any case)."""
-        animalA.species = 'Pelican'  # Valid species name
-        assert animalA.species == 'Pelican'  # Valid species change
-        animalB.species = 'tiger'  # Valid species name, lower case accepted
-        assert animalB.species == 'Tiger'  # Valid species change, changed to title case
+    def test_set_name_invalid_input_type_bool(self, animalA):
         with pytest.raises(ValueError):
-            animalA.species = 'Tigerrr'  # Invalid input, not in species dict
-            animalB.species = 1  # Invalid input, not in species dict
+            animalA.name = False
 
-    # --- Testing helper methods ---
+    def test_set_age_valid(self, animalA):
+        animalA.age = 0
+        assert animalA.age == 0
+        animalA.age = 200
+        assert animalA.age == 200
+
+    def test_set_age_invalid_below_min(self, animalA):
+        with pytest.raises(ValueError):
+            animalA.age = -1
+
+    def test_set_age_invalid_above_max(self, animalA):
+        with pytest.raises(ValueError):
+            animalA.age = 201
+
+    def test_set_age_invalid_input_type_float(self, animalA):
+        with pytest.raises(ValueError):
+            animalA.age = 2.5
+
+    def test_set_age_invalid_input_type_bool(self, animalA):
+        with pytest.raises(ValueError):
+            animalA.age = False
+
+    def test_set_is_female_valid(self, animalA, animalB):
+        animalA.is_female = True
+        assert animalA.is_female is True
+        animalB.is_female = False
+        assert animalB.is_female is False
+
+    def test_set_is_female_invalid_input_type_int(self, animalA):
+        with pytest.raises(ValueError):
+            animalA.is_female = 1
+
+    def test_set_species_valid(self, animalA):
+        animalA.species = 'Pelican'
+        assert animalA.species == 'Pelican'
+
+    def test_set_species_valid_case_change(self, animalA):
+        animalA.species = 'tiger'
+        assert animalA.species == 'Tiger'
+
+    def test_set_species_invalid_species_name(self, animalA):
+        with pytest.raises(ValueError):
+            animalA.species = 'Tigerrr'
+
+    def test_set_species_invalid_input_type_int(self, animalA):
+        with pytest.raises(ValueError):
+            animalA.species = 1
+
+    def test_set_on_display_valid(self, animalA):
+        animalA.on_display = False
+        assert animalA.on_display is False
+
+    def test_set_on_display_invalid_input_int(self, animalA):
+        with pytest.raises(ValueError):
+            animalA.on_display = 1
+
+    # --- Testing lookup methods ---
 
     def test_lookup_is_native(self, animalA):
         animalA.species = 'Fairy Penguin'
@@ -163,7 +215,66 @@ class TestAnimal:
         # Value will be automatically updated to Fairy Penguin value due to lookup functions
         assert animalA.space == 4
 
-    # --- Testing behavioural methods ---
+    # --- Testing helper methods ---
+
+    def test_add_health_record_single(self, animalA):
+        recordA = DummyHealthRecord(True)
+        animalA.add_health_record(recordA)
+        assert animalA.health_record == [recordA]
+
+    def test_add_health_record_multiple(self, animalA):
+        recordA = DummyHealthRecord(False)
+        recordB = DummyHealthRecord(False)
+        recordC = DummyHealthRecord(True)
+        animalA.add_health_record(recordA)
+        animalA.add_health_record(recordB)
+        animalA.add_health_record(recordC)
+        assert animalA.health_record == [recordA, recordB, recordC]
+
+    def test_lookup_current_record_exists(self, animalA):
+        recordA = DummyHealthRecord(False)
+        recordB = DummyHealthRecord(False)
+        recordC = DummyHealthRecord(True)
+        animalA.add_health_record(recordA)
+        animalA.add_health_record(recordB)
+        animalA.add_health_record(recordC)
+        assert animalA.lookup_current_record() is recordC
+
+    def test_lookup_current_record_none_current(self, animalA):
+        recordA = DummyHealthRecord(False)
+        recordB = DummyHealthRecord(False)
+        recordC = DummyHealthRecord(False)
+        animalA.add_health_record(recordA)
+        animalA.add_health_record(recordB)
+        animalA.add_health_record(recordC)
+        assert animalA.lookup_current_record() is None
+
+    def test_lookup_current_record_no_records(self, animalA):
+        assert animalA.lookup_current_record() is None
+
+    # --- Testing string display ---
+
+    def test_string_display(self, animalA):
+        s = str(animalA)
+        assert 'PADDY' in s
+        assert 'DUMMYANIMAL' in s
+        assert 'Lion' in s
+        assert 'not native' in s
+        assert 'Currently on display' in s
+        assert '3' in s
+        assert 'Male' in s
+        assert 'Savannah' in s
+        assert '200' in s
+        assert 'Meat' in s
+
+    def test_string_display_alt_values(self, animalB):
+        animalB.on_display = False
+        s = str(animalB)
+        assert 'is native' in s
+        assert 'NOT on display' in s
+        assert 'Female' in s
+
+    # --- Testing behavioural methods from abstract methods ---
 
     def test_make_sound(self, animalA, animalB):
         assert animalA.make_sound() == 'Dummy sound'
@@ -180,24 +291,3 @@ class TestAnimal:
     def test_move(self, animalA, animalB):
         assert animalA.move() == 'Dummy move'
         assert animalB.move() == 'Dummy move'
-
-    def test_add_health_record(self, animalA):
-        recordA = HealthRecord('Injury', 2, '12/11/2025', 'Laceration on'
-                                ' front leg', 'Clean and bandage wound.')
-        animalA.add_health_record(recordA)
-        assert animalA.health_record == [recordA]
-        recordB = HealthRecord('Behavioural Issue', 1, '8/9/2024','Lethargy',
-                               'Monitor for signs of fever.')
-        animalA.add_health_record(recordB)
-        assert animalA.health_record == [recordA, recordB]
-
-    def test_string_display(self, animalA):
-        s = str(animalA)
-        assert 'PADDY' in s
-        assert '3' in s
-        assert 'Lion' in s
-        assert 'Male' in s
-        assert 'meat' in s
-        assert 'Savannah' in s
-        assert 'not native' in s
-        assert '200' in s

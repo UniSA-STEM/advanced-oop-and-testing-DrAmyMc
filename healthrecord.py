@@ -9,8 +9,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 from datetime import datetime
 
-from veterinarian import Veterinarian
-
 
 class HealthRecord:
     """
@@ -79,7 +77,7 @@ class HealthRecord:
         """Returns whether the health issue is current (True) or resolved (False)."""
         return self.__is_current
 
-    def get_vet(self)->Veterinarian:
+    def get_vet(self)->object:
         """Returns the treating vet."""
         return self.__vet
 
@@ -157,12 +155,9 @@ class HealthRecord:
     def set_vet(self, vet):
         """
         Sets the treating veterinarian.
-        Args: vet (obj): The treating vet, must be an instance of Veterinarian.
+        Args: vet (obj): The treating vet.
         """
-        if isinstance(vet, Veterinarian):
-            self.__vet = vet
-        else:
-            raise ValueError(f"Invalid vet. Must be a veterinarian object to be assigned to animal treatment.")
+        self.__vet = vet
 
     # --------------------
     # Property definitions

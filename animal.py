@@ -9,7 +9,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 from abc import ABC, abstractmethod
 from species import species_dict, loc_dict
-from healthrecord import HealthRecord
 
 
 class Animal(ABC):
@@ -52,7 +51,7 @@ class Animal(ABC):
         self.__space = None  # Will be overridden when species is set
         self.species = species
         self.__health_record = []
-        self.__on_display = False
+        self.__on_display = True
 
     # --------------
     # Getter methods
@@ -108,7 +107,7 @@ class Animal(ABC):
         Args: name (str): The name for the animal, ensuring only a string of a minimum length may be passed.
         """
         MIN_LENGTH = 2
-        if isinstance(name, str) and len(name) >= MIN_LENGTH:
+        if type(name) is str and len(name) >= MIN_LENGTH:
             self.__name = name
         else:
             raise ValueError(f"Invalid animal name. Please enter text of at least {MIN_LENGTH} characters.")
@@ -120,7 +119,7 @@ class Animal(ABC):
         """
         MIN_AGE = 0
         MAX_AGE = 200
-        if isinstance(age, int) and MIN_AGE <= age <= MAX_AGE:
+        if type(age) is int and MIN_AGE <= age <= MAX_AGE:
             self.__age = age
         else:
             raise ValueError(f"Invalid animal age. Please enter age in years, as an integer between "
@@ -131,7 +130,7 @@ class Animal(ABC):
         Sets the sex of the animal.
         Args: is_female (bool): True if female, False if male. Must be boolean.
         """
-        if isinstance(is_female, bool):
+        if type(is_female) is bool:
             self.__is_female = is_female
         else:
             raise ValueError(f"Invalid sex. Please enter True if female or False if male.")
@@ -141,7 +140,7 @@ class Animal(ABC):
         Sets the species type and updates information related to species.
         Args: species (str): The species of the animal. Must be a valid species.
         """
-        if str(species).title() in species_dict:
+        if type(species) is str and species.title() in species_dict:
             self.__species = species.title()
             # Updates attributes determined by species type
             self.__is_native = self.__lookup_is_native()
@@ -156,7 +155,7 @@ class Animal(ABC):
         Sets the display status of the animal.
         Args: on_display (bool): True if on display, False if not. Must be boolean.
         """
-        if isinstance(on_display, bool):
+        if type(on_display) is bool:
             self.__on_display = on_display
         else:
             raise ValueError(f"Invalid status. Please enter True if on display or False if not currently on display.")
@@ -202,20 +201,17 @@ class Animal(ABC):
 
     def add_health_record(self, record):
         """Adds a health record to the animals health record history."""
-        if isinstance(record, HealthRecord):
-            self.__health_record.append(record)
-        else:
-            raise ValueError("Not a health record object.")
+        self.__health_record.append(record)
 
-    def lookup_current_record(self)->HealthRecord | None:
+    def lookup_current_record(self) -> object | None:
         """Returns the current health record for the animal (if it exists)."""
         for record in self.health_record:
             if record.is_current:
                 return record
 
-    # -------------------
-    # Behavioural methods
-    # -------------------
+    # --------------
+    # String display
+    # --------------
 
     def __str__(self) -> str:
         """
@@ -224,13 +220,15 @@ class Animal(ABC):
         """
         native = "native" if self.is_native else "not native"
         sex = 'Female' if self.is_female else 'Male'
+        display = '' if self.on_display else 'NOT '
         return (f"---{self.name.upper()} THE {self.__class__.__name__.upper()}---\n"
                 f"I am a {self.species}, which is {native} to Australia.\n"
+                f"Currently {display}on display."
                 f"Age: {self.age} years old\n"
                 f"Sex: {sex}\n"
                 f"Required environment: {self.environment}\n"
                 f"Required space: {self.space}m\u00b2\n"
-                f"Required diet: {self.dietary_requirements}\n")
+                f"Required diet: {self.dietary_requirements.title()}\n")
 
     # -----------------
     # Abstract methods
