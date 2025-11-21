@@ -16,16 +16,12 @@ class Mammal(Animal):
     def __init__(self, name, age, is_female, species, fur_type):
         """
         Initialises a new Mammal instance of the Mammal subclass.
-
-        Args:
-            fur_type (str): The fur type of the mammal.
-
-        Notes:
-            Other attributes such as name, age, species, etc. are initialised by the parent class.
+        Args: fur_type (str): The fur type of the mammal.
+        Notes: Other attributes such as name, age, species, etc. are initialised by the parent class.
         """
         super().__init__(name, age, is_female, species)
         self.fur_type = fur_type
-        self.__is_pregnant = False  # False by default
+        self.__is_pregnant = False
 
     # --------------
     # Getter methods
@@ -49,7 +45,7 @@ class Mammal(Animal):
         Args: fur_type (str): The animal's fur type, ensuring only a string of a min length may be passed.
         """
         MIN_LENGTH = 3
-        if isinstance(fur_type, str) and len(fur_type) >= MIN_LENGTH:
+        if type(fur_type) is str and len(fur_type) >= MIN_LENGTH:
             self.__fur_type = fur_type
         else:
             raise ValueError(f"Invalid fur type. Please enter text of at least {MIN_LENGTH} characters.")
@@ -59,7 +55,7 @@ class Mammal(Animal):
         Sets the pregnancy status of the mammal.
         Args: is_pregnant (bool): True if pregnant, False if not pregnant. Must be boolean.
         """
-        if isinstance(is_pregnant, bool) and self.is_female:
+        if type(is_pregnant) is bool and self.is_female:
             self.__is_pregnant = is_pregnant
         elif not self.is_female:
             raise ValueError(f"Invalid - male animal cannot be pregnant.")
@@ -98,8 +94,6 @@ class Mammal(Animal):
         Returns a formatted string containing the animal's details.
         Returns: str: The animal class string plus mammal-specific fur type and pregnancy status details.
         """
-        if not self.is_female:
-            pregnant = ''
-        else:
-            pregnant = 'Pregnancy status: PREGNANT\n' if self.is_pregnant else 'Pregnancy status: Not pregnant\n'
-        return super().__str__() + f"Fur type: {self.fur_type}" + f"\n{pregnant}"
+        pregnant = 'Pregnancy status: PREGNANT\n' if self.is_pregnant else 'Pregnancy status: Not pregnant\n'
+        display_pregnant = pregnant if self.is_female else ''
+        return super().__str__() + f"Fur type: {self.fur_type}" + f"\n{display_pregnant}"
