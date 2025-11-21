@@ -116,12 +116,12 @@ class TestMammal:
         assert 'Shaggy' in s
 
     def test_string_display_female_not_pregnant(self, mammalB):
-        s2 = str(mammalB)
-        assert 'Pregnancy status' in s2
-        assert 'Not pregnant' in s2
-        assert 'Short' in s2
+        s = str(mammalB)
+        assert 'Pregnancy status' in s
+        assert 'Not pregnant' in s
+        assert 'Short' in s
 
     def test_string_display_female_pregnant(self, mammalB):
         mammalB.is_pregnant = True
-        s3 = str(mammalB)
-        assert 'PREGNANT' in s3
+        s = str(mammalB)
+        assert 'PREGNANT' in s

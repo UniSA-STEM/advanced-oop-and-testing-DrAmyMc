@@ -21,8 +21,7 @@ class Bird(Animal):
             wingspan (float): The wingspan of the bird in metres.
             is_flightless (bool): The flightless state of the bird.
 
-         Notes:
-            Other attributes such as name, age, species, etc. are initialised by the parent class.
+         Notes: Other attributes such as name, age, species, etc. are initialised by the parent class.
         """
         super().__init__(name, age, is_female, species)
         self.wingspan = wingspan
@@ -47,12 +46,12 @@ class Bird(Animal):
     def set_wingspan(self, wingspan):
         """
         Sets the wingspan, ensuring it remains within a valid range.
-        Args: wingspan (float): The wingspan in metres
+        Args: wingspan (int | float): The wingspan in metres
         """
         MIN_SPAN = 0.03
-        MAX_SPAN = 3.70
-        if isinstance(wingspan, float) and MIN_SPAN <= wingspan <= MAX_SPAN:
-            self.__wingspan = wingspan
+        MAX_SPAN = 3.7
+        if (type(wingspan) is float or type(wingspan) is int) and MIN_SPAN <= wingspan <= MAX_SPAN:
+            self.__wingspan = float(wingspan)
         else:
             raise ValueError(f"Invalid wingspan. Please enter the wingspan in metres between "
                              f"{MIN_SPAN} and {MAX_SPAN}.")
@@ -62,7 +61,7 @@ class Bird(Animal):
         Sets whether the bird is flightless.
         Args: is_flightless (bool): True if flightless, False if able to fly. Must be boolean.
         """
-        if isinstance(is_flightless, bool):
+        if type(is_flightless) is bool:
             self.__is_flightless = is_flightless
         else:
             raise ValueError(f"Invalid value. Please enter True if flightless or False if able to fly.")
@@ -96,11 +95,11 @@ class Bird(Animal):
         return f"{self.name} the {self.species} {move} around their {self.environment.lower()} enclosure."
 
     def lay_eggs(self) -> str:
-        """Returns the bird laying eggs (if female)."""
+        """Returns the bird laying eggs if female, error message if male."""
         if self.is_female:
             return f"{self.name} the {self.species} lays eggs."
         else:
-            return f"{self.name} cannot lay eggs because they are male."
+            return f"{self.name} cannot lay eggs because he is male."
 
     def __str__(self) -> str:
         """
