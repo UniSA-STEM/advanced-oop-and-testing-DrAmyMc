@@ -10,7 +10,8 @@ This is my own work as defined by the University's Academic Integrity Policy.
 import pytest
 from enclosure import Enclosure
 
-# Dummy class for testing enclosure
+
+# Dummy animal class for testing enclosure
 class DummyAnimal:
     def __init__(self, name, species, age):
         self.name = name
@@ -18,8 +19,31 @@ class DummyAnimal:
         self.age = age
 
 
+# Dummy staff class for testing enclosure
+class DummyStaff:
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
+
+
 class TestEnclosure:
     """Testing suite for the Enclosure class."""
+
+    # --- Dummy Animal instances for testing ---
+
+    @pytest.fixture
+    def animalA(self):
+        return DummyAnimal('Percy', 'Pelican', 2)
+
+    # --- Dummy Staff instances for testing ---
+
+    @pytest.fixture
+    def vetA(self):
+        return DummyStaff('Joe', 'Bloggs')
+
+    @pytest.fixture
+    def keeperA(self):
+        return DummyStaff('Zoe', 'Kresta')
 
     # --- Enclosure instances for testing ---
 
@@ -37,13 +61,21 @@ class TestEnclosure:
 
     # --- Testing invalid instantiation ---
 
-    def test_instantiation_with_invalid_arguments(self):
-        with pytest.raises(ValueError):
-            # Invalid name, type, size, and missing argument
-            Enclosure('R', 'Terrarium', 20)
-            Enclosure('Reptile House', 'Terrrrarium', 20)
-            Enclosure('Reptile House', 'Terrarium', 0)
+    def test_instantiation_with_missing_argument(self):
+        with pytest.raises(TypeError):
             Enclosure('Reptile House', 'Terrarium')
+
+    def test_instantiation_with_invalid_name(self):
+        with pytest.raises(ValueError):
+            Enclosure('R', 'Terrarium', 20)
+
+    def test_instantiation_with_invalid_type(self):
+        with pytest.raises(ValueError):
+            Enclosure('Reptile House', 'Terrrrarium', 20)
+
+    def test_instantiation_with_invalid_size(self):
+        with pytest.raises(ValueError):
+            Enclosure('Reptile House', 'Terrarium', 0)
 
     # --- Testing getters ---
 
@@ -63,10 +95,6 @@ class TestEnclosure:
         assert encA.cleanliness_level == 5
         assert encB.cleanliness_level == 5
 
-    def test_get_on_display(self, encA, encB):
-        assert encA.on_display is False
-        assert encB.on_display is False
-
     def test_get_animal_type(self, encA, encB):
         assert encA.animal_type is None
         assert encB.animal_type is None
@@ -85,95 +113,120 @@ class TestEnclosure:
 
     # --- Testing setters ---
 
-    def test_set_name(self, encA, encB):
-        """Name setter should only accept a string of min length 3 char."""
-        encA.name = 'Wow'           # Edge case, 3 char min
-        assert encA.name == 'Wow'   # Valid name change
-        encB.name = 'Lap'           # Edge case, 3 char min
-        assert encB.name == 'Lap'   # Valid name change
-        with pytest.raises(ValueError):
-            encA.name = ''          # Invalid input, empty string
-            encA.name = 'La'        # Invalid input, below min char
-            encB.name = 123         # Invalid input, not a string
+    def test_set_name_valid_min_length(self, encA):
+        encA.name = 'Wow'
+        assert encA.name == 'Wow'
 
-    def test_set_type(self, encA, encB):
-        """Type setter should only accept a type from the class type list."""
+    def test_set_name_invalid_short_str(self, encA):
+        with pytest.raises(ValueError):
+            encA.name = 'La'
+
+    def test_set_name_invalid_input_type_bool(self, encA):
+        with pytest.raises(ValueError):
+            encA.name = False
+
+    def test_set_type_valid_exact(self, encA):
         encA.type = 'Forest'
         assert encA.type == 'Forest'
-        encB.type = 'Aviary'
-        assert encB.type == 'Aviary'
-        encB.type = 'bushland'          # Will automatically change to title case
-        assert encB.type == 'Bushland'
-        with pytest.raises(ValueError):
-            encA.type = ''              # Invalid input, empty string
-            encA.type = 1               # Invalid input, integer
-            encB.type = 'Tundra'        # Invalid input, not in type list
 
-    def test_set_size(self, encA, encB):
-        """Size setter should only accept integers between 1 and 5000."""
-        encA.size = 5000 # Edge case, max value
+    def test_set_type_valid_lower_case(self, encA):
+        encA.type = 'bushland'
+        assert encA.type == 'Bushland'
+
+    def test_set_type_invalid_not_in_list(self, encA):
+        with pytest.raises(ValueError):
+            encA.type = 'Tundra'
+
+    def test_set_type_invalid_input_int(self, encA):
+        with pytest.raises(ValueError):
+            encA.type = 1
+
+    def test_set_size_valid_min_size(self, encA):
+        encA.size = 1
+        assert encA.size == 1
+
+    def test_set_size_valid_max_size(self, encA):
+        encA.size = 5000
         assert encA.size == 5000
-        encB.size = 1   # Edge case, min value
-        assert encB.size == 1
-        with pytest.raises(ValueError):
-            encA.size = 0       # below min
-            encA.size = 5001    # above max
-            encA.size = -10     # negative
-            encA.size = 100.5   # float
-            encB.size = 'big'   # str
 
-    def test_set_cleanliness_level(self, encA, encB):
-        """Cleanliness level setter should only accept integers between 0 and 5."""
-        encA.cleanliness_level = 3          # Change level from default
+    def test_set_size_invalid_below_min(self, encA):
+        with pytest.raises(ValueError):
+            encA.size = 0
+
+    def test_set_size_invalid_above_max(self, encA):
+        with pytest.raises(ValueError):
+            encA.size = 5001
+
+    def test_set_size_invalid_input_type_float(self, encA):
+        with pytest.raises(ValueError):
+            encA.size = 100.5
+
+    def test_set_size_invalid_input_type_bool(self, encA):
+        with pytest.raises(ValueError):
+            encA.size = True
+
+    def test_set_cleanliness_level_valid_min_level(self, encA):
+        encA.cleanliness_level = 0
+        assert encA.cleanliness_level == 0
+
+    def test_set_cleanliness_level_valid_max_level(self, encA):
+        encA.cleanliness_level = 3  # Change level from default
         assert encA.cleanliness_level == 3
-        encA.cleanliness_level = 5          # Edge case, max value
+        encA.cleanliness_level = 5
         assert encA.cleanliness_level == 5
-        encB.cleanliness_level = 0
-        assert encB.cleanliness_level == 0  # Edge case, min value
-        with pytest.raises(ValueError):
-            encA.cleanliness_level = 6  # above max
-            encA.cleanliness_level = -1 # negative, below min
-            encA.cleanliness_level = 3.5 # float
-            encB.cleanliness_level = 'dirty'    # str
 
-    def test_set_on_display(self, encA, encB):
-        """On display setter should only accept bool values."""
-        encA.on_display = True
-        assert encA.on_display is True
-        encB.on_display = True
-        assert encB.on_display is True
-        encB.on_display = False
-        assert encB.on_display is False
+    def test_set_cleanliness_level_invalid_below_min(self, encA):
         with pytest.raises(ValueError):
-            encA.on_display = 'yes'
-            encB.on_display = 1
+            encA.cleanliness_level = -1
 
-    def test_set_animal_type(self, encA, encB):
-        """Animal type setter should accept only values found in species dictionary (any case)."""
+    def test_set_cleanliness_level_invalid_above_max(self, encA):
+        with pytest.raises(ValueError):
+            encA.cleanliness_level = 6
+
+    def test_set_cleanliness_level_invalid_input_type_float(self, encA):
+        with pytest.raises(ValueError):
+            encA.cleanliness_level = 3.5
+
+    def test_set_cleanliness_level_invalid_input_type_bool(self, encA):
+        with pytest.raises(ValueError):
+            encA.cleanliness_level = False
+
+    def test_set_animal_type_valid_exact_case(self, encA):
         encA.animal_type = 'Pelican'
         assert encA.animal_type == 'Pelican'
-        encB.animal_type = 'tiger'  # Valid species name, lower case accepted
-        assert encB.animal_type == 'Tiger'  # Valid animal type, changed to title case
+
+    def test_set_animal_type_valid_lower_case(self, encA):
+        encA.animal_type = 'tiger'
+        assert encA.animal_type == 'Tiger'
+
+    def test_set_animal_type_valid_return_to_empty(self, encA):
+        encA.animal_type = 'Pelican'
+        assert encA.animal_type == 'Pelican'
+        encA.animal_type = None
+        assert encA.animal_type is None
+
+    def test_set_animal_type_invalid_not_in_dict(self, encA):
         with pytest.raises(ValueError):
-            encA.animal_type = 'Tigerrr'  # Invalid input, not in species dict
-            encB.animal_type = 1  # Invalid input, not in species dict
+            encA.animal_type = 'Tigerrr'
 
-    def test_set_assigned_keeper(self, encA, encB):
-        encA.assigned_keeper = 'Joe Bloggs'
-        assert encA.assigned_keeper == 'Joe Bloggs'
-        encB.assigned_keeper = 'Zoe Bloggs'
-        assert encB.assigned_keeper == 'Zoe Bloggs'
+    def test_set_animal_type_invalid_input_type_bool(self, encA):
+        with pytest.raises(ValueError):
+            encA.animal_type = False
 
-    def test_set_assigned_vet(self, encA, encB):
-        encA.assigned_vet = 'Joe Bloggs'
-        assert encA.assigned_vet == 'Joe Bloggs'
-        encB.assigned_vet = 'Zoe Bloggs'
-        assert encB.assigned_vet == 'Zoe Bloggs'
+    def test_set_assigned_keeper_valid(self, encA, keeperA):
+        encA.assigned_keeper = keeperA
+        assert encA.assigned_keeper is keeperA
+
+    def test_set_assigned_vet_valid(self, encA, vetA):
+        encA.assigned_vet = vetA
+        assert encA.assigned_vet is vetA
 
     # --- Testing helper methods ---
 
-    def test_calculate_max_animals(self, encB):
+    def test_calculate_max_animals_valid_no_animal_type(self, encB):
         assert encB.calculate_max_animals() is None
+
+    def test_calculate_max_animals_valid(self, encB):
         encB.animal_type = 'Pelican'
         assert encB.calculate_max_animals() == 3
         encB.size = 25
@@ -181,15 +234,26 @@ class TestEnclosure:
         encB.size = 9
         assert encB.calculate_max_animals() == 0
 
-    def test_be_cleaned(self, encA, encB):
-        encA.cleanliness_level = 3
-        assert encA.cleanliness_level == 3
-        encB.cleanliness_level = 0
-        assert encB.cleanliness_level == 0
+    def test_be_cleaned_valid_cleanliness_0(self, encA):
+        encA.cleanliness_level = 0
         encA.be_cleaned()
         assert encA.cleanliness_level == 5
-        encB.be_cleaned()
-        assert encB.cleanliness_level == 5
+
+    def test_be_cleaned_valid_cleanliness_3(self, encA):
+        encA.cleanliness_level = 3
+        encA.be_cleaned()
+        assert encA.cleanliness_level == 5
+
+    def test_be_cleaned_valid_cleanliness_5(self, encA):
+        encA.be_cleaned()
+        assert encA.cleanliness_level == 5
+
+    def test_lookup_feed_valid_no_animal_type(self, encA):
+        assert encA.lookup_feed() is None
+
+    def test_lookup_feed_valid_animal(self, encB):
+        encB.animal_type = 'Pelican'
+        assert encB.lookup_feed() == 'fish'
 
     # --- Testing behavioural methods ---
 

@@ -17,7 +17,7 @@ class Enclosure:
 
     Attributes:
         name (str): The enclosure's name.
-        type (str): The envrionmental type of the enclosure.
+        type (str): The environmental type of the enclosure.
         size (int): The size of the enclosure in square metres.
         cleanliness_level (int): The cleanliness of the enclosure from 0 (filthy) to 5 (pristine).
         animal_type (str | None): The type of animal housed in the enclosure, None if empty.
@@ -38,9 +38,9 @@ class Enclosure:
             type (str): The environmental type of the enclosure.
             size (int): The size of the enclosure in square metres.
         """
-        self.name = name  # Utilises the setter for validation of new instances
-        self.type = type  # Utilises the setter for validation of new instances
-        self.size = size  # Utilises the setter for validation of new instances
+        self.name = name
+        self.type = type
+        self.size = size
         self.__cleanliness_level = 5
         self.__animal_type = None
         self.__animals_housed = []
@@ -93,18 +93,18 @@ class Enclosure:
         Args: name (str): The name for the enclosure, ensuring only a string of a minimum length may be passed.
         """
         MIN_LENGTH = 3
-        if isinstance(name, str) and len(name) >= MIN_LENGTH:
+        if type(name) is str and len(name) >= MIN_LENGTH:
             self.__name = name
         else:
             raise ValueError(f"Invalid enclosure name. Please enter text of at least {MIN_LENGTH} characters.")
 
-    def set_type(self, type):
+    def set_type(self, enc_type):
         """
         Sets the environmental type of the enclosure.
         Args: type (str): The environmental type of the enclosure. Must be a valid type.
         """
-        if type.title() in Enclosure.TYPE_LIST:
-            self.__type = type.title()
+        if type(enc_type) is str and enc_type.title() in Enclosure.TYPE_LIST:
+            self.__type = enc_type.title()
         else:
             raise ValueError(f"Invalid enclosure type. Please enter one of the following types: "
                   f"{Enclosure.TYPE_LIST}")
@@ -116,7 +116,7 @@ class Enclosure:
         """
         MIN_SIZE = 1
         MAX_SIZE = 5000
-        if isinstance(size, int) and MIN_SIZE <= size <= MAX_SIZE:
+        if type(size) is int and MIN_SIZE <= size <= MAX_SIZE:
             self.__size = size
         else:
             raise ValueError(f"Invalid size. Please enter an integer between {MIN_SIZE} and {MAX_SIZE}.")
@@ -128,7 +128,7 @@ class Enclosure:
         """
         MIN_LEVEL = 0
         MAX_LEVEL = 5
-        if isinstance(level, int) and MIN_LEVEL <= level <= MAX_LEVEL:
+        if type(level) is int and MIN_LEVEL <= level <= MAX_LEVEL:
             self.__cleanliness_level = level
         else:
             raise ValueError(f"Invalid cleanliness level. Please enter an integer between {MIN_LEVEL} and {MAX_LEVEL}.")
@@ -138,17 +138,19 @@ class Enclosure:
         Sets the species to be housed in the enclosure.
         Args: species (str): The species to be housed in the enclosure. Must be a valid species.
         """
-        if str(species).title() in species_dict:
+        if type(species) is str and species.title() in species_dict:
             self.__animal_type = species.title()
+        elif species is None:
+            self.__animal_type = None
         else:
             raise ValueError(f"{species} is not a valid species. Please enter a valid species only.")
 
     def set_assigned_keeper(self, keeper):
-        """Sets the assigned keeper to zookeeper name."""
+        """Sets the assigned keeper to zookeeper object."""
         self.__assigned_keeper = keeper
 
     def set_assigned_vet(self, vet):
-        """Sets the assigned vet to veterinarian name."""
+        """Sets the assigned vet to veterinarian object."""
         self.__assigned_vet = vet
 
     # --------------------
@@ -183,7 +185,7 @@ class Enclosure:
         """Returns the enclosure to a cleaned state."""
         self.cleanliness_level = 5
 
-    def lookup_feed(self):
+    def lookup_feed(self) -> str | None:
         if self.animal_type is not None:
             species_feed = species_dict[self.animal_type][loc_dict['diet']]
             return species_feed
