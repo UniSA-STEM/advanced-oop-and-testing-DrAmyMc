@@ -6,6 +6,8 @@ ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 """
+from random import betavariate
+from tabnanny import verbose
 
 import pytest
 from healthrecord import HealthRecord
@@ -14,18 +16,25 @@ from datetime import date
 
 # For testing purposes
 class DummyVet:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, first_name, last_name):
+        self.first_name = first_name
+        self.last_name = last_name
 
 
 class TestHealthRecord:
     """Testing suite for the HealthRecord class."""
 
-    # --- Vet and HealthRecord instances for testing ---
+    # --- Vet instances for testing ---
 
     @pytest.fixture
     def vetA(self):
-        return DummyVet('Dr Bob')
+        return DummyVet('Bob', 'Fobb')
+
+    @pytest.fixture
+    def vetB(self):
+        return DummyVet('Zoe', 'Pesco')
+
+    # --- HealthRecord instances for testing ---
 
     @pytest.fixture
     def recA(self, vetA):
@@ -33,9 +42,9 @@ class TestHealthRecord:
                             'Clean and bandage.', vetA)
 
     @pytest.fixture
-    def recB(self, vetA):
+    def recB(self, vetB):
         return HealthRecord(2, 1, '8/9/2024','Lethargy',
-                            'Monitor for fever.', vetA)
+                            'Monitor for fever.', vetB)
 
     # --- Testing invalid instantiation ---
 
@@ -95,9 +104,9 @@ class TestHealthRecord:
         assert recA.is_current is True
         assert recB.is_current is True
 
-    def test_get_vet(self, recA, recB, vetA):
+    def test_get_vet(self, recA, recB, vetA, vetB):
         assert recA.vet is vetA
-        assert recB.vet is vetA
+        assert recB.vet is vetB
 
     # --- Testing setters ---
 
@@ -209,26 +218,77 @@ class TestHealthRecord:
         with pytest.raises(ValueError):
             recA.is_current = 1
 
+    def test_set_vet_valid(self, recA, recB, vetA, vetB):
+        recA.vet = vetB
+        assert recA.vet is vetB
+        recB.vet = vetA
+        assert recB.vet is vetA
 
-# # def test_update_health_record():
-# #
-# #     # --- Create and display valid health record ---
-# #     record = HealthRecord("Injury", 3, "12 Nov 2025",
-# #                           "Laceration on left front leg", "Clean and bandage wound and monitor.")
-# #     print(record)
-# #
-# #     # --- Add treatment plan notes then resolve issue ---
-# #     record.update_treatment_plan("Change dressing twice daily.")            #Valid
-# #     record.update_treatment_plan("Continue to monitor for two more days.")  #Valid
-# #     record.update_treatment_plan("Ok")                                      #Invalid output, length insufficient
-# #     record.issue_resolved()
-# #     print(record)
-# #
-# # def test_add_health_record():#
-# #     # --- Create animal ---
-# #     cat = Mammal("Paddy", 3, "Lion", False)
-# #     print(cat)
-# #
-# #     # --- Create and display valid health record ---
-# #     cat.add_health_record("Injury", 3, "12 Nov 2025",
-# #                           "Laceration on left front leg", "Clean and bandage wound and monitor.")
+    # --- Testing helper methods ---
+
+    def test_mark_issue_resolved_valid(self, recA, recB):
+        recA.mark_issue_resolved()
+        assert recA.is_current is False
+        recB.mark_issue_resolved()
+        assert recB.is_current is False
+        recB.mark_issue_resolved()
+        assert recB.is_current is False
+
+    def test_update_health_record_valid_min_length(self, recA):
+        recA.update_treatment_plan('Test')
+        assert recA.treatment_plan == ['Clean and bandage.', 'Test']
+
+    def test_update_health_record_valid_multiple_updates(self, recA):
+        recA.update_treatment_plan('Test')
+        recA.update_treatment_plan('Check')
+        recA.update_treatment_plan('Monitor')
+        assert len(recA.treatment_plan) == 4
+
+    def test_update_health_record_invalid_short_string(self, recA):
+        with pytest.raises(ValueError):
+            recA.update_treatment_plan('Meh')
+
+    def test_update_health_record_invalid_input_type_int(self, recA):
+        with pytest.raises(ValueError):
+            recA.update_treatment_plan(1234)
+
+    # --- Testing string display ---
+
+    @pytest.fixture
+    def vetA(self):
+        return DummyVet('Bob', 'Fobb')
+    @pytest.fixture
+    def vetB(self):
+        return DummyVet('Zoe', 'Pesco')
+    @pytest.fixture
+    def recA(self, vetA):
+        return HealthRecord(0, 2, '12/11/2025','Laceration',
+                            'Clean and bandage.', vetA)
+    @pytest.fixture
+    def recB(self, vetB):
+        return HealthRecord(2, 1, '8/9/2024','Lethargy',
+                            'Monitor for fever.', vetB)
+    def test_string_display(self, recA):
+        s = str(recA)
+        assert 'INJURY REPORT' in s
+        assert 'CURRENT' in s
+        assert 'Moderate' in s
+        assert '2025-11-12' in s
+        assert 'Dr Bob Fobb' in s
+        assert 'Laceration' in s
+        assert 'Clean and bandage.' in s
+
+    def test_string_display_alt_values(self, recB):
+        recB.update_treatment_plan('Mild fever only.')
+        recB.update_treatment_plan('No fever.')
+        recB.mark_issue_resolved()
+        s = str(recB)
+        assert 'BEHAVIOURAL ISSUE REPORT' in s
+        assert 'RESOLVED' in s
+        assert 'Minor' in s
+        assert '2024-09-08' in s
+        assert 'Dr Zoe Pesco' in s
+        assert 'Lethargy' in s
+        assert 'Monitor for fever.' in s
+        assert 'Mild fever only.' in s
+        assert 'No fever.' in s

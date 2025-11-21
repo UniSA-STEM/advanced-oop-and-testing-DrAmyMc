@@ -102,6 +102,10 @@ class Reptile(Animal):
         else:
             return f"{self.name} cannot lay eggs because he is male."
 
+    # --------------
+    # String display
+    # --------------
+
     def __str__(self) -> str:
         """
         Returns a formatted string containing the animal's details.

@@ -170,7 +170,7 @@ class HealthRecord:
     vet = property(get_vet, set_vet)
 
     # -------------------
-    # Behavioural methods
+    # Helper methods
     # -------------------
 
     def mark_issue_resolved(self):
@@ -183,11 +183,15 @@ class HealthRecord:
         Args: treatment_note (str): The treatment note for the health issue, ensuring only a string
              of a minimum length may be passed.
         """
-        MIN_LENGTH = 6
+        MIN_LENGTH = 4
         if type(treatment_note) is str and len(treatment_note) >= MIN_LENGTH:
             self.__treatment_plan.append(treatment_note)
         else:
             raise ValueError(f"Invalid treatment note. Please enter text of at least {MIN_LENGTH} characters.")
+
+    # --------------
+    # String display
+    # --------------
 
     def __str__(self):
         """
@@ -200,9 +204,10 @@ class HealthRecord:
                    f"This issue is {status}.\n"
                    f"Severity: {severity}\n"
                    f"Date reported: {self.date_reported}\n"
+                   f"Assigned vet: Dr {self.vet.first_name} {self.vet.last_name}\n"
                    f"Description: {self.description}\n"
                    f"Treatment plan/Notes:"]
-        for treatment in self.treatment_plan:
-            details.append(treatment)
+        for note in self.treatment_plan:
+            details.append(note)
         details.append("")
         return '\n'.join(details)

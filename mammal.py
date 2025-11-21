@@ -89,6 +89,10 @@ class Mammal(Animal):
         """Returns the mammal moving."""
         return f"{self.name} the {self.species} roams around their {self.environment.lower()} enclosure."
 
+    # --------------
+    # String display
+    # --------------
+
     def __str__(self) -> str:
         """
         Returns a formatted string containing the animal's details.
