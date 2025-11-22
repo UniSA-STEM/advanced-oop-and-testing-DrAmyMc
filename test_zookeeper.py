@@ -15,7 +15,7 @@ from enclosure import Enclosure
 class TestZookeeper:
     """Testing suite for the Zookeeper class."""
 
-    # --- Enclosure instances for testing helper methods ---
+    # --- Enclosure instances for testing interactive behavioural methods ---
 
     @pytest.fixture
     def encA(self):

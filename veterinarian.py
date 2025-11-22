@@ -22,7 +22,7 @@ class Veterinarian(Staff):
             Attributes such as staff_id, first_name, last_name, and date_hired are initialised by the parent class.
         """
         super().__init__(staff_id, first_name, last_name, year_hired)
-        self._responsibilities = ['Conduct health checks', 'Treat animals', 'Plan preventive health care']
+        self._responsibilities = ['Conduct health checks', 'Treat animals', 'Plan preventative health care']
 
     # -------------------
     # Behavioural methods
@@ -30,7 +30,7 @@ class Veterinarian(Staff):
 
     def conduct_health_checks(self, enclosure_name):
         """Checks the health status of the animals in an assigned enclosure."""
-        enclosure = self.search_assigned_enclosures(enclosure_name)
+        enclosure = self.lookup_assigned_enclosure(enclosure_name)
         # Will not conduct health checks if not assigned
         if enclosure is None:
             return f"Cannot conduct health checks in {enclosure_name}. Not assigned to this enclosure."
@@ -39,9 +39,10 @@ class Veterinarian(Staff):
             return f"Cannot conduct health checks in {enclosure_name}. This enclosure is empty."
         # Conducts health checks if assigned to enclosure and animals present.
         else:
-            return f"{self.first_name} {self.last_name} conducted health checks in {enclosure.name} enclosure."
+            return (f"{self.first_name} {self.last_name} conducted health checks on the {enclosure.animal_type}s "
+                    f"in {enclosure.name}.")
 
-    def create_health_record(self, animal, issue_type, severity_level, date_reported, description, treatment_plan):
+    def create_health_record(self, animal, issue_type, severity_level, date_reported, description, treatment_plan)->HealthRecord:
         """
         Initialises a new Health Record instance for the animal.
 
