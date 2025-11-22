@@ -8,7 +8,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 """
 
 from datetime import datetime
-from enclosure import Enclosure
 
 
 class Staff:
@@ -87,7 +86,7 @@ class Staff:
         """
         MIN = 100000
         MAX = 999999
-        if isinstance(staff_id, int) and MIN <= staff_id <= MAX:
+        if type(staff_id) is int and MIN <= staff_id <= MAX:
             self.__staff_id = staff_id
         else:
             raise ValueError(f"Invalid staff id number. Please enter an integer between {MIN} and {MAX}.")
@@ -98,7 +97,7 @@ class Staff:
         Args: first_name (str): The employee's first name, ensuring only a string of a minimum length may be passed.
         """
         MIN_LENGTH = 2
-        if isinstance(first_name, str) and len(first_name) >= MIN_LENGTH:
+        if type(first_name) is str and len(first_name) >= MIN_LENGTH:
             self.__first_name = first_name
         else:
             raise ValueError(f"Invalid employee first name. Please enter text of at least {MIN_LENGTH} characters.")
@@ -109,7 +108,7 @@ class Staff:
         Args: last_name (str): The employee's last name, ensuring only a string of a minimum length may be passed.
         """
         MIN_LENGTH = 2
-        if isinstance(last_name, str) and len(last_name) >= MIN_LENGTH:
+        if type (last_name) is str and len(last_name) >= MIN_LENGTH:
             self.__last_name = last_name
         else:
             raise ValueError(f"Invalid employee last name. Please enter text of at least {MIN_LENGTH} characters.")
@@ -130,7 +129,7 @@ class Staff:
         Args: role (str): The employee's role, ensuring only a string of a minimum length may be passed.
         """
         MIN_LENGTH = 4
-        if isinstance(role, str) and len(role) >= MIN_LENGTH:
+        if type(role) is str and len(role) >= MIN_LENGTH:
             self.__role = role
         else:
             raise ValueError(f"Invalid employee role. Please enter text of at least {MIN_LENGTH} characters.")
@@ -147,39 +146,40 @@ class Staff:
     responsibilities = property(get_responsibilities)
     assigned_enclosures = property(get_assigned_enclosures)
 
-    # -------------------
+    # --------------
     # Helper methods
-    # -------------------
+    # --------------
 
-    def search_assigned_enclosures(self, enclosure_name)-> object | None:
+    def add_assigned_enclosure(self, enclosure):
+        """Adds an enclosure to a staff member's list of assigned enclosures."""
+        self.assigned_enclosures.append(enclosure)
+
+    def lookup_assigned_enclosure(self, enclosure_name)-> object | None:
         """Returns the assigned enclosure if found in the assigned enclosure list, otherwise None."""
         for enclosure in self.assigned_enclosures:
             if enclosure.name == enclosure_name:
                 return enclosure
 
-    # -------------------
-    # Behavioural methods
-    # -------------------
-
-    def add_enclosure(self, enclosure):
-        if isinstance(enclosure, Enclosure):
-            self.assigned_enclosures.append(enclosure)
-        else:
-            raise ValueError(f"This is not an enclosure. Cannot assign to staff.")
+    # --------------
+    # String display
+    # --------------
 
     def __str__(self):
         """
         Returns a formatted string containing the employee's details.
-        Returns: str: The staff ID, name, date hired, and role.
+        Returns: str: The staff ID, name, date hired, role, and any responsibilities and assigned enclosures.
         """
-        details = [f"{self.first_name} {self.last_name} was hired on {self.date_hired} in the role of {self.role}."]
+        details = [f"---{self.role.upper()}---\n"
+                   f"{self.first_name} {self.last_name}\n"
+                   f"Staff ID: {self.staff_id}\n"
+                   f"Date hired: {self.date_hired}"]
         if self.responsibilities != []:
             details.append('---Responsibilities---')
             for responsibility in self.responsibilities:
-                details.append(responsibility)
+                details.append(f"   {responsibility}")
         if self.assigned_enclosures != []:
             details.append('---Assigned Enclosures---')
             for enclosure in self.assigned_enclosures:
-                details.append(enclosure)
+                details.append(f"   {enclosure.name}")
         details.append("")
         return '\n'.join(details)

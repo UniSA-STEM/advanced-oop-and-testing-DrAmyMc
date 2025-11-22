@@ -276,6 +276,10 @@ class Enclosure:
                 available = "It is at maximum capacity and has no more space available."
             return current + available
 
+    # --------------
+    # String display
+    # --------------
+
     def __str__(self)->str:
         """
         Returns a formatted string containing the enclosure's details.

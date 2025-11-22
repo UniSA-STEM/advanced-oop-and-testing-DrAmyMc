@@ -234,17 +234,17 @@ class TestEnclosure:
         encB.size = 9
         assert encB.calculate_max_animals() == 0
 
-    def test_be_cleaned_valid_cleanliness_0(self, encA):
+    def test_be_cleaned_valid_cleanliness_level0(self, encA):
         encA.cleanliness_level = 0
         encA.be_cleaned()
         assert encA.cleanliness_level == 5
 
-    def test_be_cleaned_valid_cleanliness_3(self, encA):
+    def test_be_cleaned_valid_cleanliness_level3(self, encA):
         encA.cleanliness_level = 3
         encA.be_cleaned()
         assert encA.cleanliness_level == 5
 
-    def test_be_cleaned_valid_cleanliness_5(self, encA):
+    def test_be_cleaned_valid_cleanliness_level5(self, encA):
         encA.be_cleaned()
         assert encA.cleanliness_level == 5
 
@@ -257,24 +257,34 @@ class TestEnclosure:
 
     # --- Testing behavioural methods ---
 
-    def test_report_status(self, encA):
-        encA.report_status() == 'This enclosure is pristine. It has just been cleaned.'
+    def test_report_status_cleanliness_level5(self, encA):
+        assert encA.report_status() == 'This enclosure is pristine. It has just been cleaned.'
+
+    def test_report_status_cleanliness_level4(self, encA):
         encA.cleanliness_level = 4
-        encA.report_status() == 'This enclosure is quite clean. It does not need cleaning yet.'
+        assert encA.report_status() == 'This enclosure is quite clean. It does not need cleaning yet.'
+
+    def test_report_status_cleanliness_level3(self, encA):
         encA.cleanliness_level = 3
-        encA.report_status() == 'This enclosure is becoming dirty. It should be cleaned soon.'
+        assert encA.report_status() == 'This enclosure is becoming dirty. It should be cleaned soon.'
+
+    def test_report_status_cleanliness_level2(self, encA):
         encA.cleanliness_level = 2
-        encA.report_status() == 'This enclosure is now dirty. It should be cleaned now.'
+        assert encA.report_status() == 'This enclosure is now dirty. It should be cleaned now.'
+
+    def test_report_status_cleanliness_level1(self, encA):
         encA.cleanliness_level = 1
-        encA.report_status() == 'This enclosure is very dirty. It should be cleaned urgently.'
+        assert encA.report_status() == 'This enclosure is very dirty. It should be cleaned urgently.'
+
+    def test_report_status_cleanliness_level0(self, encA):
         encA.cleanliness_level = 0
-        encA.report_status() == 'This enclosure is filthy. Immediate action is required.'
+        assert encA.report_status() == 'This enclosure is filthy. Immediate action is required.'
 
-    def test_become_poopy_when_empty(self, encB):
-        encB.become_poopy()
-        assert encB.cleanliness_level == 5  # Cleanliness level will not reduce when no animals present
+    def test_become_poopy_when_empty_still_level5(self, encA):
+        assert encA.become_poopy() == 'Reptile House has no animals in the enclosure to poop in it.'
+        assert encA.cleanliness_level == 5
 
-    def test_become_poopy_with_animals(self, encB):
+    def test_become_poopy_with_animals_reduce_by_one_level(self, encB):
         encB.animal_type = 'Pelican'
         encB.become_poopy()
         assert encB.cleanliness_level == 4
@@ -286,8 +296,19 @@ class TestEnclosure:
         assert encB.cleanliness_level == 1
         encB.become_poopy()
         assert encB.cleanliness_level == 0
+
+    def test_become_poopy_with_animals_cannot_go_below_zero(self, encB):
+        encB.animal_type = 'Pelican'
+        encB.cleanliness_level = 0
         encB.become_poopy()
-        assert encB.cleanliness_level == 0  # Cleanliness cannot reduce below 0
+        assert encB.cleanliness_level == 0
+
+    def test_become_poopy_with_animals_return_message(self, encB):
+        encB.animal_type = 'Pelican'
+        assert 'Pelican Palace is becoming dirtier as the Pelicans poop.' in encB.become_poopy()
+        assert 'This enclosure is becoming dirty. It should be cleaned soon.' in encB.become_poopy()
+        assert 'Pelican Palace is becoming dirtier as the Pelicans poop.' in encB.become_poopy()
+        assert 'This enclosure is very dirty. It should be cleaned urgently.' in encB.become_poopy()
 
     def test_list_animals_when_empty(self, encA, encB):
         assert encA.list_animals() == 'Reptile House is currently empty.\n'
