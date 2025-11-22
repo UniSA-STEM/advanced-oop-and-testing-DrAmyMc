@@ -22,26 +22,6 @@ from zookeeper import Zookeeper
 class TestZoo:
     """Testing suite for the Zoo class."""
 
-    # --- Zoo instance for testing ---
-
-    @pytest.fixture
-    def zooA(self):
-        return Zoo('Halls Gap Zoo')
-
-    # --- Enclosures instances for testing ---
-
-    @pytest.fixture
-    def encA(self):
-        return Enclosure('Reptile House', 'Terrarium', 20)
-
-    @pytest.fixture
-    def encB(self):
-        return Enclosure('Pelican Palace', 'Aquatic', 30)
-
-    @pytest.fixture
-    def encC(self):
-        return Enclosure('African Plains', 'Savannah', 2000)
-
     # --- Animal instances for testing ---
 
     @pytest.fixture
@@ -68,6 +48,20 @@ class TestZoo:
     def reptileB(self):
         return Reptile('Hissy', 3, True, 'Brown Snake', 21, True)
 
+    # --- Enclosures instances for testing ---
+
+    @pytest.fixture
+    def encA(self):
+        return Enclosure('Reptile House', 'Terrarium', 20)
+
+    @pytest.fixture
+    def encB(self):
+        return Enclosure('Pelican Palace', 'Aquatic', 30)
+
+    @pytest.fixture
+    def encC(self):
+        return Enclosure('African Plains', 'Savannah', 2000)
+
     # --- Staff instances for testing ---
 
     @pytest.fixture
@@ -86,6 +80,34 @@ class TestZoo:
     def keeperB(self):
         return Zookeeper(123459, 'Jim', 'Doe', '8/9/2024')
 
+    # --- Zoo instance for testing ---
+
+    @pytest.fixture
+    def zooA(self):
+        return Zoo('Halls Gap Zoo')
+
+    @pytest.fixture
+    def zooB(self, mammalA, mammalB, birdA, birdB, reptileA, reptileB, encA, encB, encC, vetA, vetB, keeperA, keeperB):
+        zoo = Zoo('Grampians Zoo')
+        zoo.add_animal(mammalA)
+        zoo.add_animal(mammalB)
+        zoo.add_animal(birdA)
+        zoo.add_animal(birdB)
+        zoo.add_animal(reptileA)
+        zoo.add_animal(reptileB)
+        zoo.add_enclosure(encA)
+        zoo.add_enclosure(encB)
+        zoo.add_enclosure(encC)
+        zoo.add_staff(vetA)
+        zoo.add_staff(vetB)
+        zoo.add_staff(keeperA)
+        zoo.add_staff(keeperB)
+        encA.assigned_vet = vetA
+        encB.assigned_vet = vetB
+        encA.assigned_keeper = keeperA
+        encA.assigned_keeper = keeperB
+        return zoo
+
     # --- Testing invalid instantiation ---
 
     def test_instantiation_with_missing_argument(self):
@@ -98,17 +120,21 @@ class TestZoo:
 
     # --- Testing getters ---
 
-    def test_get_name(self, zooA):
+    def test_get_name(self, zooA, zooB):
         assert zooA.name == 'Halls Gap Zoo'
+        assert zooB.name == 'Grampians Zoo'
 
-    def test_get_animals(self, zooA):
+    def test_get_animals(self, zooA, zooB, mammalA, mammalB, birdA, birdB, reptileA, reptileB):
         assert zooA.animals == set()
+        assert zooB.animals == set([mammalA, mammalB, birdA, birdB, reptileA, reptileB])
 
-    def test_get_enclosures(self, zooA):
+    def test_get_enclosures(self, zooA, zooB, encA, encB, encC):
         assert zooA.enclosures == set()
+        assert zooB.enclosures == set([encA, encB, encC])
 
-    def test_get_staff(self, zooA):
+    def test_get_staff(self, zooA, zooB, vetA, vetB, keeperA, keeperB):
         assert zooA.staff == set()
+        assert zooB.staff == set([vetA, vetB, keeperA, keeperB])
 
     # --- Testing setters ---
 
@@ -124,12 +150,38 @@ class TestZoo:
         with pytest.raises(ValueError):
             zooA.name = False
 
+    # --- Testing helper methods ---
+
+    def test_lookup_animal_exists(self, zooB, mammalA, reptileB):
+        assert zooB.lookup_animal('Paddy', 'Lion') is mammalA
+        assert zooB.lookup_animal('Hissy', 'Brown Snake') is reptileB
+
+    def test_lookup_animal_not_exists(self, zooB):
+        assert zooB.lookup_animal('Puddy', 'Lion') is None
+        assert zooB.lookup_animal('Hissy', 'Snake') is None
+
+    def test_lookup_enclosure_exists(self, zooB, encA, encB):
+        assert zooB.lookup_enclosure('Reptile House') is encA
+        assert zooB.lookup_enclosure('Pelican Palace') is encB
+
+    def test_lookup_enclosure_not_exists(self, zooB):
+        assert zooB.lookup_enclosure('Reptile Palace') is None
+        assert zooB.lookup_enclosure('Pelican House') is None
+
+    def test_lookup_staff_exists(self, zooB, vetA, keeperA):
+        assert zooB.lookup_staff(123456) is vetA
+        assert zooB.lookup_staff(123458) is keeperA
+
+    def test_lookup_staff_not_exists(self, zooB):
+        assert zooB.lookup_staff(223456) is None
+        assert zooB.lookup_staff(223458) is None
+
     # --- Testing add/remove behavioural methods ---
 
     def test_add_animal_valid(self, zooA, mammalA, birdA, reptileA):
-        zooA.add_animal(mammalA)
-        zooA.add_animal(birdA)
-        zooA.add_animal(reptileA)
+        assert zooA.add_animal(mammalA) == 'Paddy the Lion added to the zoo.'
+        assert zooA.add_animal(birdA) == 'Percy the Pelican added to the zoo.'
+        assert zooA.add_animal(reptileA) == 'Lizzie the Lace Monitor added to the zoo.'
         assert len(zooA.animals) == 3
         assert zooA.animals == set([mammalA, birdA, reptileA])
 
@@ -137,24 +189,10 @@ class TestZoo:
         with pytest.raises(TypeError):
             zooA.add_animal(encA)
 
-    def test_remove_animal_valid(self, zooA, mammalA, birdA, reptileA):
-        zooA.add_animal(mammalA)
-        zooA.add_animal(birdA)
-        zooA.add_animal(reptileA)
-        zooA.remove_animal('Paddy', 'Lion')
-        assert len(zooA.animals) == 2
-        assert zooA.animals == set([birdA, reptileA])
-
-    def test_remove_animal_not_found(self, zooA, birdA, reptileA):
-        zooA.add_animal(birdA)
-        zooA.add_animal(reptileA)
-        with pytest.raises(ValueError):
-            zooA.remove_animal('Paddy', 'Lion')
-
     def test_add_enclosure_valid(self, zooA, encA, encB, encC):
-        zooA.add_enclosure(encA)
-        zooA.add_enclosure(encB)
-        zooA.add_enclosure(encC)
+        assert zooA.add_enclosure(encA) == 'Reptile House enclosure added to the zoo.'
+        assert zooA.add_enclosure(encB) == 'Pelican Palace enclosure added to the zoo.'
+        assert zooA.add_enclosure(encC) == 'African Plains enclosure added to the zoo.'
         assert len(zooA.enclosures) == 3
         assert zooA.enclosures == set([encA, encB, encC])
 
@@ -162,42 +200,53 @@ class TestZoo:
         with pytest.raises(TypeError):
             zooA.add_enclosure(mammalA)
 
-    def test_remove_enclosure_valid(self, zooA, encA, encB, encC):
-        zooA.add_enclosure(encA)
-        zooA.add_enclosure(encB)
-        zooA.add_enclosure(encC)
-        zooA.remove_enclosure('Pelican Palace')
-        assert len(zooA.enclosures) == 2
-        assert zooA.enclosures == set([encA, encC])
-
-    def test_remove_enclosure_not_found(self, zooA, encA, encC):
-        zooA.add_enclosure(encA)
-        zooA.add_enclosure(encC)
-        with pytest.raises(ValueError):
-            zooA.remove_enclosure('Pelican Palace')
-
-    def test_add_staff_valid(self, zooA, vetA, vetB, keeperA, keeperB):
-        zooA.add_staff(vetA)
-        zooA.add_staff(vetB)
-        zooA.add_staff(keeperA)
-        zooA.add_staff(keeperB)
-        assert len(zooA.staff) == 4
-        assert zooA.staff == set([keeperA, keeperB, vetA, vetB])
+    def test_add_staff_valid(self, zooA, vetA, keeperA):
+        assert zooA.add_staff(vetA) == 'Veterinarian Zoe Smith added to the zoo.'
+        assert zooA.add_staff(keeperA) == 'Zookeeper Joe Blogg added to the zoo.'
+        assert len(zooA.staff) == 2
+        assert zooA.staff == set([keeperA, vetA])
 
     def test_add_staff_invalid_object(self, zooA, encA):
         with pytest.raises(TypeError):
             zooA.add_staff(encA)
 
-    def test_remove_staff_valid(self, zooA, vetA, vetB, keeperA):
-        zooA.add_staff(vetA)
-        zooA.add_staff(vetB)
-        zooA.add_staff(keeperA)
-        zooA.remove_staff(123456)
-        assert len(zooA.staff) == 2
-        assert zooA.staff == set([keeperA, vetB])
+    def test_remove_animal_valid(self, zooB, mammalA, encC):
+        assert len(zooB.animals) == 6
+        assert mammalA in zooB.animals
+        #assert mammalA in encC.animals_housed
+        assert zooB.remove_animal('Paddy', 'Lion') == 'Paddy the Lion removed from the zoo.'
+        assert len(zooB.animals) == 5
+        assert mammalA not in zooB.animals
+        #assert mammalA not in encC.animals_housed
 
-    def test_remove_staff_not_found(self, zooA, vetB, keeperA):
-        zooA.add_staff(vetB)
-        zooA.add_staff(keeperA)
+    def test_remove_animal_not_found(self, zooB):
         with pytest.raises(ValueError):
-            zooA.remove_staff(123456)
+            zooB.remove_animal('Puddy', 'Lion')
+
+    def test_remove_enclosure_valid(self, zooB, encB, vetB, keeperB):
+        assert len(zooB.enclosures) == 3
+        assert encB in zooB.enclosures
+        # assert encB in vetB.assigned_enclosures
+        # assert encB in keeperB.assigned_enclosures
+        assert zooB.remove_enclosure('Pelican Palace') == 'Pelican Palace enclosure removed from the zoo.'
+        assert len(zooB.enclosures) == 2
+        assert encB not in zooB.enclosures
+        # assert encB not in vetB.assigned_enclosures
+        # assert encB not in keeperB.assigned_enclosures
+
+    def test_remove_enclosure_not_found(self, zooB):
+        with pytest.raises(ValueError):
+            zooB.remove_enclosure('Pelican Place')
+
+    def test_remove_staff_valid(self, zooB, vetA, encA):
+        assert len(zooB.staff) == 4
+        assert vetA in zooB.staff
+        assert encA.assigned_vet == vetA
+        assert zooB.remove_staff(123456) == 'Veterinarian Zoe Smith removed from the zoo.'
+        assert len(zooB.staff) == 3
+        assert vetA not in zooB.staff
+        assert encA.assigned_vet is None
+
+    def test_remove_staff_not_found(self, zooB):
+        with pytest.raises(ValueError):
+            zooB.remove_staff(223456)

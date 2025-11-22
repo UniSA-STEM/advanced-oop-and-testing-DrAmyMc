@@ -125,7 +125,7 @@ class Zoo:
         """Adds a staff object to the set of staff at the zoo."""
         if isinstance(staff, Staff):
             self.__staff.add(staff)
-            return f"Staff member {staff.first_name} {staff.last_name} added to the zoo."
+            return f"{staff.role} {staff.first_name} {staff.last_name} added to the zoo."
         else:
             raise TypeError(f"Invalid object - must be a Staff object to add to staff.")
 
@@ -166,7 +166,7 @@ class Zoo:
                     enclosure.assigned_vet = None
                 if target == enclosure.assigned_keeper:
                     enclosure.assigned_keeper = None
-            return f"Staff member {target.first_name} {target.last_name} removed from the zoo."
+            return f"{target.role} {target.first_name} {target.last_name} removed from the zoo."
         else:
             raise ValueError(f"Staff with staff id {staff_id} does not exist.")
 

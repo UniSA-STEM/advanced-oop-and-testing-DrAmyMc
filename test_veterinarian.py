@@ -77,13 +77,19 @@ class TestVeterinarian:
         msg = vetA.conduct_health_checks('Penguin Palace')
         assert msg == 'Zoe Vlogg conducted health checks on the Fairy Penguins in Penguin Palace.'
 
-    def test_create_health_record(self, vetA, animalA):
-        record = vetA.create_health_record(animalA, 1, 2, '20/11/2025', 'Mild fever', 'Monitor')
+    def test_create_health_record_valid(self, vetA, animalA):
+        record = vetA.create_health_record(animalA, 1, 2, '20/11/2025',
+                                           'Mild fever', 'Monitor')
         assert isinstance(record, HealthRecord)
         assert len(animalA.health_record) == 1
         assert animalA.health_record[0] == record
         assert animalA.on_display is False
         assert record.vet is vetA
+
+    def test_create_health_record_invalid_already_current_issue(self, vetA, animalB):
+        with pytest.raises(ValueError):
+            vetA.create_health_record(animalB, 1, 2, '20/11/2025',
+                                      'Mild fever', 'Monitor')
 
     def test_add_treatment_note_no_record(self, vetA, animalA):
         with pytest.raises(ValueError):

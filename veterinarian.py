@@ -53,10 +53,15 @@ class Veterinarian(Staff):
             description (str): A description of the health issue
             treatment_plan (str): The initial treatment plan/notes.
         """
-        record = HealthRecord(issue_type, severity_level, date_reported, description, treatment_plan, self)
-        animal.add_health_record(record)
-        animal.on_display = False
-        return record
+        record = animal.lookup_current_record()
+        if record is None:
+            record = HealthRecord(issue_type, severity_level, date_reported, description, treatment_plan, self)
+            animal.add_health_record(record)
+            animal.on_display = False
+            return record
+        else:
+            raise ValueError(f"Cannot create a new health record for {animal.name} the {animal.species}. They already"
+                             f" have a current record open that needs to be resolved.")
 
     def add_treatment_note(self, animal, treatment_note):
         """Adds a treatment note for an existing health condition."""
