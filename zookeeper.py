@@ -16,9 +16,7 @@ class Zookeeper(Staff):
     def __init__(self, staff_id, first_name, last_name, date_hired):
         """
         Initialises a new Zookeeper instance of the Zookeeper subclass.
-
-        Notes:
-            Attributes such as staff_id, first_name, last_name, and date_hired are initialised by the parent class.
+        Notes: Attributes such as staff_id, first_name, last_name, and date_hired are initialised by the parent class.
         """
         super().__init__(staff_id, first_name, last_name, date_hired)
         self._responsibilities = ['Feed animals', 'Clean enclosures', 'Exhibit planning']
@@ -29,7 +27,7 @@ class Zookeeper(Staff):
 
     def clean_enclosure(self, enclosure_name):
         """Cleans the enclosure if assigned and it needs cleaning."""
-        enclosure = self.search_assigned_enclosures(enclosure_name)
+        enclosure = self.lookup_assigned_enclosure(enclosure_name)
         # Will not clean enclosure if not assigned
         if enclosure is None:
             return f"Cannot clean {enclosure_name}. Not assigned to this enclosure."
@@ -38,12 +36,12 @@ class Zookeeper(Staff):
             return f"Cannot clean {enclosure_name}. This enclosure is already pristine."
         # Clean enclosure if assigned and not pristine
         else:
-            enclosure.clean_enclosure()
+            enclosure.be_cleaned()
             return f"{self.first_name} {self.last_name} cleaned the {enclosure.name} enclosure."
 
     def feed_animals(self, enclosure_name):
         """Feeds the animals in an enclosure if assigned and it contains animals."""
-        enclosure = self.search_assigned_enclosures(enclosure_name)
+        enclosure = self.lookup_assigned_enclosure(enclosure_name)
         # Will not feed animals if not assigned
         if enclosure is None:
             return f"Cannot feed animals in {enclosure_name}. Not assigned to this enclosure."
