@@ -42,7 +42,8 @@ class Veterinarian(Staff):
             return (f"{self.first_name} {self.last_name} conducted health checks on the {enclosure.animal_type}s "
                     f"in {enclosure.name}.")
 
-    def create_health_record(self, animal, issue_type, severity_level, date_reported, description, treatment_plan)->HealthRecord:
+    def create_health_record(self, animal, issue_type, severity_level, date_reported, description,
+                             treatment_plan) -> HealthRecord:
         """
         Initialises a new Health Record instance for the animal.
 

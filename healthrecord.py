@@ -50,23 +50,23 @@ class HealthRecord:
     # Getter methods
     # --------------
 
-    def get_issue_type(self)->str:
+    def get_issue_type(self) -> str:
         """Returns the health issue type."""
         return self.__issue_type
 
-    def get_severity_level(self)->int:
+    def get_severity_level(self) -> int:
         """Returns the severity level of the health issue."""
         return self.__severity_level
 
-    def get_date_reported(self)->datetime:
+    def get_date_reported(self) -> datetime:
         """Returns the date that the health issue was reported."""
         return self.__date_reported
 
-    def get_description(self)->str:
+    def get_description(self) -> str:
         """Returns a description of the health issue."""
         return self.__description
 
-    def get_treatment_plan(self)->list:
+    def get_treatment_plan(self) -> list:
         """Returns the list of treatment plan notes."""
         return self.__treatment_plan
 
@@ -74,7 +74,7 @@ class HealthRecord:
         """Returns whether the health issue is current (True) or resolved (False)."""
         return self.__is_current
 
-    def get_vet(self)->object:
+    def get_vet(self) -> object:
         """Returns the treating vet."""
         return self.__vet
 
@@ -148,7 +148,7 @@ class HealthRecord:
             self.__is_current = is_current
         else:
             raise ValueError(f"Invalid current health status. Please enter either True (issue still current) or "
-                  f"False (issue resolved).")
+                             f"False (issue resolved).")
 
     def set_vet(self, vet):
         """

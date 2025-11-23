@@ -52,7 +52,7 @@ class TestZookeeper:
 
     def test_clean_enclosure_not_assigned(self, keeperA):
         msg = keeperA.clean_enclosure('Penguins')
-        assert msg  == 'Cannot clean Penguins. Not assigned to this enclosure.'
+        assert msg == 'Cannot clean Penguins. Not assigned to this enclosure.'
 
     def test_clean_enclosure_not_dirty(self, keeperA):
         msg = keeperA.clean_enclosure('African Plains')

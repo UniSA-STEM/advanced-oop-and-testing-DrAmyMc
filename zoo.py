@@ -11,7 +11,6 @@ from ftplib import all_errors
 from animal import Animal
 from enclosure import Enclosure
 from staff import Staff
-from species import species_dict
 
 
 class Zoo:
@@ -33,19 +32,19 @@ class Zoo:
     # Getter methods
     # --------------
 
-    def get_name(self)->str:
+    def get_name(self) -> str:
         """Returns the zoo's name."""
         return self.__name
 
-    def get_animals(self)->set:
+    def get_animals(self) -> set:
         """Returns the set of animal objects at the zoo."""
         return self.__animals
 
-    def get_enclosures(self)->set:
+    def get_enclosures(self) -> set:
         """Returns the set of enclosure objects at the zoo."""
         return self.__enclosures
 
-    def get_staff(self)->set:
+    def get_staff(self) -> set:
         """Returns the set of staff objects at the zoo."""
         return self.__staff
 
@@ -77,7 +76,7 @@ class Zoo:
     # Helper methods
     # -------------------
 
-    def lookup_animal(self, animal_name, species)->Animal | None:
+    def lookup_animal(self, animal_name, species) -> Animal | None:
         """Looks up animal by name and species from animals set, returns animal object if found."""
         target = None
         for animal in self.animals:
@@ -85,7 +84,7 @@ class Zoo:
                 target = animal
         return target
 
-    def lookup_enclosure(self, enclosure_name)->Enclosure | None:
+    def lookup_enclosure(self, enclosure_name) -> Enclosure | None:
         """Looks up enclosure by name from enclosures set, returns enclosure object if found."""
         target = None
         for enclosure in self.enclosures:
@@ -93,7 +92,7 @@ class Zoo:
                 target = enclosure
         return target
 
-    def lookup_staff(self, staff_id)->Staff | None:
+    def lookup_staff(self, staff_id) -> Staff | None:
         """Looks up staff by staff_id from staff set, returns staff object if found."""
         target = None
         for staff in self.staff:
@@ -105,7 +104,7 @@ class Zoo:
     # Behavioural methods
     # -------------------
 
-    def add_animal(self, animal)->str:
+    def add_animal(self, animal) -> str:
         """Adds an animal object to the set of animals at the zoo."""
         if isinstance(animal, Animal):
             self.__animals.add(animal)
@@ -113,7 +112,7 @@ class Zoo:
         else:
             raise TypeError(f"Invalid object - must be an Animal object to add to animals.")
 
-    def add_enclosure(self, enclosure)->str:
+    def add_enclosure(self, enclosure) -> str:
         """Adds an enclosure object to the set of enclosures at the zoo."""
         if isinstance(enclosure, Enclosure):
             self.__enclosures.add(enclosure)
@@ -121,7 +120,7 @@ class Zoo:
         else:
             raise TypeError(f"Invalid object - must be an Enclosure object to add to enclosures.")
 
-    def add_staff(self, staff)->str:
+    def add_staff(self, staff) -> str:
         """Adds a staff object to the set of staff at the zoo."""
         if isinstance(staff, Staff):
             self.__staff.add(staff)
@@ -129,7 +128,7 @@ class Zoo:
         else:
             raise TypeError(f"Invalid object - must be a Staff object to add to staff.")
 
-    def remove_animal(self, animal_name, species)->str:
+    def remove_animal(self, animal_name, species) -> str:
         """Removes animal from the set of animals at the zoo if found. Also removes animal from assigned enclosure."""
         target = self.lookup_animal(animal_name, species)
         if target:
@@ -142,7 +141,7 @@ class Zoo:
         else:
             raise ValueError(f"{animal_name} the {species} does not exist.")
 
-    def remove_enclosure(self, enclosure_name)->str:
+    def remove_enclosure(self, enclosure_name) -> str:
         """Removes enclosure from the set of enclosures at the zoo if found. Also removes from staff assignments."""
         target = self.lookup_enclosure(enclosure_name)
         if target:
@@ -155,7 +154,7 @@ class Zoo:
         else:
             raise ValueError(f"Enclosure with name {enclosure_name} does not exist.")
 
-    def remove_staff(self, staff_id)->str:
+    def remove_staff(self, staff_id) -> str:
         """Removes staff from the set of staff at the zoo if found. Also updates any enclosure assignments."""
         target = self.lookup_staff(staff_id)
         if target:
@@ -274,7 +273,7 @@ class Zoo:
         for animal in self.animals:
             for record in animal.health_record:
                 if record.is_current:
-                   under_treatment.append((animal, record))
+                    under_treatment.append((animal, record))
         if not under_treatment:
             details.append('No current health records found.')
         else:
@@ -314,7 +313,7 @@ class Zoo:
                 clean_levels.add(enclosure.cleanliness_level)
             sorted_levels = sorted(clean_levels)
             desc = ['Filthy (Level 0):', 'Very Dirty (Level 1):', 'Dirty (Level 2):', 'Becoming Dirty (Level 3):',
-                           'Quite Clean (Level 4):', 'Pristine (Level 5):']
+                    'Quite Clean (Level 4):', 'Pristine (Level 5):']
             for level in sorted_levels:
                 details.append(desc[level])
                 for enclosure in self.enclosures:
@@ -374,7 +373,7 @@ class Zoo:
     #         details.append('')
     #         return '\n'.join(details)
 
-    def __str__(self)->str:
+    def __str__(self) -> str:
         """
         Returns a formatted string containing the zoo's details.
         Returns: str: The zoo name and list of animals, enclosures and staff.

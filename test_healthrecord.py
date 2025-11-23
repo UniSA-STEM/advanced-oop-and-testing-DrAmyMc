@@ -36,12 +36,12 @@ class TestHealthRecord:
 
     @pytest.fixture
     def recA(self, vetA):
-        return HealthRecord(0, 2, '12/11/2025','Laceration',
+        return HealthRecord(0, 2, '12/11/2025', 'Laceration',
                             'Clean and bandage.', vetA)
 
     @pytest.fixture
     def recB(self, vetB):
-        return HealthRecord(2, 1, '8/9/2024','Lethargy',
+        return HealthRecord(2, 1, '8/9/2024', 'Lethargy',
                             'Monitor for fever.', vetB)
 
     # --- Testing invalid instantiation ---
@@ -164,7 +164,7 @@ class TestHealthRecord:
 
     def test_set_date_reported_invalid_not_string(self, recA):
         with pytest.raises(ValueError):
-            recA.date_reported = 4/5/2023
+            recA.date_reported = 4 / 5 / 2023
 
     def test_set_date_reported_invalid_day(self, recA):
         with pytest.raises(ValueError):
@@ -255,17 +255,21 @@ class TestHealthRecord:
     @pytest.fixture
     def vetA(self):
         return DummyVet('Bob', 'Fobb')
+
     @pytest.fixture
     def vetB(self):
         return DummyVet('Zoe', 'Pesco')
+
     @pytest.fixture
     def recA(self, vetA):
-        return HealthRecord(0, 2, '12/11/2025','Laceration',
+        return HealthRecord(0, 2, '12/11/2025', 'Laceration',
                             'Clean and bandage.', vetA)
+
     @pytest.fixture
     def recB(self, vetB):
-        return HealthRecord(2, 1, '8/9/2024','Lethargy',
+        return HealthRecord(2, 1, '8/9/2024', 'Lethargy',
                             'Monitor for fever.', vetB)
+
     def test_string_display(self, recA):
         s = str(recA)
         assert 'INJURY REPORT' in s

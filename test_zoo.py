@@ -8,7 +8,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 """
 
 import pytest
-
 from zoo import Zoo
 from enclosure import Enclosure
 from mammal import Mammal
@@ -288,9 +287,9 @@ class TestZoo:
             zooB.assign_animal_to_enclosure('Paddy', 'Lion', 'Africa')
 
     def test_assign_animal_to_enclosure_invalid_animal_under_treatment(self, zooB, mammalA, encC):
-         mammalA.on_display = False
-         with pytest.raises(ValueError):
-             zooB.assign_animal_to_enclosure('Paddy', 'Lion', 'African Plains')
+        mammalA.on_display = False
+        with pytest.raises(ValueError):
+            zooB.assign_animal_to_enclosure('Paddy', 'Lion', 'African Plains')
 
     def test_assign_animal_to_enclosure_valid(self, zooB, mammalA, mammalB, encC, encD):
         assert encC.animals_housed == []

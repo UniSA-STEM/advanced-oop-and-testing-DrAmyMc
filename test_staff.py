@@ -14,6 +14,7 @@ from datetime import date
 
 class DummyEnclosure:
     """Dummy Enclosure class for testing purposes only."""
+
     def __init__(self, name):
         self.name = name
 
@@ -139,7 +140,7 @@ class TestStaff:
 
     def test_set_date_hired_invalid_input_not_string(self, staffA):
         with pytest.raises(ValueError):
-            staffA.date_hired = 4/5/2023
+            staffA.date_hired = 4 / 5 / 2023
 
     def test_set_date_hired_invalid_day(self, staffA):
         with pytest.raises(ValueError):
@@ -204,7 +205,7 @@ class TestStaff:
         staffA.add_assigned_enclosure(encC)
         assert staffA.lookup_assigned_enclosure('Africa') is None
 
-# --- Testing string display ---
+    # --- Testing string display ---
 
     def test_string_display(self, staffA):
         s = str(staffA)

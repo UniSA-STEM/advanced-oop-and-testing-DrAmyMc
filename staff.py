@@ -39,7 +39,7 @@ class Staff:
         self.first_name = first_name
         self.last_name = last_name
         self.date_hired = date_hired
-        self.__role = self.__class__.__name__   #Utilises the name of the class to label the role
+        self.__role = self.__class__.__name__  # Utilises the name of the class to label the role
         self._responsibilities = []
         self.__assigned_enclosures = []
 
@@ -47,31 +47,31 @@ class Staff:
     # Getter methods
     # --------------
 
-    def get_staff_id(self)->int:
+    def get_staff_id(self) -> int:
         """Return's the employee's staff ID number."""
         return self.__staff_id
 
-    def get_first_name(self)->str:
+    def get_first_name(self) -> str:
         """Returns the employee's first name."""
         return self.__first_name
 
-    def get_last_name(self)->str:
+    def get_last_name(self) -> str:
         """Returns the employee's last name."""
         return self.__last_name
 
-    def get_date_hired(self)->datetime:
+    def get_date_hired(self) -> datetime:
         """Returns the date the employee was hired ."""
         return self.__date_hired
 
-    def get_role(self)->str:
+    def get_role(self) -> str:
         """Returns the employee's role."""
         return self.__role
 
-    def get_responsibilities(self)->list:
+    def get_responsibilities(self) -> list:
         """Returns a list of the employee's responsibilities."""
         return self._responsibilities
 
-    def get_assigned_enclosures(self)->list:
+    def get_assigned_enclosures(self) -> list:
         """Returns a list of the enclosures assigned to the employee."""
         return self.__assigned_enclosures
 
@@ -108,7 +108,7 @@ class Staff:
         Args: last_name (str): The employee's last name, ensuring only a string of a minimum length may be passed.
         """
         MIN_LENGTH = 2
-        if type (last_name) is str and len(last_name) >= MIN_LENGTH:
+        if type(last_name) is str and len(last_name) >= MIN_LENGTH:
             self.__last_name = last_name
         else:
             raise ValueError(f"Invalid employee last name. Please enter text of at least {MIN_LENGTH} characters.")
@@ -154,7 +154,7 @@ class Staff:
         """Adds an enclosure to a staff member's list of assigned enclosures."""
         self.assigned_enclosures.append(enclosure)
 
-    def lookup_assigned_enclosure(self, enclosure_name)-> object | None:
+    def lookup_assigned_enclosure(self, enclosure_name) -> object | None:
         """Returns the assigned enclosure if found in the assigned enclosure list, otherwise None."""
         for enclosure in self.assigned_enclosures:
             if enclosure.name == enclosure_name:
