@@ -12,6 +12,7 @@ from enclosure import Enclosure
 from mammal import Mammal
 from bird import Bird
 
+
 # Dummy staff class for testing enclosure
 class DummyStaff:
     def __init__(self, first_name, last_name):
@@ -34,7 +35,7 @@ class TestEnclosure:
 
     @pytest.fixture
     def animalC(self):
-        return Bird('Percy2', 2, True, 'Pelican', 2, False)
+        return Bird('Ploppy', 5, False, 'Pelican', 2, False)
 
     # --- Dummy Staff instances for testing ---
 
@@ -358,60 +359,43 @@ class TestEnclosure:
         assert msg == ('This enclosure currently houses 2 Pelicans. It is at maximum capacity and '
                        'has no more space available.')
 
-    def test_list_animals_housed_when_empty(self, encA, encB):
-        assert encA.list_animals_housed() == 'Reptile House is currently empty.\n'
-        assert encB.list_animals_housed() == 'Pelican Palace is currently empty.\n'
+    def test_list_animals_housed_when_empty(self, encA):
+        s = str(encA.list_animals_housed())
+        assert 'ANIMALS HOUSED IN REPTILE HOUSE' in s
+        assert 'This enclosure is currently empty.' in s
 
-    # def test_list_animals_with_animals(self, encB):
-    #     a1 = DummyAnimal("Pelly", "Pelican", 5)
-    #     a2 = DummyAnimal("Percy", "Pelican", 2)
-    #     a3 = DummyAnimal("Pedro", "Pelican", 1)
-    #     encB.animals_housed = [a1, a2, a3]  THIS WON"T WORK ADD ANIMALS FIRST NOT A SETTER
-    #     s = encB.list_animals()
-    #     assert 'Pelican Palace' in s
+    def test_list_animals_housed_with_animals(self, encB, animalA, animalC):
+        encB.add_assigned_animal(animalA)
+        encB.add_assigned_animal(animalC)
+        animalC.on_display = False
+        s = str(encB.list_animals_housed())
+        assert 'ANIMALS HOUSED IN PELICAN PALACE' in s
+        assert 'The Pelicans housed in this enclosure are' in s
+        assert 'Percy, Female, aged 2 years, on display' in s
+        assert 'Ploppy, Male, aged 5 years, NOT on display' in s
 
-#
-# def test_check_capacity_list_animals():
-#     # --- Create and display empty enclosure ---
-#     enc = Enclosure("Test Enclosure", "Aquatic", 30)
-#     print(enc)
-#     enc.list_animals()
-#     enc.check_capacity()
-#
-#     # --- Create test animals ---
-#     bird1 = Bird("Percy1", 2, "Pelican")
-#     bird2 = Bird("Percy2", 2, "Pelican")
-#     bird3 = Bird("Percy3", 2, "Pelican")
-#
-#     # --- Add animals, list animals and check capacity ---
-#     enc.add_animal(bird1)
-#     enc.list_animals()
-#     enc.check_capacity()
-#     enc.add_animal(bird2)
-#     enc.list_animals()
-#     enc.check_capacity()
-#     enc.add_animal(bird3)
-#     enc.list_animals()
-#     enc.check_capacity()
-#
-# def test_add_animals():
-#     # --- Create and display valid enclosure and animals ---
-#     enc = Enclosure("Test Enclosure", "Aquatic", 30)
-#     print(enc)
-#     person = Veterinarian("Test Vet", 2025)
-#     bird1 = Bird("Percy1", 2, "Pelican")
-#     bird2 = Bird("Percy2", 2, "Pelican")
-#     bird3 = Bird("Percy3", 2, "Pelican")
-#     bird4 = Bird("Percy4", 2, "Pelican")
-#     cat = Mammal("Puddy", 3, "Lion")
-#     otter = Mammal("Otty", 1, "Otter")
-#
-#     # --- Add valid and attempt to add invalid selections to enclosure --
-#     enc.add_animal(person)      # Not a valid animal object
-#     enc.add_animal(cat)         # Not an environmental match
-#     enc.add_animal(bird1)       # Valid addition, sets enclosure to Pelican
-#     enc.add_animal(otter)       # Not the correct species
-#     enc.add_animal(bird2)       # Valid addition
-#     enc.add_animal(bird3)       # Valid addition
-#     enc.add_animal(bird4)       # No more space in enclosure
-#     print(enc)                  # Enclosure will now contain 3 pelicans
+    # --- Testing string display ---
+
+    def test_string_display(self, encA):
+        s = str(encA)
+        assert 'REPTILE HOUSE' in s
+        assert 'Terrarium Enclosure' in s
+        assert '20m' in s
+        assert '5' in s
+        assert 'None' in s
+        assert 'This enclosure is currently empty.' in s
+
+    def test_string_display_alt_values(self, encB, keeperA, vetA, animalA, animalC):
+        encB.cleanliness_level = 3
+        encB.assigned_keeper = keeperA
+        encB.assigned_vet = vetA
+        encB.add_assigned_animal(animalA)
+        encB.add_assigned_animal(animalC)
+        s = str(encB)
+        assert 'PELICAN PALACE' in s
+        assert 'Aquatic Enclosure' in s
+        assert '25m' in s
+        assert '3' in s
+        assert 'Dr Joe Bloggs' in s
+        assert 'Zoe Kresta' in s
+        assert 'Houses: 2 Pelicans' in s

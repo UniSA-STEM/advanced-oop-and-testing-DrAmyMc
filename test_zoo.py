@@ -308,3 +308,9 @@ class TestZoo:
         assert encB.assigned_keeper == keeperA
         assert keeperA.assigned_enclosures == [encA, encB]
         assert keeperB.assigned_enclosures == []
+
+# --- Testing scheduling behavioural methods ---
+
+# --- Testing reporting behavioural methods ---
+
+# --- Testing string display ---

@@ -107,7 +107,7 @@ class Enclosure:
             self.__type = enc_type.title()
         else:
             raise ValueError(f"Invalid enclosure type. Please enter one of the following types: "
-                  f"{Enclosure.TYPE_LIST}")
+                             f"{Enclosure.TYPE_LIST}")
 
     def set_size(self, size):
         """
@@ -186,6 +186,10 @@ class Enclosure:
         self.cleanliness_level = 5
 
     def lookup_feed(self) -> str | None:
+        """
+        Looks up feed type for species housed.
+        Returns: feed type for species housed, None if enclosure empty.
+        """
         if self.animal_type is not None:
             species_feed = species_dict[self.animal_type][loc_dict['diet']]
             return species_feed
@@ -194,7 +198,7 @@ class Enclosure:
     # Behavioural methods
     # -------------------
 
-    def report_status(self)->str:
+    def report_status(self) -> str:
         """Returns a cleanliness status message based on current cleanliness level."""
         if self.cleanliness_level == 0:
             return "This enclosure is filthy. Immediate action is required."
@@ -209,7 +213,8 @@ class Enclosure:
         else:
             return "This enclosure is pristine. It has just been cleaned."
 
-    def become_poopy(self)->str:
+    def become_poopy(self) -> str:
+        """Reduces cleanliness level of enclosure."""
         if self.animal_type is None:
             return f"{self.name} has no animals in the enclosure to poop in it."
         else:
@@ -224,13 +229,16 @@ class Enclosure:
         """
         # Ensures environmental type of enclosure is suitable for species being added
         if animal.environment != self.type:
-            raise ValueError(f"Cannot add {animal.species} to this {self.type} enclosure - must be in {animal.environment} enclosure.")
+            raise ValueError(
+                f"Cannot add {animal.species} to this {self.type} enclosure - must be in {animal.environment} enclosure.")
         # Ensures enclosure is restricted to a single type of animal as per assignment specification
         elif self.animal_type is not None and self.animal_type != animal.species:
-            raise ValueError(f"Cannot add {animal.species} to this {self.animal_type} enclosure - must be same species.")
+            raise ValueError(
+                f"Cannot add {animal.species} to this {self.animal_type} enclosure - must be same species.")
         # Ensures enclosure has enough space before successfully adding animal when enclosure emptu.
         elif self.animal_type is None and self.size < animal.space:
-            raise ValueError(f"Cannot add {animal.species} - you need a bigger enclosure of at least {animal.space}m\u00b2.")
+            raise ValueError(
+                f"Cannot add {animal.species} - you need a bigger enclosure of at least {animal.space}m\u00b2.")
         # Adds animal to empty enclosure of appropriate size and type.
         elif self.animal_type is None and self.size >= animal.space:
             self.__animals_housed.append(animal)
@@ -243,9 +251,9 @@ class Enclosure:
         # Adds animal to enclosure of appropriate size and type with same species
         else:
             self.__animals_housed.append(animal)
-            return(f"You have successfully added another {animal.species} to this enclosure.")
+            return (f"You have successfully added another {animal.species} to this enclosure.")
 
-    def check_capacity(self)->str:
+    def check_capacity(self) -> str:
         """Returns a capacity message based on current capacity of enclosure."""
         if self.animal_type is None:
             return f"This enclosure is currently empty. It has {self.size}m\u00b2 of space available."
@@ -263,33 +271,45 @@ class Enclosure:
                 available = "It is at maximum capacity and has no more space available."
             return current + available
 
-    def list_animals_housed(self)-> str:
+    def list_animals_housed(self) -> str:
         """Returns a list of animals housed in enclosure."""
+        details = [f'---ANIMALS HOUSED IN {self.name.upper()}']
         if self.animals_housed == []:
-            animals_housed_str = f"{self.name} is currently empty.\n"
+            details.append(f"This enclosure is currently empty.")
         else:
-            animals_housed_str = f"---Animals Housed in {self.name}---\n"
+            details.append(f"The {self.animal_type}s housed in this enclosure are:")
             for animal in self.animals_housed:
-                animals_housed_str += (f"{animal.name} the {animal.species}, aged {animal.age} years\n")
-        return animals_housed_str
+                sex = 'Female' if animal.is_female else 'Male'
+                display = 'on display' if animal.on_display else 'NOT on display'
+                details.append(f"   {animal.name}, {sex}, aged {animal.age} years, {display}")
+        details.append("")
+        return '\n'.join(details)
 
     # --------------
     # String display
     # --------------
 
-    def __str__(self)->str:
+    def __str__(self) -> str:
         """
         Returns a formatted string containing the enclosure's details.
-        Returns: str: The enclosure name, type, size, cleanliness level, and animal species housed.
+        Returns: str: The enclosure name, type, size, cleanliness level, assigned staff, and animal species housed.
         """
         if self.animal_type is None:
-            animal_type = f"This enclosure is currently empty.\n"
+            animal_type = f"This enclosure is currently empty."
         else:
-            animal_type = f"Houses: {len(self.animals_housed)} {self.animal_type}s\n"
-        return [f"---{self.name.upper()}---\n"
+            animal_type = f"Houses: {len(self.animals_housed)} {self.animal_type}s"
+        if self.assigned_keeper is None:
+            keeper = 'None'
+        else:
+            keeper = f"{self.assigned_keeper.first_name} {self.assigned_keeper.last_name}"
+        if self.assigned_vet is None:
+            vet = 'None'
+        else:
+            vet = f"Dr {self.assigned_vet.first_name} {self.assigned_vet.last_name}"
+        return (f"---{self.name.upper()}---\n"
                 f"{self.type} Enclosure\n"
                 f"Size: {self.size}m\u00b2\n"
                 f"Cleanliness level: {self.cleanliness_level}\n"
-                f"Assigned zookeeper: {self.assigned_keeper.first_name} {self.assigned_keeper.last_name}\n"
-                f"Assigned veterinarian: {self.assigned_vet.first_name} {self.assigned_vet.last_name}\n"
-                f"{animal_type}\n"]
+                f"Assigned zookeeper: {keeper}\n"
+                f"Assigned veterinarian: {vet}\n"
+                f"{animal_type}\n")
