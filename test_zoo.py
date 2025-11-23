@@ -62,6 +62,10 @@ class TestZoo:
     def encC(self):
         return Enclosure('African Plains', 'Savannah', 2000)
 
+    @pytest.fixture
+    def encD(self):
+        return Enclosure('Small Plains', 'Savannah', 500)
+
     # --- Staff instances for testing ---
 
     @pytest.fixture
@@ -87,7 +91,8 @@ class TestZoo:
         return Zoo('Halls Gap Zoo')
 
     @pytest.fixture
-    def zooB(self, mammalA, mammalB, birdA, birdB, reptileA, reptileB, encA, encB, encC, vetA, vetB, keeperA, keeperB):
+    def zooB(self, mammalA, mammalB, birdA, birdB, reptileA, reptileB, encA, encB, encC, encD,
+             vetA, vetB, keeperA, keeperB):
         zoo = Zoo('Grampians Zoo')
         zoo.add_animal(mammalA)
         zoo.add_animal(mammalB)
@@ -98,6 +103,7 @@ class TestZoo:
         zoo.add_enclosure(encA)
         zoo.add_enclosure(encB)
         zoo.add_enclosure(encC)
+        zoo.add_enclosure(encD)
         zoo.add_staff(vetA)
         zoo.add_staff(vetB)
         zoo.add_staff(keeperA)
@@ -106,6 +112,7 @@ class TestZoo:
         zoo.assign_enclosure_to_staff('Pelican Palace', 123457)
         zoo.assign_enclosure_to_staff('Reptile House', 123458)
         zoo.assign_enclosure_to_staff('Pelican Palace', 123459)
+        zoo.assign_animal_to_enclosure('Paddy', 'Lion', 'Small Plains')
         return zoo
 
     # --- Testing invalid instantiation ---
@@ -128,9 +135,9 @@ class TestZoo:
         assert zooA.animals == set()
         assert zooB.animals == set([mammalA, mammalB, birdA, birdB, reptileA, reptileB])
 
-    def test_get_enclosures(self, zooA, zooB, encA, encB, encC):
+    def test_get_enclosures(self, zooA, zooB, encA, encB, encC, encD):
         assert zooA.enclosures == set()
-        assert zooB.enclosures == set([encA, encB, encC])
+        assert zooB.enclosures == set([encA, encB, encC, encD])
 
     def test_get_staff(self, zooA, zooB, vetA, vetB, keeperA, keeperB):
         assert zooA.staff == set()
@@ -210,26 +217,26 @@ class TestZoo:
         with pytest.raises(TypeError):
             zooA.add_staff(encA)
 
-    def test_remove_animal_valid(self, zooB, mammalA, encC):
+    def test_remove_animal_valid(self, zooB, mammalA, encD):
         assert len(zooB.animals) == 6
         assert mammalA in zooB.animals
-        #assert mammalA in encC.animals_housed
+        assert mammalA in encD.animals_housed
         assert zooB.remove_animal('Paddy', 'Lion') == 'Paddy the Lion removed from the zoo.'
         assert len(zooB.animals) == 5
         assert mammalA not in zooB.animals
-        #assert mammalA not in encC.animals_housed
+        assert mammalA not in encD.animals_housed
 
     def test_remove_animal_not_found(self, zooB):
         with pytest.raises(ValueError):
             zooB.remove_animal('Puddy', 'Lion')
 
     def test_remove_enclosure_valid(self, zooB, encB, vetB, keeperB):
-        assert len(zooB.enclosures) == 3
+        assert len(zooB.enclosures) == 4
         assert encB in zooB.enclosures
         assert encB in vetB.assigned_enclosures
         assert encB in keeperB.assigned_enclosures
         assert zooB.remove_enclosure('Pelican Palace') == 'Pelican Palace enclosure removed from the zoo.'
-        assert len(zooB.enclosures) == 2
+        assert len(zooB.enclosures) == 3
         assert encB not in zooB.enclosures
         assert encB not in vetB.assigned_enclosures
         assert encB not in keeperB.assigned_enclosures
@@ -252,6 +259,27 @@ class TestZoo:
             zooB.remove_staff(223456)
 
     # --- Testing assignment of animals/staff behavioural methods ---
+
+    def test_assign_enclosure_to_staff_invalid_animal(self, zooB):
+        with pytest.raises(ValueError):
+            zooB.assign_animal_to_enclosure('Puddy', 'Lion', 'African Plains')
+
+    def test_assign_animal_to_enclosure_invalid_enclosure(self, zooB):
+        with pytest.raises(ValueError):
+            zooB.assign_animal_to_enclosure('Paddy', 'Lion', 'Africa')
+
+    def test_assign_animal_to_enclosure_invalid_animal_under_treatment(self, zooB, mammalA, encC):
+         mammalA.on_display = False
+         with pytest.raises(ValueError):
+             zooB.assign_animal_to_enclosure('Paddy', 'Lion', 'African Plains')
+
+    def test_assign_animal_to_enclosure_valid(self, zooB, mammalA, encC, encD):
+        assert encC.animals_housed == []
+        assert encD.animals_housed == [mammalA]
+        msg = zooB.assign_animal_to_enclosure('Paddy', 'Lion', 'African Plains')
+        assert msg == 'Paddy the Lion is now assigned to the African Plains enclosure.'
+        assert encC.animals_housed == [mammalA]
+        assert encD.animals_housed == []
 
     def test_assign_enclosure_to_staff_invalid_enclosure(self, zooB):
         with pytest.raises(ValueError):

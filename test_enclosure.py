@@ -9,15 +9,8 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 import pytest
 from enclosure import Enclosure
-
-
-# Dummy animal class for testing enclosure
-class DummyAnimal:
-    def __init__(self, name, species, age):
-        self.name = name
-        self.species = species
-        self.age = age
-
+from mammal import Mammal
+from bird import Bird
 
 # Dummy staff class for testing enclosure
 class DummyStaff:
@@ -29,11 +22,19 @@ class DummyStaff:
 class TestEnclosure:
     """Testing suite for the Enclosure class."""
 
-    # --- Dummy Animal instances for testing ---
+    # --- Animal instances for testing ---
 
     @pytest.fixture
     def animalA(self):
-        return DummyAnimal('Percy', 'Pelican', 2)
+        return Bird('Percy', 2, True, 'Pelican', 2, False)
+
+    @pytest.fixture
+    def animalB(self):
+        return Mammal('Paddy', 3, False, 'Lion', 'Shaggy')
+
+    @pytest.fixture
+    def animalC(self):
+        return Bird('Percy2', 2, True, 'Pelican', 2, False)
 
     # --- Dummy Staff instances for testing ---
 
@@ -53,11 +54,7 @@ class TestEnclosure:
 
     @pytest.fixture
     def encB(self):
-        return Enclosure('Pelican Palace', 'Aquatic', 30)
-
-    @pytest.fixture
-    def encC(self):
-        return Enclosure('Small Savannah', 'Savannah', 150)
+        return Enclosure('Pelican Palace', 'Aquatic', 25)
 
     # --- Testing invalid instantiation ---
 
@@ -89,7 +86,7 @@ class TestEnclosure:
 
     def test_get_size(self, encA, encB):
         assert encA.size == 20
-        assert encB.size == 30
+        assert encB.size == 25
 
     def test_get_cleanliness_level(self, encA, encB):
         assert encA.cleanliness_level == 5
@@ -228,9 +225,9 @@ class TestEnclosure:
 
     def test_calculate_max_animals_valid(self, encB):
         encB.animal_type = 'Pelican'
-        assert encB.calculate_max_animals() == 3
-        encB.size = 25
         assert encB.calculate_max_animals() == 2
+        encB.size = 15
+        assert encB.calculate_max_animals() == 1
         encB.size = 9
         assert encB.calculate_max_animals() == 0
 
@@ -310,9 +307,60 @@ class TestEnclosure:
         assert 'Pelican Palace is becoming dirtier as the Pelicans poop.' in encB.become_poopy()
         assert 'This enclosure is very dirty. It should be cleaned urgently.' in encB.become_poopy()
 
-    def test_list_animals_when_empty(self, encA, encB):
-        assert encA.list_animals() == 'Reptile House is currently empty.\n'
-        assert encB.list_animals() == 'Pelican Palace is currently empty.\n'
+    def test_add_assigned_animal_invalid_environmental_type(self, encB, animalB):
+        with pytest.raises(ValueError):
+            encB.add_assigned_animal(animalB)
+
+    def test_add_assigned_animal_invalid_animal_type_match(self, encB, animalA):
+        encB.animal_type = 'Fairy Penguin'
+        with pytest.raises(ValueError):
+            encB.add_assigned_animal(animalA)
+
+    def test_add_assigned_animal_invalid_too_small(self, encB, animalA):
+        encB.size = 9
+        with pytest.raises(ValueError):
+            encB.add_assigned_animal(animalA)
+
+    def test_add_assigned_animal_valid_empty_enclosure(self, encB, animalA):
+        assert encB.animal_type is None
+        assert encB.animals_housed == []
+        msg = encB.add_assigned_animal(animalA)
+        assert msg == 'You have successfully added a Pelican. This is now a Pelican enclosure.'
+        assert encB.animal_type == 'Pelican'
+        assert encB.animals_housed == [animalA]
+
+    def test_add_assigned_animal_invalid_too_full(self, encB, animalA, animalC):
+        encB.size = 15
+        encB.add_assigned_animal(animalA)
+        with pytest.raises(ValueError):
+            encB.add_assigned_animal(animalC)
+
+    def test_add_assigned_animal_valid_additional_animal(self, encB, animalA, animalC):
+        encB.add_assigned_animal(animalA)
+        assert encB.animal_type == 'Pelican'
+        msg = encB.add_assigned_animal(animalC)
+        assert msg == 'You have successfully added another Pelican to this enclosure.'
+        assert encB.animals_housed == [animalA, animalC]
+
+    def test_check_capacity_when_empty(self, encB):
+        msg = encB.check_capacity()
+        assert msg == 'This enclosure is currently empty. It has 25m\u00b2 of space available.'
+
+    def test_check_capacity_more_space_available(self, encB, animalA):
+        encB.add_assigned_animal(animalA)
+        msg = encB.check_capacity()
+        assert msg == 'This enclosure currently houses 1 Pelicans. It has space available for 1 more Pelicans.'
+
+    def test_check_capacity_enclosure_full(self, encB, animalA, animalC):
+        encB.add_assigned_animal(animalA)
+        encB.add_assigned_animal(animalC)
+        msg = encB.check_capacity()
+        assert msg == ('This enclosure currently houses 2 Pelicans. It is at maximum capacity and '
+                       'has no more space available.')
+
+    def test_list_animals_housed_when_empty(self, encA, encB):
+        assert encA.list_animals_housed() == 'Reptile House is currently empty.\n'
+        assert encB.list_animals_housed() == 'Pelican Palace is currently empty.\n'
 
     # def test_list_animals_with_animals(self, encB):
     #     a1 = DummyAnimal("Pelly", "Pelican", 5)

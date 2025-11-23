@@ -177,15 +177,15 @@ class Zoo:
             raise ValueError(f"{animal_name} the {species} does not exist.")
         elif enclosure is None:
             raise ValueError(f"Enclosure with name {enclosure_name} does not exist.")
-        elif any(record.is_current for record in animal.health_record):
+        elif not animal.on_display:
             raise ValueError(f"Cannot move this animal while under treatment for a health condition.")
         else:
-            enclosure.add_animal(animal)
+            enclosure.add_assigned_animal(animal)
             # Removes from any other enclosure currently assigned to
             for other in self.enclosures:
                 if other is not enclosure and animal in other.animals_housed:
                     other.animals_housed.remove(animal)
-            return f"{animal.name} the {animal.species} assigned to {enclosure.name} enclosure."
+            return f"{animal.name} the {animal.species} is now assigned to the {enclosure.name} enclosure."
 
     def assign_enclosure_to_staff(self, enclosure_name, staff_id):
         enclosure = self.lookup_enclosure(enclosure_name)

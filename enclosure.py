@@ -217,16 +217,13 @@ class Enclosure:
                 self.cleanliness_level -= 1
             return f"{self.name} is becoming dirtier as the {self.animal_type}s poop. " + self.report_status()
 
-    def add_animal(self, animal):
+    def add_assigned_animal(self, animal):
         """
         Adds an animal to the enclosure.
-        Args: animal (Animal): Adds an animal to the list of animals housed in the enclosure. Must be Animal class.
+        Args: animal (Animal): Adds an animal to the list of animals housed in the enclosure.
         """
-        # Ensures only animal objects can be added to enclosure
-        if not isinstance(animal, Animal):
-            raise ValueError(f"This is not an animal. Cannot add to enclosure.")
         # Ensures environmental type of enclosure is suitable for species being added
-        elif animal.environment != self.type:
+        if animal.environment != self.type:
             raise ValueError(f"Cannot add {animal.species} to this {self.type} enclosure - must be in {animal.environment} enclosure.")
         # Ensures enclosure is restricted to a single type of animal as per assignment specification
         elif self.animal_type is not None and self.animal_type != animal.species:
@@ -248,16 +245,6 @@ class Enclosure:
             self.__animals_housed.append(animal)
             return(f"You have successfully added another {animal.species} to this enclosure.")
 
-    def list_animals(self)-> str:
-        """Returns a list of animals housed in enclosure."""
-        if self.animals_housed == []:
-            animals_housed_str = f"{self.name} is currently empty.\n"
-        else:
-            animals_housed_str = f"---Animals Housed in {self.name}---\n"
-            for animal in self.animals_housed:
-                animals_housed_str += (f"{animal.name} the {animal.species}, aged {animal.age} years\n")
-        return animals_housed_str
-
     def check_capacity(self)->str:
         """Returns a capacity message based on current capacity of enclosure."""
         if self.animal_type is None:
@@ -275,6 +262,16 @@ class Enclosure:
             else:
                 available = "It is at maximum capacity and has no more space available."
             return current + available
+
+    def list_animals_housed(self)-> str:
+        """Returns a list of animals housed in enclosure."""
+        if self.animals_housed == []:
+            animals_housed_str = f"{self.name} is currently empty.\n"
+        else:
+            animals_housed_str = f"---Animals Housed in {self.name}---\n"
+            for animal in self.animals_housed:
+                animals_housed_str += (f"{animal.name} the {animal.species}, aged {animal.age} years\n")
+        return animals_housed_str
 
     # --------------
     # String display
