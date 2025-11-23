@@ -391,4 +391,24 @@ class TestZoo:
         assert 'Percy, Pelican, Male, aged 3 years, Minor Behavioural Issue' in s
         assert 'Lizzie, Lace Monitor, Male, aged 1 years, Moderate Injury' in s
 
+    def test_list_animals_by_species(self, zooB):
+        pass
+
+    def test_list_enclosures_by_status(self, zooB):
+        pass
+
     # --- Testing string display ---
+
+    def test_string_display(self, zooA):
+        s = str(zooA)
+        assert 'HALLS GAP ZOO' in s
+        assert 'no animals' in s
+        assert 'no enclosures' in s
+        assert 'no staff' in s
+
+    def test_string_display_alt_values(self, zooB):
+        s = str(zooB)
+        assert 'GRAMPIANS ZOO' in s
+        assert '6 animals' in s
+        assert '4 enclosures' in s
+        assert '4 staff' in s

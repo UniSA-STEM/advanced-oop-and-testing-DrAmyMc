@@ -10,8 +10,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 from animal import Animal
 from enclosure import Enclosure
 from staff import Staff
-from veterinarian import Veterinarian
-from zookeeper import Zookeeper
+from species import species_dict
 
 
 class Zoo:
@@ -221,6 +220,7 @@ class Zoo:
                 for enclosure in staff.assigned_enclosures:
                     str = staff.feed_animals(enclosure.name)
                     details.append(str)
+        details.append('')
         return '\n'.join(details)
 
     def schedule_cleaning(self):
@@ -235,6 +235,7 @@ class Zoo:
                 for enclosure in staff.assigned_enclosures:
                     str = staff.clean_enclosure(enclosure.name)
                     details.append(str)
+        details.append('')
         return '\n'.join(details)
 
     def schedule_health_checks(self):
@@ -249,6 +250,7 @@ class Zoo:
                 for enclosure in staff.assigned_enclosures:
                     str = staff.conduct_health_checks(enclosure.name)
                     details.append(str)
+        details.append('')
         return '\n'.join(details)
 
     def list_animal_health_history(self, animal_name, species):
@@ -283,15 +285,77 @@ class Zoo:
         details.append('')
         return '\n'.join(details)
 
-    def list_animals_by_species(self):
-        pass
+    # def list_animals_by_species(self):
+    #     details = [f'---ANIMALS IN ZOO LISTED BY SPECIES---']
+    #     if not self.animals:
+    #         details.append('No animals found.')
+    #     else:
+    #         species = sorted(species_dict.keys())
+    #         for animal in self.animals:
+    #     details.append('')
+    #     return '\n'.join(details)
 
-    def list_enclosure_status(self):
-        pass
+    # def list_enclosures_by_status(self):
+    #     details = [f'---ENCLOSURES IN ZOO LISTED BY CLEANLINESS---']
+    #     if not self.enclosures:
+    #         details.append('No enclosures found.')
+    #     else:
+    #         level5 = []
+    #         level4 = []
+    #         level3 = []
+    #         level2 = []
+    #         level1 = []
+    #         level0 = []
+    #         for enclosure in self.enclosures:
+    #             if enclosure.cleanliness_level == 5:
+    #                 level5.append(enclosure)
+    #             elif enclosure.cleanliness_level == 4:
+    #                 level4.append(enclosure)
+    #             elif enclosure.cleanliness_level == 3:
+    #                 level3.append(enclosure)
+    #             elif enclosure.cleanliness_level == 2:
+    #                 level2.append(enclosure)
+    #             elif enclosure.cleanliness_level == 1:
+    #                 level1.append(enclosure)
+    #             else:
+    #                 level0.append(enclosure)
+    #         if level5:
+    #             details.append('Pristine Enclosures (Level 5):')
+    #             for enc in level5:
+    #                 details.append(f'   {enc.name}')
+    #         if level4:
+    #             details.append('Quite Clean Enclosures (Level 4):')
+    #             for enc in level4:
+    #                 details.append(f'   {enc.name}')
+    #         if level3:
+    #             details.append('Becoming Dirty Enclosures (Level 3):')
+    #             for enc in level3:
+    #                 details.append(f'   {enc.name}')
+    #         if level2:
+    #             details.append('Dirty Enclosures (Level 2):')
+    #             for enc in level2:
+    #                 details.append(f'   {enc.name}')
+    #         if level1:
+    #             details.append('Very Dirty Enclosures (Level 1):')
+    #             for enc in level1:
+    #                 details.append(f'   {enc.name}')
+    #         if level0:
+    #             details.append('Filthy Enclosures (Level 0):')
+    #             for enc in level0:
+    #                 details.append(f'   {enc.name}')
+    #         details.append('')
+    #         return '\n'.join(details)
 
     def __str__(self)->str:
         """
         Returns a formatted string containing the zoo's details.
-        Returns: str: The name, enclosure list, and staff list.
+        Returns: str: The zoo name and list of animals, enclosures and staff.
         """
-        return f"{self.name} has {self.enclosures} enclosures and {self.staff} staff.\n"
+        animals = len(self.animals) if self.animals else 'no'
+        enclosures = len(self.enclosures) if self.enclosures else 'no'
+        staff = len(self.staff) if self.staff else 'no'
+        return (f'---{self.name.upper()}---\n'
+                f'This zoo has:\n'
+                f'   {animals} animals\n'
+                f'   {enclosures} enclosures\n'
+                f'   {staff} staff\n')

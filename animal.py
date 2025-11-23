@@ -223,7 +223,7 @@ class Animal(ABC):
         display = '' if self.on_display else 'NOT '
         return (f"---{self.name.upper()} THE {self.__class__.__name__.upper()}---\n"
                 f"I am a {self.species}, which is {native} to Australia.\n"
-                f"Currently {display}on display."
+                f"Currently {display}on display.\n"
                 f"Age: {self.age} years old\n"
                 f"Sex: {sex}\n"
                 f"Required environment: {self.environment}\n"

@@ -174,11 +174,11 @@ class Staff:
                    f"Staff ID: {self.staff_id}\n"
                    f"Date hired: {self.date_hired}"]
         if self.responsibilities != []:
-            details.append('---Responsibilities---')
+            details.append('Responsibilities:')
             for responsibility in self.responsibilities:
                 details.append(f"   {responsibility}")
         if self.assigned_enclosures != []:
-            details.append('---Assigned Enclosures---')
+            details.append('Assigned Enclosures:')
             for enclosure in self.assigned_enclosures:
                 details.append(f"   {enclosure.name}")
         details.append("")

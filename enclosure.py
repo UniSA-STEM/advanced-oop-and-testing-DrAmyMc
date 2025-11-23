@@ -273,7 +273,7 @@ class Enclosure:
 
     def list_animals_housed(self) -> str:
         """Returns a list of animals housed in enclosure."""
-        details = [f'---ANIMALS HOUSED IN {self.name.upper()}']
+        details = [f'---ANIMALS HOUSED IN {self.name.upper()}---']
         if self.animals_housed == []:
             details.append(f"This enclosure is currently empty.")
         else:

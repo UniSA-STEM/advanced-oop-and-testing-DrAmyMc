@@ -208,6 +208,6 @@ class HealthRecord:
                    f"Description: {self.description}\n"
                    f"Treatment plan/Notes:"]
         for note in self.treatment_plan:
-            details.append(note)
+            details.append(f'   {note}')
         details.append("")
         return '\n'.join(details)
