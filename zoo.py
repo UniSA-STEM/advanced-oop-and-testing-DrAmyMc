@@ -195,7 +195,7 @@ class Zoo:
         elif staff is None:
             raise ValueError(f"Staff with staff id {staff_id} does not exist.")
         else:
-            staff.add_enclosure(enclosure)
+            staff.add_assigned_enclosure(enclosure)
             # Removes enclosure from any other staff members it is currently assigned to
             for other_staff in self.staff:
                 if other_staff is not staff and staff.role == other_staff.role:
@@ -203,9 +203,9 @@ class Zoo:
                         other_staff.assigned_enclosures.remove(enclosure)
             # Updates assignment in enclosure
             if staff.role == 'Zookeeper':
-                enclosure.assigned_keeper = f"{staff.first_name} {staff.last_name}"
+                enclosure.assigned_keeper = staff
             if staff.role == 'Veterinarian':
-                enclosure.assigned_vet = f"{staff.first_name} {staff.last_name}"
+                enclosure.assigned_vet = staff
             return (f"{staff.first_name} {staff.last_name} is now the assigned {staff.role} for "
                     f"the {enclosure.name} enclosure.")
 

@@ -102,10 +102,10 @@ class TestZoo:
         zoo.add_staff(vetB)
         zoo.add_staff(keeperA)
         zoo.add_staff(keeperB)
-        encA.assigned_vet = vetA
-        encB.assigned_vet = vetB
-        encA.assigned_keeper = keeperA
-        encA.assigned_keeper = keeperB
+        zoo.assign_enclosure_to_staff('Reptile House', 123456)
+        zoo.assign_enclosure_to_staff('Pelican Palace', 123457)
+        zoo.assign_enclosure_to_staff('Reptile House', 123458)
+        zoo.assign_enclosure_to_staff('Pelican Palace', 123459)
         return zoo
 
     # --- Testing invalid instantiation ---
@@ -176,7 +176,7 @@ class TestZoo:
         assert zooB.lookup_staff(223456) is None
         assert zooB.lookup_staff(223458) is None
 
-    # --- Testing add/remove behavioural methods ---
+    # --- Testing add/remove animals/enclosures/staff behavioural methods ---
 
     def test_add_animal_valid(self, zooA, mammalA, birdA, reptileA):
         assert zooA.add_animal(mammalA) == 'Paddy the Lion added to the zoo.'
@@ -226,13 +226,13 @@ class TestZoo:
     def test_remove_enclosure_valid(self, zooB, encB, vetB, keeperB):
         assert len(zooB.enclosures) == 3
         assert encB in zooB.enclosures
-        # assert encB in vetB.assigned_enclosures
-        # assert encB in keeperB.assigned_enclosures
+        assert encB in vetB.assigned_enclosures
+        assert encB in keeperB.assigned_enclosures
         assert zooB.remove_enclosure('Pelican Palace') == 'Pelican Palace enclosure removed from the zoo.'
         assert len(zooB.enclosures) == 2
         assert encB not in zooB.enclosures
-        # assert encB not in vetB.assigned_enclosures
-        # assert encB not in keeperB.assigned_enclosures
+        assert encB not in vetB.assigned_enclosures
+        assert encB not in keeperB.assigned_enclosures
 
     def test_remove_enclosure_not_found(self, zooB):
         with pytest.raises(ValueError):
@@ -250,3 +250,33 @@ class TestZoo:
     def test_remove_staff_not_found(self, zooB):
         with pytest.raises(ValueError):
             zooB.remove_staff(223456)
+
+    # --- Testing assignment of animals/staff behavioural methods ---
+
+    def test_assign_enclosure_to_staff_invalid_enclosure(self, zooB):
+        with pytest.raises(ValueError):
+            zooB.assign_enclosure_to_staff('Pelican Place', 123456)
+
+    def test_assign_enclosure_to_staff_invalid_staff(self, zooB):
+        with pytest.raises(ValueError):
+            zooB.assign_enclosure_to_staff('Pelican Palace', 223456)
+
+    def test_assign_enclosure_to_staff_valid_vet(self, zooB, encA, encB, vetA, vetB):
+        assert encB.assigned_vet == vetB
+        assert vetA.assigned_enclosures == [encA]
+        assert vetB.assigned_enclosures == [encB]
+        msg = zooB.assign_enclosure_to_staff('Pelican Palace', 123456)
+        assert msg == 'Zoe Smith is now the assigned Veterinarian for the Pelican Palace enclosure.'
+        assert encB.assigned_vet == vetA
+        assert vetA.assigned_enclosures == [encA, encB]
+        assert vetB.assigned_enclosures == []
+
+    def test_assign_enclosure_to_staff_valid_keeper(self, zooB, encA, encB, keeperA, keeperB):
+        assert encB.assigned_keeper == keeperB
+        assert keeperA.assigned_enclosures == [encA]
+        assert keeperB.assigned_enclosures == [encB]
+        msg = zooB.assign_enclosure_to_staff('Pelican Palace', 123458)
+        assert msg == 'Joe Blogg is now the assigned Zookeeper for the Pelican Palace enclosure.'
+        assert encB.assigned_keeper == keeperA
+        assert keeperA.assigned_enclosures == [encA, encB]
+        assert keeperB.assigned_enclosures == []
