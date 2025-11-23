@@ -215,9 +215,9 @@ class Zoo:
         Calls each Zookeeper's feed_animals method for each assigned enclosure.
         Returns: a summary of feeding actions.
         """
-        details = []
+        details = [f'---FEEDING TIME AT {self.name.upper()}---']
         for staff in self.staff:
-            if isinstance(staff, Zookeeper):
+            if staff.role == 'Zookeeper':
                 for enclosure in staff.assigned_enclosures:
                     str = staff.feed_animals(enclosure.name)
                     details.append(str)
@@ -229,26 +229,58 @@ class Zoo:
         Calls each Zookeeper's clean_enclosure method for each assigned enclosure.
         Returns: a summary of cleaning actions.
         """
-        details = []
+        details = [f'---CLEANING TIME AT {self.name.upper()}---']
         for staff in self.staff:
-            if isinstance(staff, Zookeeper):
+            if staff.role == 'Zookeeper':
                 for enclosure in staff.assigned_enclosures:
                     str = staff.clean_enclosure(enclosure.name)
                     details.append(str)
         return '\n'.join(details)
 
-    def schedule_health_check(self):
+    def schedule_health_checks(self):
         """
         Schedules health checks of all enclosures in the zoo by their assigned veterinarians.
         Calls each Veterinarian's conduct_health_checks method for each assigned enclosure.
         Returns: a summary of health check actions.
         """
-        details = []
+        details = [f'---HEALTH CHECK TIME AT {self.name.upper()}---']
         for staff in self.staff:
-            if isinstance(staff, Veterinarian):
+            if staff.role == 'Veterinarian':
                 for enclosure in staff.assigned_enclosures:
                     str = staff.conduct_health_checks(enclosure.name)
                     details.append(str)
+        return '\n'.join(details)
+
+    def list_animal_health_history(self, animal_name, species):
+        """Lists health history for a particular animal."""
+        target = self.lookup_animal(animal_name, species)
+        if target:
+            details = [f'---HEALTH HISTORY FOR {target.name.upper()} THE {target.species.upper()}---']
+            if target.health_record == []:
+                details.append('No health records found.')
+            else:
+                for record in target.health_record:
+                    details.append(str(record))
+            return '\n'.join(details)
+        else:
+            raise ValueError(f"{animal_name} the {species} does not exist.")
+
+    def list_animals_under_treatment(self):
+        details = [f'---ANIMALS CURRENTLY UNDER TREATMENT---']
+        under_treatment = []
+        for animal in self.animals:
+            for record in animal.health_record:
+                if record.is_current:
+                   under_treatment.append((animal, record))
+        if not under_treatment:
+            details.append('No current health records found.')
+        else:
+            for animal, record in under_treatment:
+                sex = 'Female' if animal.is_female else 'Male'
+                severity = ['Negligible', 'Minor', 'Moderate', 'Severe'][record.severity_level]
+                issue = record.issue_type
+                details.append(f"{animal.name}, {animal.species}, {sex}, aged {animal.age} years, {severity} {issue}")
+        details.append('')
         return '\n'.join(details)
 
     def list_animals_by_species(self):
@@ -257,10 +289,6 @@ class Zoo:
     def list_enclosure_status(self):
         pass
 
-    def list_animals_under_treatement(self):
-        pass
-
-    #TODO: Update with different format to list enclosures and staff properly
     def __str__(self)->str:
         """
         Returns a formatted string containing the zoo's details.

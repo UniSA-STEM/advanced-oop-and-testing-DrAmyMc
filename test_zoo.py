@@ -9,7 +9,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 import pytest
 
-import zoo
 from zoo import Zoo
 from enclosure import Enclosure
 from mammal import Mammal
@@ -17,6 +16,7 @@ from bird import Bird
 from reptile import Reptile
 from veterinarian import Veterinarian
 from zookeeper import Zookeeper
+from healthrecord import HealthRecord
 
 
 class TestZoo:
@@ -30,7 +30,7 @@ class TestZoo:
 
     @pytest.fixture
     def mammalB(self):
-        return Mammal('Blinky', 1, True, 'Koala', 'Short')
+        return Mammal('Fluffy', 1, True, 'Lion', 'Short')
 
     @pytest.fixture
     def birdA(self):
@@ -84,6 +84,18 @@ class TestZoo:
     def keeperB(self):
         return Zookeeper(123459, 'Jim', 'Doe', '8/9/2024')
 
+    # --- Health Record instances for testing ---
+
+    @pytest.fixture
+    def recA(self, vetA):
+        return HealthRecord(0, 2, '12/11/2025', 'Laceration',
+                            'Clean and bandage.', vetA)
+
+    @pytest.fixture
+    def recB(self, vetA):
+        return HealthRecord(2, 1, '8/9/2024', 'Lethargy',
+                            'Monitor for fever.', vetA)
+
     # --- Zoo instance for testing ---
 
     @pytest.fixture
@@ -109,10 +121,17 @@ class TestZoo:
         zoo.add_staff(keeperA)
         zoo.add_staff(keeperB)
         zoo.assign_enclosure_to_staff('Reptile House', 123456)
-        zoo.assign_enclosure_to_staff('Pelican Palace', 123457)
         zoo.assign_enclosure_to_staff('Reptile House', 123458)
+        zoo.assign_enclosure_to_staff('Pelican Palace', 123457)
         zoo.assign_enclosure_to_staff('Pelican Palace', 123459)
+        zoo.assign_enclosure_to_staff('African Plains', 123456)
+        zoo.assign_enclosure_to_staff('African Plains', 123458)
+        zoo.assign_enclosure_to_staff('Small Plains', 123457)
+        zoo.assign_enclosure_to_staff('Small Plains', 123459)
         zoo.assign_animal_to_enclosure('Paddy', 'Lion', 'Small Plains')
+        zoo.assign_animal_to_enclosure('Fluffy', 'Lion', 'Small Plains')
+        zoo.assign_animal_to_enclosure('Lizzie', 'Lace Monitor', 'Reptile House')
+        zoo.assign_animal_to_enclosure('Percy', 'Pelican', 'Pelican Palace')
         return zoo
 
     # --- Testing invalid instantiation ---
@@ -273,13 +292,13 @@ class TestZoo:
          with pytest.raises(ValueError):
              zooB.assign_animal_to_enclosure('Paddy', 'Lion', 'African Plains')
 
-    def test_assign_animal_to_enclosure_valid(self, zooB, mammalA, encC, encD):
+    def test_assign_animal_to_enclosure_valid(self, zooB, mammalA, mammalB, encC, encD):
         assert encC.animals_housed == []
-        assert encD.animals_housed == [mammalA]
+        assert encD.animals_housed == [mammalA, mammalB]
         msg = zooB.assign_animal_to_enclosure('Paddy', 'Lion', 'African Plains')
         assert msg == 'Paddy the Lion is now assigned to the African Plains enclosure.'
         assert encC.animals_housed == [mammalA]
-        assert encD.animals_housed == []
+        assert encD.animals_housed == [mammalB]
 
     def test_assign_enclosure_to_staff_invalid_enclosure(self, zooB):
         with pytest.raises(ValueError):
@@ -289,28 +308,87 @@ class TestZoo:
         with pytest.raises(ValueError):
             zooB.assign_enclosure_to_staff('Pelican Palace', 223456)
 
-    def test_assign_enclosure_to_staff_valid_vet(self, zooB, encA, encB, vetA, vetB):
+    def test_assign_enclosure_to_staff_valid_vet(self, zooB, encA, encB, encC, encD, vetA, vetB):
         assert encB.assigned_vet == vetB
-        assert vetA.assigned_enclosures == [encA]
-        assert vetB.assigned_enclosures == [encB]
+        assert vetA.assigned_enclosures == [encA, encC]
+        assert vetB.assigned_enclosures == [encB, encD]
         msg = zooB.assign_enclosure_to_staff('Pelican Palace', 123456)
         assert msg == 'Zoe Smith is now the assigned Veterinarian for the Pelican Palace enclosure.'
         assert encB.assigned_vet == vetA
-        assert vetA.assigned_enclosures == [encA, encB]
-        assert vetB.assigned_enclosures == []
+        assert vetA.assigned_enclosures == [encA, encC, encB]
+        assert vetB.assigned_enclosures == [encD]
 
-    def test_assign_enclosure_to_staff_valid_keeper(self, zooB, encA, encB, keeperA, keeperB):
+    def test_assign_enclosure_to_staff_valid_keeper(self, zooB, encA, encB, encC, encD, keeperA, keeperB):
         assert encB.assigned_keeper == keeperB
-        assert keeperA.assigned_enclosures == [encA]
-        assert keeperB.assigned_enclosures == [encB]
+        assert keeperA.assigned_enclosures == [encA, encC]
+        assert keeperB.assigned_enclosures == [encB, encD]
         msg = zooB.assign_enclosure_to_staff('Pelican Palace', 123458)
         assert msg == 'Joe Blogg is now the assigned Zookeeper for the Pelican Palace enclosure.'
         assert encB.assigned_keeper == keeperA
-        assert keeperA.assigned_enclosures == [encA, encB]
-        assert keeperB.assigned_enclosures == []
+        assert keeperA.assigned_enclosures == [encA, encC, encB]
+        assert keeperB.assigned_enclosures == [encD]
 
-# --- Testing scheduling behavioural methods ---
+    # --- Testing scheduling behavioural methods ---
 
-# --- Testing reporting behavioural methods ---
+    def test_schedule_feeding(self, zooB):
+        s = zooB.schedule_feeding()
+        assert 'FEEDING TIME AT GRAMPIANS ZOO' in s
+        assert 'Joe Blogg fed insects to the Lace Monitors in Reptile House.'
+        assert 'Jim Doe fed fish to the Pelicans in Pelican Palace.'
+        assert 'Cannot feed animals in African Plains. This enclosure is empty.' in s
+        assert 'Jim Doe fed meat to the Lions in Small Plains.'
 
-# --- Testing string display ---
+    def test_schedule_cleaning(self, zooB, encA, encB):
+        encA.cleanliness_level = 3
+        encB.cleanliness_level = 3
+        s = zooB.schedule_cleaning()
+        assert 'CLEANING TIME AT GRAMPIANS ZOO' in s
+        assert 'Joe Blogg cleaned the Reptile House enclosure.'
+        assert 'Jim Doe cleaned the Pelican Palace enclosure.'
+        assert 'Cannot clean African Plains. This enclosure is already pristine.' in s
+        assert 'Cannot clean Small Plains. This enclosure is already pristine.' in s
+
+    def test_schedule_health_checks(self, zooB):
+        s = zooB.schedule_health_checks()
+        assert 'HEALTH CHECK TIME AT GRAMPIANS ZOO' in s
+        assert 'Zoe Smith conducted health checks on the Lace Monitors in Reptile House.'
+        assert 'Sally Brown conducted health checks on the Pelicans in Pelican Palace.'
+        assert 'Cannot conduct health checks in African Plains. This enclosure is empty.' in s
+        assert 'Sally Brown conducted health checks on the Lions in Small Plains.'
+
+    # --- Testing reporting behavioural methods ---
+
+    def test_list_animal_health_history_animal_not_found(self, zooB):
+        with pytest.raises(ValueError):
+            zooB.list_animal_health_history('Puddy', 'Lion')
+
+    def test_list_animal_health_history_no_records(self, zooB):
+        s = zooB.list_animal_health_history('Paddy', 'Lion')
+        assert 'HEALTH HISTORY FOR PADDY THE LION' in s
+        assert 'No health records found.' in s
+
+    def test_list_animal_health_history(self, zooB, reptileA, recA, recB):
+        reptileA.add_health_record(recA)
+        reptileA.add_health_record(recB)
+        s = zooB.list_animal_health_history('Lizzie', 'Lace Monitor')
+        assert 'HEALTH HISTORY FOR LIZZIE THE LACE MONITOR' in s
+        assert 'Laceration' in s
+        assert 'Lethargy' in s
+
+    def test_list_animals_under_treatment_none_unwell(self, zooB):
+        s = zooB.list_animals_under_treatment()
+        assert 'ANIMALS CURRENTLY UNDER TREATMENT' in s
+        assert 'No current health records found.' in s
+
+    def test_list_animals_under_treatment(self, zooB, reptileA, birdA, mammalA, recA, recB):
+        reptileA.add_health_record(recA)
+        birdA.add_health_record(recB)
+        mammalA.add_health_record(recA)
+        s = zooB.list_animals_under_treatment()
+        assert 'ANIMALS CURRENTLY UNDER TREATMENT' in s
+        assert 'No current health records found.' not in s
+        assert 'Paddy, Lion, Male, aged 3 years, Moderate Injury' in s
+        assert 'Percy, Pelican, Male, aged 3 years, Minor Behavioural Issue' in s
+        assert 'Lizzie, Lace Monitor, Male, aged 1 years, Moderate Injury' in s
+
+    # --- Testing string display ---

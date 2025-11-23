@@ -6,8 +6,6 @@ ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 """
-from random import betavariate
-from tabnanny import verbose
 
 import pytest
 from healthrecord import HealthRecord

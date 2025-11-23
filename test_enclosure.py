@@ -360,7 +360,7 @@ class TestEnclosure:
                        'has no more space available.')
 
     def test_list_animals_housed_when_empty(self, encA):
-        s = str(encA.list_animals_housed())
+        s = encA.list_animals_housed()
         assert 'ANIMALS HOUSED IN REPTILE HOUSE' in s
         assert 'This enclosure is currently empty.' in s
 
@@ -368,7 +368,7 @@ class TestEnclosure:
         encB.add_assigned_animal(animalA)
         encB.add_assigned_animal(animalC)
         animalC.on_display = False
-        s = str(encB.list_animals_housed())
+        s = encB.list_animals_housed()
         assert 'ANIMALS HOUSED IN PELICAN PALACE' in s
         assert 'The Pelicans housed in this enclosure are' in s
         assert 'Percy, Female, aged 2 years, on display' in s
