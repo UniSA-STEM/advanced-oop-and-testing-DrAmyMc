@@ -6,6 +6,7 @@ ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 """
+from ftplib import all_errors
 
 from animal import Animal
 from enclosure import Enclosure
@@ -257,7 +258,7 @@ class Zoo:
         """Lists health history for a particular animal."""
         target = self.lookup_animal(animal_name, species)
         if target:
-            details = [f'---HEALTH HISTORY FOR {target.name.upper()} THE {target.species.upper()}---']
+            details = [f'---HEALTH HISTORY FOR {target.name.upper()} THE {target.species.upper()}---\n']
             if target.health_record == []:
                 details.append('No health records found.')
             else:
@@ -285,15 +286,42 @@ class Zoo:
         details.append('')
         return '\n'.join(details)
 
-    # def list_animals_by_species(self):
-    #     details = [f'---ANIMALS IN ZOO LISTED BY SPECIES---']
-    #     if not self.animals:
-    #         details.append('No animals found.')
-    #     else:
-    #         species = sorted(species_dict.keys())
-    #         for animal in self.animals:
-    #     details.append('')
-    #     return '\n'.join(details)
+    def list_animals_by_species(self):
+        details = [f'---ANIMALS IN ZOO LISTED BY SPECIES---']
+        if not self.animals:
+            details.append('No animals found.')
+        else:
+            zoo_species = set()
+            for animal in self.animals:
+                zoo_species.add(animal.species)
+            sorted_species = sorted(zoo_species)
+            for species in sorted_species:
+                details.append(f'{species}:')
+                for animal in self.animals:
+                    if animal.species == species:
+                        sex = 'Female' if animal.is_female else 'Male'
+                        details.append(f"   {animal.name}, {sex}, age {animal.age}")
+        details.append('')
+        return '\n'.join(details)
+
+    def list_enclosures_by_status(self):
+        details = [f'---ENCLOSURES IN ZOO LISTED BY CLEANLINESS---']
+        if not self.enclosures:
+            details.append('No enclosures found.')
+        else:
+            clean_levels = set()
+            for enclosure in self.enclosures:
+                clean_levels.add(enclosure.cleanliness_level)
+            sorted_levels = sorted(clean_levels)
+            desc = ['Filthy (Level 0):', 'Very Dirty (Level 1):', 'Dirty (Level 2):', 'Becoming Dirty (Level 3):',
+                           'Quite Clean (Level 4):', 'Pristine (Level 5):']
+            for level in sorted_levels:
+                details.append(desc[level])
+                for enclosure in self.enclosures:
+                    if enclosure.cleanliness_level == level:
+                        details.append(f"   {enclosure.name}, {enclosure.type}")
+            details.append('')
+            return '\n'.join(details)
 
     # def list_enclosures_by_status(self):
     #     details = [f'---ENCLOSURES IN ZOO LISTED BY CLEANLINESS---']

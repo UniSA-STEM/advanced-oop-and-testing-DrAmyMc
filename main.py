@@ -6,19 +6,18 @@ ID: 110392134
 Username: MCCAY044
 This is my own work as defined by the University's Academic Integrity Policy.
 """
-from json.encoder import encode_basestring
 
 from mammal import Mammal
 from bird import Bird
 from reptile import Reptile
 from enclosure import Enclosure
-from healthrecord import HealthRecord
 from veterinarian import Veterinarian
 from zookeeper import Zookeeper
 from zoo import Zoo
 
 
 def main():
+    """Demonstrates all main methods of Zoo program."""
 
     # --- Create instances of animals and display their information ---
     mammalA = Mammal('Paddy', 3, False, 'Lion', 'Shaggy')
@@ -164,6 +163,10 @@ def main():
     print(encD.check_capacity())
     print(encD.list_animals_housed())
 
+    # --- Demonstrate zoo reporting ---
+    print(zoo.list_animals_by_species())
+    print(zoo.list_enclosures_by_status())
+
     # --- Demonstrate zoo behavioural/staff behavioural methods ---
     print(zoo.schedule_feeding())
     print(zoo.schedule_cleaning())
@@ -175,13 +178,10 @@ def main():
     vetA.add_treatment_note(mammalA, 'Redress wound')
     vetA.add_treatment_note(mammalA, 'Continue to monitor')
     vetA.mark_issue_resolved(mammalA)
-
-def next():
-# --- Create instances of health records and display their information ---
-    recA = HealthRecord(0, 2, '12/11/2025', 'Laceration', 'Clean and bandage.', vetA)
-    recB = HealthRecord(2, 1, '8/9/2024', 'Lethargy', 'Monitor for fever.', vetA)
-    print(recA)
-    print(recB)
+    vetA.create_health_record(mammalA, 2, 1, '8/9/2024', 'Lethargy', 'Monitor for fever.')
+    print(zoo.list_animal_health_history('Paddy', 'Lion'))
+    vetA.create_health_record(mammalB, 0, 2, '12/11/2025', 'Laceration', 'Clean and bandage.')
+    print(zoo.list_animals_under_treatment())
 
 # Call main function to run tests
 if __name__ == "__main__":

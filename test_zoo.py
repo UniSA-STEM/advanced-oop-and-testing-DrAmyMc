@@ -392,10 +392,26 @@ class TestZoo:
         assert 'Lizzie, Lace Monitor, Male, aged 1 years, Moderate Injury' in s
 
     def test_list_animals_by_species(self, zooB):
-        pass
+        s = zooB.list_animals_by_species()
+        assert 'Brown Snake' in s
+        assert 'Lace Monitor' in s
+        assert 'Lion' in s
+        assert 'Ostrich' in s
+        assert 'Pelican' in s
+        assert 'Tiger' not in s
+        assert 'Fairy Penguin' not in s
+        assert 'Paddy, Male, age 3' in s
+        assert 'Fluffy, Female, age 1' in s
+        assert 'Evil, Female, age 1' in s
 
     def test_list_enclosures_by_status(self, zooB):
-        pass
+        s = zooB.list_enclosures_by_status()
+        assert 'Pristine' in s
+        assert 'Level 5' in s
+        assert 'Dirty' not in s
+        assert 'Filthy' not in s
+        assert 'African Plains, Savannah' in s
+        assert 'Pelican Palace, Aquatic' in s
 
     # --- Testing string display ---
 
